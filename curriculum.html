@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - 基礎マスターコース</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="curriculum-container">
+            <!-- パンくずナビ -->
+            <nav class="breadcrumb">
+                <a href="home.html">ホーム</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">基礎マスターコース</span>
+            </nav>
+
+            <!-- ページタイトル -->
+            <div class="page-header">
+                <h1 class="page-title">基礎マスターコース</h1>
+                <p class="course-description">
+                    生成AIの理解を深め、効果的に活用するためのプロンプトエンジニアリングのスキルを身につけることを目指します。<br>
+                    段階的な学習を通じ、基礎知識から応用的な技法、そして実践的な演習へと進んでいきます。
+                </p>
+            </div>
+
+            <!-- 進捗サマリー -->
+            <div class="course-progress">
+                <div class="progress-card">
+                    <h3>コース進捗</h3>
+                    <div class="progress-stats" id="courseProgressStats">
+                        <span class="completed">0</span> / <span class="total">0</span> チャプター完了
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="courseProgressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-percentage" id="courseProgressPercentage">0%</div>
+                </div>
+            </div>
+
+            <!-- レッスン一覧 -->
+            <div class="lessons-list" id="lessonsList">
+                <!-- JavaScriptで動的に生成 -->
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+            
+            // カリキュラムの表示
+            displayCurriculum();
+            
+            // 進捗の表示
+            displayCourseProgress();
+        });
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        function displayCurriculum() {
+            const curriculumData = progressManager.getCurriculumData();
+            const course = curriculumData.basic_course;
+            const currentUser = authSystem.getCurrentUser();
+            const lessonsList = document.getElementById('lessonsList');
+
+            let lessonsHTML = '';
+
+            course.lessons.forEach((lesson, index) => {
+                const completionRate = progressManager.getLessonCompletionRate(currentUser.userId, lesson.id);
+                const completedChapters = lesson.chapters.filter(chapter => 
+                    progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id)
+                ).length;
+
+                lessonsHTML += `
+                    <div class="lesson-card" data-lesson-id="${lesson.id}">
+                        <div class="lesson-header">
+                            <div class="lesson-info">
+                                <h3 class="lesson-title">${lesson.title}</h3>
+                                <div class="lesson-meta">
+                                    <span class="lesson-time">学習時間の目安: ${lesson.estimatedTime}</span>
+                                    <span class="lesson-status ${completionRate === 100 ? 'completed' : completionRate > 0 ? 'in-progress' : 'not-started'}">
+                                        ${completionRate === 100 ? '完了' : completionRate > 0 ? '学習中' : '未実施'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="lesson-progress">
+                                <div class="lesson-progress-text">
+                                    ${completedChapters} / ${lesson.chapters.length} チャプター完了
+                                </div>
+                                <div class="progress-bar small">
+                                    <div class="progress-fill" style="width: ${completionRate}%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chapters-list">
+                            ${lesson.chapters.map((chapter, chapterIndex) => {
+                                const isCompleted = progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id);
+                                return `
+                                    <div class="chapter-item ${isCompleted ? 'completed' : ''}" 
+                                         data-chapter-id="${chapter.id}"
+                                         onclick="openChapter('${lesson.id}', '${chapter.id}', '${encodeURIComponent(chapter.title)}')">
+                                        <div class="chapter-info">
+                                            <div class="chapter-number">Chapter ${chapterIndex + 1}</div>
+                                            <div class="chapter-title">${chapter.title}</div>
+                                        </div>
+                                        <div class="chapter-status">
+                                            ${isCompleted ? '✓' : '▶'}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            lessonsList.innerHTML = lessonsHTML;
+        }
+
+        function displayCourseProgress() {
+            const currentUser = authSystem.getCurrentUser();
+            const progress = progressManager.getUserProgress(currentUser.userId);
+            
+            const completed = progress.completedChapters.length;
+            const total = progress.totalChapters;
+            const percentage = progress.completionRate;
+            
+            document.querySelector('#courseProgressStats .completed').textContent = completed;
+            document.querySelector('#courseProgressStats .total').textContent = total;
+            document.getElementById('courseProgressFill').style.width = percentage + '%';
+            document.getElementById('courseProgressPercentage').textContent = percentage + '%';
+        }
+
+        function openChapter(lessonId, chapterId, chapterTitle) {
+            // アクティビティを更新
+            authSystem.updateLastActivity();
+            
+            // チャプターページに遷移
+            const params = new URLSearchParams({
+                lesson: lessonId,
+                chapter: chapterId,
+                title: chapterTitle
+            });
+            
+            window.location.href = `chapter.html?${params.toString()}`;
+        }
+    </script>
+
+    <style>
+        /* カリキュラムページ専用スタイル */
+        .curriculum-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .breadcrumb {
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .breadcrumb-separator {
+            margin: 0 0.5rem;
+        }
+
+        .breadcrumb-current {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .course-description {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .course-progress {
+            margin-bottom: 3rem;
+        }
+
+        .course-progress .progress-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .course-progress .progress-stats {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-progress .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .course-progress .progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-percentage {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .lessons-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 2rem;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .lesson-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .lesson-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lesson-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .lesson-status.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .lesson-status.in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .lesson-status.not-started {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .lesson-progress {
+            min-width: 200px;
+        }
+
+        .lesson-progress-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar.small {
+            height: 8px;
+            background: #e1e8ed;
+            border-radius: 4px;
+        }
+
+        .progress-bar.small .progress-fill {
+            background: #667eea;
+            height: 100%;
+            border-radius: 4px;
+        }
+
+        .chapters-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chapter-item:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .chapter-item.completed {
+            background: #f8fff8;
+            border-color: #28a745;
+        }
+
+        .chapter-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .chapter-number {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .chapter-item.completed .chapter-number {
+            background: #28a745;
+        }
+
+        .chapter-title {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .chapter-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chapter-status {
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .chapter-item.completed .chapter-status {
+            color: #28a745;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .curriculum-container {
+                padding: 1rem;
+            }
+
+            .lesson-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .chapter-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .chapter-number {
+                min-width: auto;
+            }
+        }
+    </style>
+</body>
+</html>

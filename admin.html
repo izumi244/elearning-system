@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - 管理者画面</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar admin">A</div>
+            <span class="user-name">管理者</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="admin-container">
+            <!-- ページタイトル -->
+            <div class="page-header">
+                <h1 class="page-title">管理者画面</h1>
+                <p class="page-description">受講者の学習進捗とシステム利用状況を管理できます。</p>
+            </div>
+
+            <!-- 統計サマリー -->
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <h3>総受講者数</h3>
+                            <div class="stat-number" id="totalUsers">30</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <h3>学習中ユーザー</h3>
+                            <div class="stat-number" id="activeUsers">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <h3>完了ユーザー</h3>
+                            <div class="stat-number" id="completedUsers">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3>平均進捗率</h3>
+                            <div class="stat-number" id="averageProgress">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- タブナビゲーション -->
+            <div class="admin-tabs">
+                <button class="tab-button active" onclick="switchTab('progress')">進捗管理</button>
+                <button class="tab-button" onclick="switchTab('login-history')">ログイン履歴</button>
+                <button class="tab-button" onclick="switchTab('export')">データエクスポート</button>
+            </div>
+
+            <!-- 進捗管理タブ -->
+            <div class="tab-content active" id="progressTab">
+                <div class="section-header">
+                    <h2>受講者進捗一覧</h2>
+                    <div class="controls">
+                        <select id="progressFilter" onchange="filterProgress()">
+                            <option value="all">すべて</option>
+                            <option value="not-started">未開始</option>
+                            <option value="in-progress">学習中</option>
+                            <option value="completed">完了</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="refreshProgress()">🔄 更新</button>
+                    </div>
+                </div>
+
+                <div class="progress-table-container">
+                    <table class="admin-table" id="progressTable">
+                        <thead>
+                            <tr>
+                                <th>ユーザーID</th>
+                                <th>ユーザー名</th>
+                                <th>進捗率</th>
+                                <th>完了チャプター</th>
+                                <th>最終更新</th>
+                                <th>ステータス</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="progressTableBody">
+                            <!-- JavaScriptで動的に生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ログイン履歴タブ -->
+            <div class="tab-content" id="loginHistoryTab">
+                <div class="section-header">
+                    <h2>ログイン履歴</h2>
+                    <div class="controls">
+                        <select id="historyFilter" onchange="filterHistory()">
+                            <option value="all">すべて</option>
+                            <option value="today">本日</option>
+                            <option value="week">1週間</option>
+                            <option value="month">1ヶ月</option>
+                        </select>
+                        <button class="btn btn-secondary" onclick="refreshHistory()">🔄 更新</button>
+                    </div>
+                </div>
+
+                <div class="history-table-container">
+                    <table class="admin-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>ユーザーID</th>
+                                <th>ユーザー名</th>
+                                <th>ログイン日時</th>
+                                <th>ログアウト日時</th>
+                                <th>セッション時間</th>
+                                <th>ステータス</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- JavaScriptで動的に生成 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- データエクスポートタブ -->
+            <div class="tab-content" id="exportTab">
+                <div class="section-header">
+                    <h2>データエクスポート</h2>
+                </div>
+
+                <div class="export-section">
+                    <div class="export-cards">
+                        <div class="export-card">
+                            <div class="export-icon">📊</div>
+                            <h3>進捗データ</h3>
+                            <p>全受講者の学習進捗をCSV形式でエクスポートします。</p>
+                            <button class="btn btn-primary" onclick="exportProgressCSV()">
+                                📥 進捗データをダウンロード
+                            </button>
+                        </div>
+
+                        <div class="export-card">
+                            <div class="export-icon">📋</div>
+                            <h3>ログイン履歴</h3>
+                            <p>受講者のログイン・ログアウト履歴をCSV形式でエクスポートします。</p>
+                            <button class="btn btn-primary" onclick="exportHistoryCSV()">
+                                📥 履歴データをダウンロード
+                            </button>
+                        </div>
+
+                        <div class="export-card">
+                            <div class="export-icon">📈</div>
+                            <h3>統計レポート</h3>
+                            <p>学習状況の統計情報をまとめたレポートを作成します。</p>
+                            <button class="btn btn-primary" onclick="exportStatisticsReport()">
+                                📥 統計レポートをダウンロード
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="export-options">
+                        <h3>エクスポートオプション</h3>
+                        <div class="options-grid">
+                            <label class="option-item">
+                                <input type="checkbox" id="includePersonalInfo" checked>
+                                <span>個人情報を含む</span>
+                            </label>
+                            <label class="option-item">
+                                <input type="checkbox" id="includeTimestamps" checked>
+                                <span>タイムスタンプを含む</span>
+                            </label>
+                            <label class="option-item">
+                                <input type="checkbox" id="includeProgressDetails" checked>
+                                <span>詳細な進捗情報を含む</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 受講者詳細モーダル -->
+            <div class="modal" id="userDetailModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalUserName">ユーザー詳細</h3>
+                        <button class="modal-close" onclick="closeUserModal()">×</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="user-detail-grid">
+                            <div class="detail-section">
+                                <h4>基本情報</h4>
+                                <div class="detail-item">
+                                    <span class="label">ユーザーID:</span>
+                                    <span class="value" id="modalUserId">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">進捗率:</span>
+                                    <span class="value" id="modalProgress">-</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">最終ログイン:</span>
+                                    <span class="value" id="modalLastLogin">-</span>
+                                </div>
+                            </div>
+                            <div class="detail-section">
+                                <h4>完了チャプター</h4>
+                                <div class="completed-chapters" id="modalCompletedChapters">
+                                    <!-- 動的に生成 -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeUserModal()">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        let allProgressData = [];
+        let allLoginHistory = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 管理者権限チェック
+            if (!authSystem.requireAdmin()) {
+                return;
+            }
+
+            // データの初期読み込み
+            loadAdminData();
+            
+            // 統計の表示
+            updateStatistics();
+        });
+
+        function loadAdminData() {
+            // 進捗データの取得
+            allProgressData = progressManager.getAllUsersProgress();
+            
+            // ログイン履歴の取得
+            allLoginHistory = JSON.parse(localStorage.getItem('loginHistory') || '[]');
+            
+            // テーブルの更新
+            updateProgressTable();
+            updateHistoryTable();
+        }
+
+        function updateStatistics() {
+            const totalUsers = 30;
+            let activeUsers = 0;
+            let completedUsers = 0;
+            let totalProgress = 0;
+
+            allProgressData.forEach(user => {
+                if (user.completionRate > 0 && user.completionRate < 100) {
+                    activeUsers++;
+                } else if (user.completionRate === 100) {
+                    completedUsers++;
+                }
+                totalProgress += user.completionRate;
+            });
+
+            const averageProgress = allProgressData.length > 0 ? 
+                Math.round(totalProgress / allProgressData.length) : 0;
+
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            document.getElementById('completedUsers').textContent = completedUsers;
+            document.getElementById('averageProgress').textContent = averageProgress + '%';
+        }
+
+        function updateProgressTable() {
+            const tableBody = document.getElementById('progressTableBody');
+            const filter = document.getElementById('progressFilter').value;
+
+            let filteredData = allProgressData.filter(user => {
+                if (filter === 'all') return true;
+                if (filter === 'not-started') return user.completionRate === 0;
+                if (filter === 'in-progress') return user.completionRate > 0 && user.completionRate < 100;
+                if (filter === 'completed') return user.completionRate === 100;
+                return true;
+            });
+
+            let html = '';
+            filteredData.forEach(user => {
+                const completedCount = user.completedChapters ? user.completedChapters.length : 0;
+                const lastUpdated = user.lastUpdated ? 
+                    new Date(user.lastUpdated).toLocaleDateString('ja-JP') : '未学習';
+                
+                let status = '未開始';
+                let statusClass = 'not-started';
+                
+                if (user.completionRate === 100) {
+                    status = '完了';
+                    statusClass = 'completed';
+                } else if (user.completionRate > 0) {
+                    status = '学習中';
+                    statusClass = 'in-progress';
+                }
+
+                html += `
+                    <tr>
+                        <td>${user.userId}</td>
+                        <td>${user.userName}</td>
+                        <td>
+                            <div class="progress-cell">
+                                <div class="progress-bar small">
+                                    <div class="progress-fill" style="width: ${user.completionRate}%"></div>
+                                </div>
+                                <span>${user.completionRate}%</span>
+                            </div>
+                        </td>
+                        <td>${completedCount} / ${user.totalChapters}</td>
+                        <td>${lastUpdated}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>
+                            <button class="btn btn-small" onclick="showUserDetail('${user.userId}')">
+                                詳細
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html || '<tr><td colspan="7" class="no-data">データがありません</td></tr>';
+        }
+
+        function updateHistoryTable() {
+            const tableBody = document.getElementById('historyTableBody');
+            const filter = document.getElementById('historyFilter').value;
+            
+            let filteredHistory = allLoginHistory.filter(entry => {
+                const loginDate = new Date(entry.loginTime);
+                const now = new Date();
+                
+                if (filter === 'all') return true;
+                if (filter === 'today') {
+                    return loginDate.toDateString() === now.toDateString();
+                }
+                if (filter === 'week') {
+                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return loginDate >= weekAgo;
+                }
+                if (filter === 'month') {
+                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                    return loginDate >= monthAgo;
+                }
+                return true;
+            });
+
+            // 最新順にソート
+            filteredHistory.sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime));
+
+            let html = '';
+            filteredHistory.slice(0, 100).forEach(entry => { // 最新100件のみ表示
+                const loginTime = new Date(entry.loginTime).toLocaleString('ja-JP');
+                const logoutTime = entry.logoutTime ? 
+                    new Date(entry.logoutTime).toLocaleString('ja-JP') : 'ログイン中';
+                
+                let sessionTime = '-';
+                let statusClass = 'active';
+                let status = 'ログイン中';
+
+                if (entry.logoutTime) {
+                    const duration = new Date(entry.logoutTime) - new Date(entry.loginTime);
+                    const minutes = Math.floor(duration / 60000);
+                    sessionTime = `${minutes}分`;
+                    status = '完了';
+                    statusClass = 'completed';
+                }
+
+                html += `
+                    <tr>
+                        <td>${entry.userId}</td>
+                        <td>${entry.name}</td>
+                        <td>${loginTime}</td>
+                        <td>${logoutTime}</td>
+                        <td>${sessionTime}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                    </tr>
+                `;
+            });
+
+            tableBody.innerHTML = html || '<tr><td colspan="6" class="no-data">データがありません</td></tr>';
+        }
+
+        function showUserDetail(userId) {
+            const user = allProgressData.find(u => u.userId === userId);
+            if (!user) return;
+
+            document.getElementById('modalUserName').textContent = `${user.userName}の詳細情報`;
+            document.getElementById('modalUserId').textContent = user.userId;
+            document.getElementById('modalProgress').textContent = user.completionRate + '%';
+            
+            // 最新のログイン履歴を取得
+            const lastLogin = allLoginHistory
+                .filter(entry => entry.userId === userId)
+                .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))[0];
+            
+            const lastLoginText = lastLogin ? 
+                new Date(lastLogin.loginTime).toLocaleString('ja-JP') : '履歴なし';
+            document.getElementById('modalLastLogin').textContent = lastLoginText;
+
+            // 完了チャプターの表示
+            const completedChaptersHtml = user.completedChapters ? 
+                user.completedChapters.map(ch => `
+                    <div class="completed-chapter-item">
+                        <span class="chapter-title">${ch.chapterTitle}</span>
+                        <span class="completion-date">${new Date(ch.completedAt).toLocaleDateString('ja-JP')}</span>
+                    </div>
+                `).join('') : '<div class="no-data">完了したチャプターがありません</div>';
+            
+            document.getElementById('modalCompletedChapters').innerHTML = completedChaptersHtml;
+            
+            document.getElementById('userDetailModal').style.display = 'block';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userDetailModal').style.display = 'none';
+        }
+
+        function switchTab(tabName) {
+            // タブボタンの状態更新
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // タブコンテンツの表示切り替え
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            if (tabName === 'progress') {
+                document.getElementById('progressTab').classList.add('active');
+            } else if (tabName === 'login-history') {
+                document.getElementById('loginHistoryTab').classList.add('active');
+            } else if (tabName === 'export') {
+                document.getElementById('exportTab').classList.add('active');
+            }
+        }
+
+        function filterProgress() {
+            updateProgressTable();
+        }
+
+        function filterHistory() {
+            updateHistoryTable();
+        }
+
+        function refreshProgress() {
+            loadAdminData();
+            updateStatistics();
+        }
+
+        function refreshHistory() {
+            loadAdminData();
+        }
+
+        function exportProgressCSV() {
+            const csvContent = progressManager.exportProgressToCSV();
+            downloadCSV(csvContent, 'progress_data.csv');
+        }
+
+        function exportHistoryCSV() {
+            let csvContent = 'ユーザーID,ユーザー名,ログイン日時,ログアウト日時,セッション時間(分)\n';
+            
+            allLoginHistory.forEach(entry => {
+                const sessionMinutes = entry.logoutTime ? 
+                    Math.floor((new Date(entry.logoutTime) - new Date(entry.loginTime)) / 60000) : '';
+                
+                const row = [
+                    entry.userId,
+                    entry.name,
+                    new Date(entry.loginTime).toLocaleString('ja-JP'),
+                    entry.logoutTime ? new Date(entry.logoutTime).toLocaleString('ja-JP') : '',
+                    sessionMinutes
+                ].join(',');
+                
+                csvContent += row + '\n';
+            });
+
+            downloadCSV(csvContent, 'login_history.csv');
+        }
+
+        function exportStatisticsReport() {
+            const report = generateStatisticsReport();
+            downloadCSV(report, 'statistics_report.csv');
+        }
+
+        function generateStatisticsReport() {
+            let report = '学習管理システム 統計レポート\n';
+            report += `生成日時,${new Date().toLocaleString('ja-JP')}\n\n`;
+            
+            report += '基本統計\n';
+            report += `総受講者数,${document.getElementById('totalUsers').textContent}\n`;
+            report += `学習中ユーザー,${document.getElementById('activeUsers').textContent}\n`;
+            report += `完了ユーザー,${document.getElementById('completedUsers').textContent}\n`;
+            report += `平均進捗率,${document.getElementById('averageProgress').textContent}\n\n`;
+            
+            report += '進捗率分布\n';
+            const distribution = [0, 25, 50, 75, 100].map(threshold => {
+                const count = allProgressData.filter(user => user.completionRate >= threshold).length;
+                return `${threshold}%以上,${count}人`;
+            }).join('\n');
+            
+            report += distribution + '\n\n';
+            
+            report += '最新ログイン履歴(上位10件)\n';
+            report += 'ユーザーID,ログイン日時\n';
+            
+            allLoginHistory
+                .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))
+                .slice(0, 10)
+                .forEach(entry => {
+                    report += `${entry.userId},${new Date(entry.loginTime).toLocaleString('ja-JP')}\n`;
+                });
+            
+            return report;
+        }
+
+        function downloadCSV(csvContent, filename) {
+            const bom = '\uFEFF'; // UTF-8 BOM
+            const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // モーダル外クリックで閉じる
+        window.onclick = function(event) {
+            const modal = document.getElementById('userDetailModal');
+            if (event.target === modal) {
+                closeUserModal();
+            }
+        }
+    </script>
+
+    <style>
+        /* 管理者画面専用スタイル */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-section {
+            margin-bottom: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            opacity: 0.8;
+        }
+
+        .stat-content h3 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        /* タブナビゲーション */
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e1e8ed;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            color: #667eea;
+        }
+
+        .tab-button.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+
+        /* タブコンテンツ */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .controls select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* テーブルスタイル */
+        .admin-table {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .admin-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9rem;
+        }
+
+        .admin-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .progress-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .progress-cell .progress-bar {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-badge.not-started {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .status-badge.in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.active {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        /* エクスポートセクション */
+        .export-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .export-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #e1e8ed;
+        }
+
+        .export-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .export-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .export-options {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .export-options h3 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .option-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* モーダルスタイル */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .modal-header h3 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .detail-section h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+
+        .detail-item .label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+        }
+
+        .detail-item .value {
+            color: #666;
+        }
+
+        .completed-chapters {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .completed-chapter-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-title {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .completion-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .modal-footer {
+            padding: 2rem;
+            border-top: 1px solid #e1e8ed;
+            text-align: right;
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-tabs {
+                flex-wrap: wrap;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .admin-table {
+                font-size: 0.8rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.5rem;
+            }
+
+            .progress-cell {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .user-detail-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .export-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 管理者アバターの特別スタイル */
+        .user-avatar.admin {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+    </style>
+</body>
+</html>

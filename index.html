@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - ログイン</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="login-page">
+    <div class="logo-section">
+        <h1>【ロゴ】</h1>
+    </div>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="system-title">
+                <h2>学習管理システム</h2>
+            </div>
+            
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <label for="userId">ユーザーID</label>
+                    <input 
+                        type="text" 
+                        id="userId" 
+                        name="userId" 
+                        placeholder="ユーザーIDを入力"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">パスワード</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="パスワードを入力"
+                        required
+                        autocomplete="current-password"
+                    >
+                </div>
+                
+                <button type="submit" class="login-button">
+                    <span>ログイン</span>
+                </button>
+                
+                <div class="error-message" id="errorMessage" style="display: none;">
+                    ユーザーIDまたはパスワードが正しくありません。
+                </div>
+            </form>
+            
+            <div class="login-help">
+                <small>
+                    ログインでお困りの場合は、管理者にお問い合わせください。
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/auth.js"></script>
+</body>
+</html>

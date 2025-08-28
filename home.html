@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - ホーム</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="home-container">
+            <!-- ページタイトル -->
+            <div class="page-header">
+                <h1 class="page-title">ホーム</h1>
+                <p class="welcome-message" id="welcomeMessage">お疲れ様です！本日も学習を頑張りましょう。</p>
+            </div>
+
+            <!-- 進捗サマリー -->
+            <div class="progress-summary">
+                <div class="progress-card">
+                    <div class="progress-icon">📚</div>
+                    <div class="progress-info">
+                        <h3>学習進捗</h3>
+                        <div class="progress-stats" id="progressStats">
+                            <span class="completed">0</span> / <span class="total">0</span> チャプター完了
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- メニューカード -->
+            <div class="menu-grid">
+                <div class="menu-card" onclick="navigateToPage('curriculum.html')">
+                    <div class="menu-icon">📚</div>
+                    <h3>学習カリキュラム</h3>
+                    <p>メインの学習コンテンツでスキルアップを目指しましょう</p>
+                    <div class="menu-arrow">→</div>
+                </div>
+
+                <div class="menu-card" onclick="navigateToPage('pc-beginner.html')">
+                    <div class="menu-icon">💻</div>
+                    <h3>PC初心者用カリキュラム</h3>
+                    <p>パソコン操作の基礎から丁寧に学習できます</p>
+                    <div class="menu-arrow">→</div>
+                </div>
+
+                <div class="menu-card" onclick="navigateToPage('faq.html')">
+                    <div class="menu-icon">❓</div>
+                    <h3>よくある質問</h3>
+                    <p>学習に関する疑問やシステムの使い方について</p>
+                    <div class="menu-arrow">→</div>
+                </div>
+            </div>
+
+
+        </div>
+    </main>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        // ページ固有のJavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+            
+            // 進捗情報の表示
+            displayProgressSummary();
+            
+            // 最近のアクティビティの表示
+            displayRecentActivity();
+        });
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+                
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                const hour = new Date().getHours();
+                let greeting = 'こんにちは';
+                if (hour < 12) greeting = 'おはようございます';
+                else if (hour >= 18) greeting = 'こんばんは';
+                
+                welcomeMessage.textContent = `${greeting}、${currentUser.name}さん！本日も学習を頑張りましょう。`;
+            }
+        }
+
+        function displayProgressSummary() {
+            const currentUser = authSystem.getCurrentUser();
+            if (!currentUser) return;
+
+            const progressKey = `userProgress_${currentUser.userId}`;
+            const progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+            
+            const completed = progress.completedChapters ? progress.completedChapters.length : 0;
+            const total = progress.totalChapters || 0;
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            
+            document.querySelector('#progressStats .completed').textContent = completed;
+            document.querySelector('#progressStats .total').textContent = total;
+            document.getElementById('progressFill').style.width = percentage + '%';
+        }
+
+        function displayRecentActivity() {
+            const currentUser = authSystem.getCurrentUser();
+            if (!currentUser) return;
+
+            const progressKey = `userProgress_${currentUser.userId}`;
+            const progress = JSON.parse(localStorage.getItem(progressKey) || '{}');
+            const activityList = document.getElementById('activityList');
+            
+            // 最近完了したチャプターがあれば表示
+            if (progress.completedChapters && progress.completedChapters.length > 0) {
+                const recentChapter = progress.completedChapters[progress.completedChapters.length - 1];
+                const activityHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon">✅</div>
+                        <div class="activity-content">
+                            <p class="activity-text">${recentChapter.chapterTitle} を完了しました</p>
+                            <small class="activity-time">${new Date(recentChapter.completedAt).toLocaleDateString('ja-JP')}</small>
+                        </div>
+                    </div>
+                `;
+                activityList.innerHTML = activityHTML + activityList.innerHTML;
+            }
+        }
+
+        function navigateToPage(page) {
+            // ページナビゲーション時にアクティビティを更新
+            authSystem.updateLastActivity();
+            window.location.href = page;
+        }
+    </script>
+</body>
+</html>

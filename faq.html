@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - よくある質問</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="faq-container">
+            <!-- パンくずナビ -->
+            <nav class="breadcrumb">
+                <a href="home.html">ホーム</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">よくある質問</span>
+            </nav>
+
+            <!-- ページタイトル -->
+            <div class="page-header">
+                <h1 class="page-title">よくある質問</h1>
+                <p class="page-description">学習に関する疑問やシステムの使い方について、よくいただく質問をまとめました。</p>
+            </div>
+
+            <!-- 検索ボックス -->
+            <div class="faq-search">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="質問を検索..." onkeyup="searchFAQ()">
+                    <div class="search-icon">🔍</div>
+                </div>
+            </div>
+
+            <!-- カテゴリータブ -->
+            <div class="category-tabs">
+                <button class="category-tab active" onclick="filterCategory('all')">すべて</button>
+                <button class="category-tab" onclick="filterCategory('system')">システム利用</button>
+                <button class="category-tab" onclick="filterCategory('learning')">学習について</button>
+                <button class="category-tab" onclick="filterCategory('technical')">技術的な質問</button>
+                <button class="category-tab" onclick="filterCategory('account')">アカウント・ログイン</button>
+            </div>
+
+            <!-- FAQ リスト -->
+            <div class="faq-list" id="faqList">
+                <!-- システム利用について -->
+                <div class="faq-item" data-category="system">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge system">システム</span>
+                            <h3>学習の進捗はどこで確認できますか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>学習の進捗は以下の場所で確認できます：</p>
+                        <ul>
+                            <li><strong>ホーム画面</strong>：全体的な進捗サマリーが表示されます</li>
+                            <li><strong>カリキュラム画面</strong>：各レッスンとチャプターの詳細な進捗状況が確認できます</li>
+                            <li><strong>各チャプターページ</strong>：完了したチャプターにはチェックマークが付きます</li>
+                        </ul>
+                        <p>完了したチャプター数と進捗率がリアルタイムで更新されます。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="system">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge system">システム</span>
+                            <h3>チャプターを完了するにはどうすればよいですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>チャプターを完了するには以下の手順に従ってください：</p>
+                        <ol>
+                            <li>チャプターの内容を読み、理解します</li>
+                            <li>ページ下部の「チャプターの学習を完了しました」ボタンをクリックします</li>
+                            <li>完了すると、進捗に反映され、次のチャプターに進むことができます</li>
+                        </ol>
+                        <p><strong>注意：</strong>一度完了したチャプターは取り消すことができませんので、内容を十分理解してから完了ボタンを押してください。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="learning">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge learning">学習</span>
+                            <h3>学習はどのような順序で進めるべきですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>効果的な学習のために、以下の順序で進めることをお勧めします：</p>
+                        <ol>
+                            <li><strong>Lesson 1 事前準備</strong>：システムの使い方やサポート体制について理解します</li>
+                            <li><strong>Lesson 2 プロンプトエンジニアリング入門</strong>：基礎的な概念を学習します</li>
+                            <li><strong>Lesson 3 基本編</strong>：実践的な技法を身につけます</li>
+                            <li><strong>Lesson 4 応用編</strong>：より高度なスキルを習得します</li>
+                        </ol>
+                        <p>各レッスン内のチャプターも順番通りに進めることで、段階的にスキルを身につけることができます。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="learning">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge learning">学習</span>
+                            <h3>学習時間の目安はどの程度ですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>各チャプターおよびレッスンの学習時間の目安は以下の通りです：</p>
+                        <ul>
+                            <li><strong>Lesson 1</strong>：約2時間</li>
+                            <li><strong>Lesson 2</strong>：約2.7時間</li>
+                            <li><strong>Lesson 3</strong>：約3.7時間</li>
+                            <li><strong>Lesson 4</strong>：約7.2時間</li>
+                        </ul>
+                        <p>これらは目安の時間です。理解度や経験により個人差がありますので、ご自身のペースで学習を進めてください。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="technical">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge technical">技術</span>
+                            <h3>ChatGPTなどの生成AIツールは別途契約が必要ですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>実践的な学習のために、以下のツールの利用をお勧めします：</p>
+                        <ul>
+                            <li><strong>ChatGPT</strong>：基本的な学習には無料版でも十分ですが、より高度な機能を使用する場合はChatGPT Plusの契約を検討してください</li>
+                            <li><strong>Claude</strong>：Anthropic社のAIアシスタント（無料枠あり）</li>
+                            <li><strong>Google Bard</strong>：Google社のAIチャットボット（無料）</li>
+                        </ul>
+                        <p>学習段階に応じて適切なツールを選択し、実際に手を動かして練習することが重要です。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge account">アカウント</span>
+                            <h3>ログインできない場合はどうすればよいですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>ログインできない場合は、以下をご確認ください：</p>
+                        <ol>
+                            <li><strong>ユーザーIDの確認</strong>：user001からuser030の形式になっているか確認してください</li>
+                            <li><strong>パスワードの確認</strong>：パスワードはユーザーIDと同じです（例：user001のパスワードはuser001）</li>
+                            <li><strong>入力ミス</strong>：余計なスペースや全角文字が入っていないか確認してください</li>
+                            <li><strong>ブラウザのキャッシュ</strong>：ブラウザのキャッシュをクリアして再度お試しください</li>
+                        </ol>
+                        <p>それでも解決しない場合は、管理者にお問い合わせください。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge account">アカウント</span>
+                            <h3>セッションの有効期限はどのくらいですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>セキュリティのため、ログインセッションには以下の制限があります：</p>
+                        <ul>
+                            <li><strong>セッション有効期限</strong>：24時間</li>
+                            <li><strong>自動ログアウト</strong>：24時間後に自動的にログアウトされます</li>
+                            <li><strong>アクティビティ更新</strong>：学習活動を行うと自動的にセッションが更新されます</li>
+                        </ul>
+                        <p>長時間利用しない場合は、手動でログアウトすることをお勧めします。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="system">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge system">システム</span>
+                            <h3>スマートフォンでも利用できますか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>はい、本システムはレスポンシブデザインに対応しており、様々なデバイスでご利用いただけます：</p>
+                        <ul>
+                            <li><strong>スマートフォン</strong>：iPhone、Androidの主要ブラウザに対応</li>
+                            <li><strong>タブレット</strong>：iPad、Androidタブレットに対応</li>
+                            <li><strong>PC</strong>：Chrome、Firefox、Safari、Edgeに対応</li>
+                        </ul>
+                        <p>画面サイズに応じて最適化されたレイアウトで表示されるため、外出先でも学習を継続できます。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="learning">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge learning">学習</span>
+                            <h3>サポートが必要な場合はどこに相談すればよいですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>学習に関するサポートは以下の方法でご利用いただけます：</p>
+                        <ul>
+                            <li><strong>Slackサポート</strong>：専用のSlackチャンネルでメンターに質問できます</li>
+                            <li><strong>課題レビュー</strong>：提出した課題に対してフィードバックを受けられます</li>
+                            <li><strong>オフィスアワー</strong>：定期的に開催される質問会に参加できます</li>
+                            <li><strong>メール</strong>：緊急の技術的問題については管理者にメールでお問い合わせください</li>
+                        </ul>
+                        <p>学習で困った際は、遠慮なくサポートをご活用ください。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- お問い合わせセクション -->
+            <div class="contact-section">
+                <div class="contact-card">
+                    <h2>解決しない問題がありますか？</h2>
+                    <p>上記のFAQで解決しない問題がございましたら、お気軽にお問い合わせください。</p>
+                    <div class="contact-buttons">
+                        <button class="btn btn-primary" onclick="openSlackSupport()">
+                            💬 Slackで質問する
+                        </button>
+                        <button class="btn btn-secondary" onclick="contactAdmin()">
+                            📧 管理者に連絡
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+        });
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const answer = faqItem.querySelector('.faq-answer');
+            const toggleIcon = element.querySelector('.toggle-icon');
+            
+            const isOpen = faqItem.classList.contains('open');
+            
+            if (isOpen) {
+                faqItem.classList.remove('open');
+                answer.style.maxHeight = '0';
+                toggleIcon.textContent = '+';
+            } else {
+                faqItem.classList.add('open');
+                answer.style.maxHeight = answer.scrollHeight + 'px';
+                toggleIcon.textContent = '−';
+            }
+
+            // アクティビティ更新
+            authSystem.updateLastActivity();
+        }
+
+        function filterCategory(category) {
+            const faqItems = document.querySelectorAll('.faq-item');
+            const tabs = document.querySelectorAll('.category-tab');
+            
+            // タブの状態更新
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // アイテムのフィルタリング
+            faqItems.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // 検索をクリア
+            document.getElementById('searchInput').value = '';
+        }
+
+        function searchFAQ() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('h3').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // カテゴリータブをリセット
+            if (searchTerm) {
+                document.querySelectorAll('.category-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+            }
+        }
+
+        function openSlackSupport() {
+            alert('Slackサポートチャンネルへのリンクを開きます。\n（実際の運用時には適切なSlackリンクを設定してください）');
+        }
+
+        function contactAdmin() {
+            alert('管理者への連絡フォームを開きます。\n（実際の運用時には適切な連絡先を設定してください）');
+        }
+    </script>
+
+    <style>
+        /* FAQページ専用スタイル */
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-description {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .faq-search {
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: 2px solid #e1e8ed;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .category-tab {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .category-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .category-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #f8f9fa;
+        }
+
+        .question-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .category-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .category-badge.system {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .category-badge.learning {
+            background: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .category-badge.technical {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .category-badge.account {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .question-content h3 {
+            margin: 0;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .toggle-icon {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.open .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-top: 1px solid #f1f3f4;
+        }
+
+        .faq-item.open .faq-answer {
+            padding: 1.5rem;
+        }
+
+        .faq-answer p {
+            margin: 0 0 1rem 0;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .faq-answer ul,
+        .faq-answer ol {
+            margin: 0 0 1rem 0;
+            padding-left: 1.5rem;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-answer strong {
+            color: #2c3e50;
+        }
+
+        .contact-section {
+            margin-top: 3rem;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .contact-card h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.5rem;
+        }
+
+        .contact-card p {
+            margin: 0 0 2rem 0;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-buttons .btn {
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            border-radius: 25px;
+            border: 2px solid white;
+        }
+
+        .contact-buttons .btn-primary {
+            background: white;
+            color: #667eea;
+        }
+
+        .contact-buttons .btn-primary:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .contact-buttons .btn-secondary {
+            background: transparent;
+            color: white;
+        }
+
+        .contact-buttons .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .faq-container {
+                padding: 1rem;
+            }
+
+            .category-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .category-tab {
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            .question-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .question-content h3 {
+                font-size: 1rem;
+            }
+
+            .contact-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</body>
+</html>

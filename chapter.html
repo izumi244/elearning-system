@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - チャプター</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- サイドナビゲーション -->
+    <div class="chapter-layout">
+        <nav class="chapter-sidebar" id="chapterSidebar">
+            <div class="sidebar-header">
+                <h3>基礎マスターコース</h3>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <span>≡</span>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <!-- JavaScriptで動的に生成 -->
+            </div>
+        </nav>
+
+        <!-- メインコンテンツ -->
+        <main class="chapter-main">
+            <!-- パンくずナビ -->
+            <nav class="breadcrumb">
+                <a href="home.html">ホーム</a>
+                <span class="breadcrumb-separator">></span>
+                <a href="curriculum.html">基礎マスターコース</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current" id="currentChapterBreadcrumb">チャプター</span>
+            </nav>
+
+            <!-- チャプターヘッダー -->
+            <div class="chapter-header">
+                <div class="chapter-meta">
+                    <span class="lesson-badge" id="lessonBadge">Lesson 1</span>
+                    <span class="chapter-time" id="chapterTime">学習時間の目安</span>
+                </div>
+                <h1 class="chapter-title" id="chapterTitle">チャプタータイトル</h1>
+                <div class="chapter-progress-info">
+                    <span id="chapterProgressInfo">読み込み中...</span>
+                </div>
+            </div>
+
+            <!-- チャプター内容 -->
+            <div class="chapter-content">
+                <div class="content-card">
+                    <div class="content-section">
+                        <h2>基礎マスターコースのゴール</h2>
+                        <p>このコースでは、生成AIの理解を深め、効果的に活用するためのプロンプトエンジニアリングのスキルを身につけることを目指します。段階的な学習を通じ、基礎知識から応用的な技法、そして実践的な演習へと進んでいきます。</p>
+                    </div>
+
+                    <div class="content-section">
+                        <h2>コースの受講予定者について</h2>
+                        <p>コース終了予定者には以下のような状態を目指します：</p>
+                        <ul>
+                            <li>生成AIの概要や影響、得意・不得意を作業について理解できる</li>
+                            <li>生成AIに入力する指示（プロンプト）の重要性と注意点を把握できる</li>
+                            <li>基本および応用的な技法を習得できる</li>
+                            <li>実践的な課題を通して生成AIの業務活用イメージを具体的に持つことができる</li>
+                            <li>プロンプトエンジニアリングスキルを活用した収益化の可能性について理解を深めることができる</li>
+                        </ul>
+                    </div>
+
+                    <div class="content-section">
+                        <h2>インプットとアウトプットを繰り返してみよう</h2>
+                        <p>生成AIやプロンプトエンジニアリングのスキルを身につけるには、「習得した知識を実践で活用する」という行動が必要です。</p>
+                        <p>各レッスンには確認テストや演習課題などの実践の場が用意されており、これらにしっかり取り組むことが重要です。指示された問題の状況に対して自分なりのプロンプトを作成し、生成AIに入力してみましょう。得られた回答を分析し、期待する結果に近づくようにプロンプトを改善していくことで、生成AIと効果的にコミュニケーションするスキルが身についていきます。</p>
+                        <p>課題に取り組む中で、うまくいかないこともあるかもしれません。このコースでは、メンターによるサポート制度も備わっています。課題などで困った場合は、積極的にメンターに質問してください。</p>
+                    </div>
+
+                    <div class="content-section">
+                        <h2>カリキュラムアップデートについて</h2>
+                        <p>生成AIの技術は日々進歩していますので、本カリキュラムが常に最新であるとは限りません。</p>
+                        <p>しかし、このカリキュラムの内容は実務においても分に役立つ情報とスキルを提供するものとなっておりますのでご安心ください。</p>
+                        <p>最新のアップデートについては、以下の課題をご確認ください。</p>
+                        
+                        <div class="update-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>コース・カリキュラム</th>
+                                        <th>アップデート日時</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>基礎マスターコース</td>
+                                        <td>2024年5月25日</td>
+                                    </tr>
+                                    <tr>
+                                        <td>マーケティングコース</td>
+                                        <td>2024年5月25日</td>
+                                    </tr>
+                                    <tr>
+                                        <td>営業コース</td>
+                                        <td>2024年5月25日</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 完了ボタンエリア -->
+                <div class="completion-section">
+                    <div class="completion-card" id="completionCard">
+                        <div class="completion-status" id="completionStatus">
+                            <span class="status-icon">📚</span>
+                            <span class="status-text">このチャプターの学習はお済みですか？</span>
+                        </div>
+                        <button class="complete-button" id="completeButton" onclick="completeChapter()">
+                            チャプターの学習を完了しました
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ナビゲーション -->
+                <div class="chapter-navigation">
+                    <div class="nav-buttons">
+                        <button class="nav-button prev" id="prevButton" onclick="navigateToPrevious()">
+                            ← 前のチャプター
+                        </button>
+                        <button class="nav-button back-to-curriculum" onclick="backToCurriculum()">
+                            📋 コース一覧に戻る
+                        </button>
+                        <button class="nav-button next" id="nextButton" onclick="navigateToNext()">
+                            次のChapter →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        let currentLessonId = '';
+        let currentChapterId = '';
+        let currentChapterTitle = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // URL パラメータから情報を取得
+            const urlParams = new URLSearchParams(window.location.search);
+            currentLessonId = urlParams.get('lesson');
+            currentChapterId = urlParams.get('chapter');
+            currentChapterTitle = urlParams.get('title');
+
+            if (!currentLessonId || !currentChapterId) {
+                window.location.href = 'curriculum.html';
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+            
+            // サイドバーの生成
+            generateSidebar();
+            
+            // チャプター情報の表示
+            displayChapterInfo();
+            
+            // 完了状態の確認
+            checkCompletionStatus();
+            
+            // ナビゲーションボタンの設定
+            setupNavigation();
+        });
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        function generateSidebar() {
+            const curriculumData = progressManager.getCurriculumData();
+            const course = curriculumData.basic_course;
+            const currentUser = authSystem.getCurrentUser();
+            const sidebarContent = document.querySelector('.sidebar-content');
+
+            let sidebarHTML = '';
+
+            course.lessons.forEach(lesson => {
+                sidebarHTML += `
+                    <div class="lesson-section">
+                        <div class="lesson-header-sidebar">
+                            <h4>${lesson.title}</h4>
+                        </div>
+                        <ul class="chapters-sidebar">
+                            ${lesson.chapters.map((chapter, index) => {
+                                const isCompleted = progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id);
+                                const isCurrent = lesson.id === currentLessonId && chapter.id === currentChapterId;
+                                
+                                return `
+                                    <li class="chapter-sidebar-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}">
+                                        <a href="chapter.html?lesson=${lesson.id}&chapter=${chapter.id}&title=${encodeURIComponent(chapter.title)}"
+                                           class="chapter-link">
+                                            <span class="chapter-number">${index + 1}</span>
+                                            <span class="chapter-title-sidebar">${chapter.title}</span>
+                                            <span class="chapter-status-icon">${isCompleted ? '✓' : ''}</span>
+                                        </a>
+                                    </li>
+                                `;
+                            }).join('')}
+                        </ul>
+                    </div>
+                `;
+            });
+
+            sidebarContent.innerHTML = sidebarHTML;
+        }
+
+        function displayChapterInfo() {
+            const curriculumData = progressManager.getCurriculumData();
+            const lesson = progressManager.getLessonById(currentLessonId);
+            const chapter = lesson ? lesson.chapters.find(ch => ch.id === currentChapterId) : null;
+
+            if (lesson && chapter) {
+                document.getElementById('lessonBadge').textContent = lesson.title.split(' ')[0] + ' ' + lesson.title.split(' ')[1];
+                document.getElementById('chapterTitle').textContent = currentChapterTitle || chapter.title;
+                document.getElementById('chapterTime').textContent = `学習時間の目安 ${chapter.estimatedTime}`;
+                document.getElementById('currentChapterBreadcrumb').textContent = chapter.title;
+
+                // 進捗情報
+                const currentUser = authSystem.getCurrentUser();
+                const completedCount = lesson.chapters.filter(ch => 
+                    progressManager.isChapterCompleted(currentUser.userId, currentLessonId, ch.id)
+                ).length;
+                document.getElementById('chapterProgressInfo').textContent = 
+                    `${currentLessonId.toUpperCase()} - ${completedCount}/${lesson.chapters.length} チャプター完了`;
+            }
+        }
+
+        function checkCompletionStatus() {
+            const currentUser = authSystem.getCurrentUser();
+            const isCompleted = progressManager.isChapterCompleted(currentUser.userId, currentLessonId, currentChapterId);
+            
+            const completionCard = document.getElementById('completionCard');
+            const completionStatus = document.getElementById('completionStatus');
+            const completeButton = document.getElementById('completeButton');
+
+            if (isCompleted) {
+                completionCard.classList.add('completed');
+                completionStatus.innerHTML = `
+                    <span class="status-icon">✅</span>
+                    <span class="status-text">このチャプターは完了済みです</span>
+                `;
+                completeButton.textContent = '完了済み';
+                completeButton.disabled = true;
+            }
+        }
+
+        function completeChapter() {
+            const currentUser = authSystem.getCurrentUser();
+            
+            if (progressManager.isChapterCompleted(currentUser.userId, currentLessonId, currentChapterId)) {
+                alert('このチャプターは既に完了しています。');
+                return;
+            }
+
+            const success = progressManager.completeChapter(
+                currentUser.userId,
+                currentLessonId,
+                currentChapterId,
+                currentChapterTitle
+            );
+
+            if (success) {
+                // 完了状態を更新
+                checkCompletionStatus();
+                
+                // サイドバーを更新
+                generateSidebar();
+                
+                // 成功メッセージ
+                showSuccessMessage('チャプターを完了しました！');
+                
+                // アクティビティ更新
+                authSystem.updateLastActivity();
+            } else {
+                alert('完了処理でエラーが発生しました。再度お試しください。');
+            }
+        }
+
+        function setupNavigation() {
+            const curriculumData = progressManager.getCurriculumData();
+            const course = curriculumData.basic_course;
+            
+            // 全チャプターのリストを作成
+            let allChapters = [];
+            course.lessons.forEach(lesson => {
+                lesson.chapters.forEach(chapter => {
+                    allChapters.push({
+                        lessonId: lesson.id,
+                        chapterId: chapter.id,
+                        chapterTitle: chapter.title
+                    });
+                });
+            });
+
+            // 現在のチャプターのインデックスを取得
+            const currentIndex = allChapters.findIndex(ch => 
+                ch.lessonId === currentLessonId && ch.chapterId === currentChapterId
+            );
+
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+
+            // 前へボタン
+            if (currentIndex > 0) {
+                prevButton.style.display = 'block';
+                prevButton.onclick = () => navigateToChapter(allChapters[currentIndex - 1]);
+            } else {
+                prevButton.style.display = 'none';
+            }
+
+            // 次へボタン
+            if (currentIndex < allChapters.length - 1) {
+                nextButton.style.display = 'block';
+                nextButton.onclick = () => navigateToChapter(allChapters[currentIndex + 1]);
+            } else {
+                nextButton.style.display = 'none';
+            }
+        }
+
+        function navigateToChapter(chapter) {
+            const params = new URLSearchParams({
+                lesson: chapter.lessonId,
+                chapter: chapter.chapterId,
+                title: chapter.chapterTitle
+            });
+            window.location.href = `chapter.html?${params.toString()}`;
+        }
+
+        function backToCurriculum() {
+            window.location.href = 'curriculum.html';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('chapterSidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+
+        function showSuccessMessage(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #28a745;
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+
+            document.body.appendChild(successDiv);
+
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        // CSS アニメーション
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+
+    <style>
+        /* チャプターページ専用スタイル */
+        .chapter-layout {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        .chapter-sidebar {
+            width: 300px;
+            background: white;
+            border-right: 1px solid #e1e8ed;
+            overflow-y: auto;
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 80px);
+            transition: all 0.3s ease;
+        }
+
+        .chapter-sidebar.collapsed {
+            width: 60px;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h3 {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: #666;
+        }
+
+        .sidebar-content {
+            padding: 1rem 0;
+        }
+
+        .lesson-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .lesson-header-sidebar {
+            padding: 0.75rem 1.5rem;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .lesson-header-sidebar h4 {
+            font-size: 0.9rem;
+            color: #495057;
+            margin: 0;
+        }
+
+        .chapters-sidebar {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .chapter-sidebar-item {
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .chapter-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #495057;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 0.75rem;
+        }
+
+        .chapter-link:hover {
+            background: #f8f9fa;
+            color: #667eea;
+        }
+
+        .chapter-sidebar-item.current .chapter-link {
+            background: #667eea;
+            color: white;
+        }
+
+        .chapter-sidebar-item.completed .chapter-link {
+            color: #28a745;
+        }
+
+        .chapter-sidebar-item.completed.current .chapter-link {
+            background: #28a745;
+            color: white;
+        }
+
+        .chapter-number {
+            min-width: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .chapter-title-sidebar {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        .chapter-status-icon {
+            font-size: 0.9rem;
+        }
+
+        .chapter-main {
+            flex: 1;
+            padding: 2rem;
+            max-width: calc(100vw - 300px);
+        }
+
+        .chapter-header {
+            margin-bottom: 2rem;
+        }
+
+        .chapter-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-badge {
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .chapter-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chapter-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-progress-info {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chapter-content {
+            max-width: 800px;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .content-section {
+            margin-bottom: 2rem;
+        }
+
+        .content-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .content-section h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .content-section p {
+            line-height: 1.7;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+
+        .content-section ul {
+            padding-left: 1.5rem;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .content-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        .update-table {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        .update-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .update-table th,
+        .update-table td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #e1e8ed;
+        }
+
+        .update-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .completion-section {
+            margin-bottom: 2rem;
+        }
+
+        .completion-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .completion-card.completed {
+            border-color: #28a745;
+            background: #f8fff8;
+        }
+
+        .completion-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-icon {
+            font-size: 1.5rem;
+        }
+
+        .status-text {
+            font-size: 1.1rem;
+            color: #495057;
+        }
+
+        .complete-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .complete-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .complete-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .chapter-navigation {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-button:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-1px);
+        }
+
+        .nav-button.prev,
+        .nav-button.next {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .nav-button.prev:hover,
+        .nav-button.next:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 1024px) {
+            .chapter-sidebar {
+                width: 250px;
+            }
+            
+            .chapter-main {
+                max-width: calc(100vw - 250px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chapter-layout {
+                flex-direction: column;
+            }
+            
+            .chapter-sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+            
+            .chapter-main {
+                max-width: 100%;
+                padding: 1rem;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+            
+            .chapter-title {
+                font-size: 1.5rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</body>
+</html>

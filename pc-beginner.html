@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - PC初心者用カリキュラム</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="pc-beginner-container">
+            <!-- パンくずナビ -->
+            <nav class="breadcrumb">
+                <a href="home.html">ホーム</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current">PC初心者用カリキュラム</span>
+            </nav>
+
+            <!-- ページタイトル -->
+            <div class="page-header">
+                <div class="header-icon">💻</div>
+                <div class="header-content">
+                    <h1 class="page-title">PC初心者用カリキュラム</h1>
+                    <p class="course-description">
+                        パソコン操作の基礎から丁寧に学習できます。初心者の方でも安心してスタートできるよう、
+                        基本的な操作方法から実践的なスキルまで、段階的に学習を進めることができます。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 学習の特徴 -->
+            <div class="features-section">
+                <h2 class="section-title">このカリキュラムの特徴</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔰</div>
+                        <h3>初心者にやさしい</h3>
+                        <p>専門用語を避け、図解を多用した分かりやすい説明で、PC操作が初めての方でも安心です。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>段階的学習</h3>
+                        <p>基本操作から応用まで、レベルに合わせて無理なく段階的にスキルアップできます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>実践重視</h3>
+                        <p>実際の操作を体験しながら学べるので、確実にスキルが身につきます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <h3>サポート充実</h3>
+                        <p>分からないことがあっても、専門スタッフがしっかりとサポートします。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- カリキュラム構成 -->
+            <div class="curriculum-section">
+                <h2 class="section-title">カリキュラム構成</h2>
+                <div class="curriculum-notice">
+                    <div class="notice-icon">📝</div>
+                    <div class="notice-content">
+                        <h3>現在準備中です</h3>
+                        <p>PC初心者用カリキュラムは現在作成中です。準備が整い次第、こちらでご案内いたします。</p>
+                        <p>しばらくお待ちください。ご質問がありましたら、管理者までお問い合わせください。</p>
+                    </div>
+                </div>
+
+                <!-- 予定カリキュラム（プレビュー） -->
+                <div class="preview-curriculum">
+                    <h3 class="preview-title">予定されている学習内容</h3>
+                    <div class="preview-lessons">
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 1</div>
+                            <div class="lesson-content">
+                                <h4>パソコンの基本操作</h4>
+                                <ul>
+                                    <li>電源の入れ方・切り方</li>
+                                    <li>マウスとキーボードの使い方</li>
+                                    <li>画面の見方と基本用語</li>
+                                    <li>ウィンドウの操作方法</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 2</div>
+                            <div class="lesson-content">
+                                <h4>ファイルとフォルダの管理</h4>
+                                <ul>
+                                    <li>ファイルとフォルダの概念</li>
+                                    <li>ファイルの作成・保存・削除</li>
+                                    <li>フォルダの作成と整理</li>
+                                    <li>ファイルの検索方法</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 3</div>
+                            <div class="lesson-content">
+                                <h4>インターネットの基礎</h4>
+                                <ul>
+                                    <li>ブラウザの使い方</li>
+                                    <li>ウェブサイトの閲覧方法</li>
+                                    <li>検索エンジンの活用</li>
+                                    <li>お気に入りの登録と管理</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 4</div>
+                            <div class="lesson-content">
+                                <h4>メールの基本操作</h4>
+                                <ul>
+                                    <li>メールアドレスの概念</li>
+                                    <li>メールの送信・受信</li>
+                                    <li>添付ファイルの扱い方</li>
+                                    <li>メールの整理と管理</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 5</div>
+                            <div class="lesson-content">
+                                <h4>文書作成の基礎</h4>
+                                <ul>
+                                    <li>テキストエディタの使い方</li>
+                                    <li>文字の入力と変換</li>
+                                    <li>文書の編集と装飾</li>
+                                    <li>印刷の基本操作</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+
+                        <div class="preview-lesson">
+                            <div class="lesson-number">STEP 6</div>
+                            <div class="lesson-content">
+                                <h4>セキュリティとマナー</h4>
+                                <ul>
+                                    <li>パスワードの管理</li>
+                                    <li>ウイルス対策の基本</li>
+                                    <li>インターネットマナー</li>
+                                    <li>個人情報の保護</li>
+                                </ul>
+                                <span class="lesson-status coming-soon">Coming Soon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 学習をスムーズに進めるために -->
+            <div class="tips-section">
+                <h2 class="section-title">学習をスムーズに進めるために</h2>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <div class="tip-icon">⏰</div>
+                        <h3>学習時間</h3>
+                        <p>1日30分から1時間程度の学習時間を確保することをお勧めします。無理せず継続することが大切です。</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">🔄</div>
+                        <h3>復習の重要性</h3>
+                        <p>操作方法は実際に何度も練習することで身につきます。前回の内容を復習してから次に進みましょう。</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">❓</div>
+                        <h3>質問をしよう</h3>
+                        <p>分からないことがあれば、遠慮なく質問してください。小さな疑問でも解決することが上達の近道です。</p>
+                    </div>
+                    <div class="tip-card">
+                        <div class="tip-icon">📝</div>
+                        <h3>メモを取ろう</h3>
+                        <p>重要な操作手順や覚えておきたいことはメモに残しましょう。後で見返すときに役立ちます。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 準備状況の更新情報 -->
+            <div class="updates-section">
+                <h2 class="section-title">準備状況の更新</h2>
+                <div class="updates-timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">2024年8月</div>
+                        <div class="timeline-content">
+                            <h4>カリキュラム設計開始</h4>
+                            <p>初心者の方にとって最も効果的な学習順序と内容の検討を開始しました。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item current">
+                        <div class="timeline-date">2024年9月</div>
+                        <div class="timeline-content">
+                            <h4>コンテンツ作成中</h4>
+                            <p>各ステップの詳細な説明と実践的な演習問題を作成中です。</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item future">
+                        <div class="timeline-date">2024年10月予定</div>
+                        <div class="timeline-content">
+                            <h4>カリキュラム公開予定</h4>
+                            <p>準備が整い次第、こちらで学習を開始していただけます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- お知らせとサポート -->
+            <div class="support-section">
+                <div class="support-card">
+                    <h2>準備完了のお知らせについて</h2>
+                    <p>PC初心者用カリキュラムの準備が完了しましたら、ログイン時にお知らせいたします。また、メールでのご連絡も可能ですので、管理者までお気軽にお問い合わせください。</p>
+                    <div class="support-buttons">
+                        <button class="btn btn-primary" onclick="contactForUpdates()">
+                            📧 準備完了の通知を希望
+                        </button>
+                        <button class="btn btn-secondary" onclick="goToMainCurriculum()">
+                            📚 基礎マスターコースを見る
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+        });
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        function contactForUpdates() {
+            const currentUser = authSystem.getCurrentUser();
+            alert(`${currentUser.name}さん\n\nPC初心者用カリキュラムの準備完了をお知らせいたします。\n（実際の運用時には適切な通知システムを実装してください）`);
+        }
+
+        function goToMainCurriculum() {
+            window.location.href = 'curriculum.html';
+        }
+    </script>
+
+    <style>
+        /* PC初心者ページ専用スタイル */
+        .pc-beginner-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            color: white;
+        }
+
+        .header-icon {
+            font-size: 4rem;
+            opacity: 0.9;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .course-description {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            opacity: 0.95;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* 特徴セクション */
+        .features-section {
+            margin-bottom: 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* カリキュラムセクション */
+        .curriculum-section {
+            margin-bottom: 4rem;
+        }
+
+        .curriculum-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .notice-icon {
+            font-size: 2rem;
+            color: #856404;
+        }
+
+        .notice-content h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .notice-content p {
+            color: #856404;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        /* プレビューカリキュラム */
+        .preview-curriculum {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .preview-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .preview-lessons {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .preview-lesson {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e1e8ed;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .preview-lesson:hover {
+            background: #f8f9fa;
+            border-color: #667eea;
+        }
+
+        .lesson-number {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .lesson-content {
+            flex: 1;
+        }
+
+        .lesson-content h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .lesson-content ul {
+            margin: 0 0 1rem 0;
+            padding-left: 1.5rem;
+            color: #666;
+        }
+
+        .lesson-content li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .lesson-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .lesson-status.coming-soon {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        /* ティップスセクション */
+        .tips-section {
+            margin-bottom: 4rem;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .tip-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+        }
+
+        .tip-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tip-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .tip-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* 更新情報セクション */
+        .updates-section {
+            margin-bottom: 4rem;
+        }
+
+        .updates-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 120px;
+            top: 0;
+            bottom: -2rem;
+            width: 2px;
+            background: #e1e8ed;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-item.current {
+            background: #e3f2fd;
+            border: 2px solid #667eea;
+        }
+
+        .timeline-item.future {
+            background: #f8f9fa;
+            opacity: 0.7;
+        }
+
+        .timeline-date {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .timeline-item.current .timeline-date {
+            background: #28a745;
+        }
+
+        .timeline-item.future .timeline-date {
+            background: #6c757d;
+        }
+
+        .timeline-content h4 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .timeline-content p {
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* サポートセクション */
+        .support-section {
+            margin-bottom: 3rem;
+        }
+
+        .support-card {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .support-card h2 {
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+        }
+
+        .support-card p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .support-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .support-buttons .btn {
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            border: 2px solid white;
+        }
+
+        .support-buttons .btn-primary {
+            background: white;
+            color: #28a745;
+        }
+
+        .support-buttons .btn-primary:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .support-buttons .btn-secondary {
+            background: transparent;
+            color: white;
+        }
+
+        .support-buttons .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* レスポンシブ対応 */
+        @media (max-width: 768px) {
+            .pc-beginner-container {
+                padding: 1rem;
+            }
+
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .features-grid,
+            .tips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-lesson {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .lesson-number {
+                min-width: auto;
+                align-self: flex-start;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .timeline-item::before {
+                display: none;
+            }
+
+            .support-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .support-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</body>
+</html>
