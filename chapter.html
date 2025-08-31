@@ -57,59 +57,10 @@
             <!-- チャプター内容 -->
             <div class="chapter-content">
                 <div class="content-card">
-                    <div class="content-section">
-                        <h2>基礎マスターコースのゴール</h2>
-                        <p>このコースでは、生成AIの理解を深め、効果的に活用するためのプロンプトエンジニアリングのスキルを身につけることを目指します。段階的な学習を通じ、基礎知識から応用的な技法、そして実践的な演習へと進んでいきます。</p>
-                    </div>
-
-                    <div class="content-section">
-                        <h2>コースの受講予定者について</h2>
-                        <p>コース終了予定者には以下のような状態を目指します：</p>
-                        <ul>
-                            <li>生成AIの概要や影響、得意・不得意を作業について理解できる</li>
-                            <li>生成AIに入力する指示（プロンプト）の重要性と注意点を把握できる</li>
-                            <li>基本および応用的な技法を習得できる</li>
-                            <li>実践的な課題を通して生成AIの業務活用イメージを具体的に持つことができる</li>
-                            <li>プロンプトエンジニアリングスキルを活用した収益化の可能性について理解を深めることができる</li>
-                        </ul>
-                    </div>
-
-                    <div class="content-section">
-                        <h2>インプットとアウトプットを繰り返してみよう</h2>
-                        <p>生成AIやプロンプトエンジニアリングのスキルを身につけるには、「習得した知識を実践で活用する」という行動が必要です。</p>
-                        <p>各レッスンには確認テストや演習課題などの実践の場が用意されており、これらにしっかり取り組むことが重要です。指示された問題の状況に対して自分なりのプロンプトを作成し、生成AIに入力してみましょう。得られた回答を分析し、期待する結果に近づくようにプロンプトを改善していくことで、生成AIと効果的にコミュニケーションするスキルが身についていきます。</p>
-                        <p>課題に取り組む中で、うまくいかないこともあるかもしれません。このコースでは、メンターによるサポート制度も備わっています。課題などで困った場合は、積極的にメンターに質問してください。</p>
-                    </div>
-
-                    <div class="content-section">
-                        <h2>カリキュラムアップデートについて</h2>
-                        <p>生成AIの技術は日々進歩していますので、本カリキュラムが常に最新であるとは限りません。</p>
-                        <p>しかし、このカリキュラムの内容は実務においても分に役立つ情報とスキルを提供するものとなっておりますのでご安心ください。</p>
-                        <p>最新のアップデートについては、以下の課題をご確認ください。</p>
-                        
-                        <div class="update-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>コース・カリキュラム</th>
-                                        <th>アップデート日時</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>基礎マスターコース</td>
-                                        <td>2024年5月25日</td>
-                                    </tr>
-                                    <tr>
-                                        <td>マーケティングコース</td>
-                                        <td>2024年5月25日</td>
-                                    </tr>
-                                    <tr>
-                                        <td>営業コース</td>
-                                        <td>2024年5月25日</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div id="dynamicContent">
+                        <!-- 動的に読み込まれるコンテンツがここに表示される -->
+                        <div class="loading-message">
+                            <p>コンテンツを読み込み中...</p>
                         </div>
                     </div>
                 </div>
@@ -179,12 +130,58 @@
             // チャプター情報の表示
             displayChapterInfo();
             
+            // 動的コンテンツの読み込み
+            loadChapterContent();
+            
             // 完了状態の確認
             checkCompletionStatus();
             
             // ナビゲーションボタンの設定
             setupNavigation();
         });
+
+        function loadChapterContent() {
+            const contentPath = `content/${currentLessonId}-${currentChapterId}.html`;
+            
+            fetch(contentPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(htmlContent => {
+                    // HTMLを解析して必要な部分を抽出
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlContent, 'text/html');
+                    const pageBody = doc.querySelector('.page-body');
+                    
+                    if (pageBody) {
+                        // 動的コンテンツエリアに挿入
+                        document.getElementById('dynamicContent').innerHTML = pageBody.innerHTML;
+                    } else {
+                        // フォールバック: 全体のarticle要素を取得
+                        const article = doc.querySelector('article');
+                        if (article) {
+                            document.getElementById('dynamicContent').innerHTML = article.innerHTML;
+                        } else {
+                            // 最後の手段: bodyの内容を取得
+                            document.getElementById('dynamicContent').innerHTML = doc.body.innerHTML;
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('コンテンツの読み込みに失敗しました:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="error-message">
+                            <h3>コンテンツの読み込みに失敗しました</h3>
+                            <p>ファイルパス: ${contentPath}</p>
+                            <p>エラー詳細: ${error.message}</p>
+                            <button onclick="loadChapterContent()" class="btn btn-primary">再試行</button>
+                        </div>
+                    `;
+                });
+        }
 
         function displayUserInfo() {
             const currentUser = authSystem.getCurrentUser();
@@ -399,6 +396,45 @@
     </script>
 
     <style>
+        .loading-message {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 2rem;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            color: #856404;
+        }
+
+        .error-message h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .error-message p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* 文字色の改善 */
+        .chapter-time {
+            color: #2c3e50 !important; /* 濃い色に変更 */
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .chapter-progress-info {
+            color: #2c3e50 !important; /* 濃い色に変更 */
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
         /* チャプターページ専用スタイル */
         .chapter-layout {
             display: flex;
@@ -521,6 +557,9 @@
             flex: 1;
             padding: 2rem;
             max-width: calc(100vw - 300px);
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 中央寄せ */
         }
 
         .chapter-header {
@@ -543,24 +582,14 @@
             font-weight: 600;
         }
 
-        .chapter-time {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
         .chapter-title {
             font-size: 2rem;
             color: #2c3e50;
             margin-bottom: 0.5rem;
         }
 
-        .chapter-progress-info {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
         .chapter-content {
-            max-width: 800px;
+            max-width: 1000px; /* 幅を広げる */
         }
 
         .content-card {
@@ -569,61 +598,29 @@
             padding: 2.5rem;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             margin-bottom: 2rem;
+            max-width: 100%; /* 最大幅を100%に */
         }
 
-        .content-section {
-            margin-bottom: 2rem;
+        /* Notionコンテンツ内の画像スタイリング */
+        #dynamicContent img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block !important;
+            margin: 1.5rem auto !important; /* 中央寄せ */
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        .content-section:last-child {
-            margin-bottom: 0;
+        /* Notionコンテンツ内のfigureスタイリング */
+        #dynamicContent figure {
+            margin: 2rem 0 !important;
+            text-align: center !important;
+            max-width: 100% !important;
         }
 
-        .content-section h2 {
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #667eea;
-        }
-
-        .content-section p {
-            line-height: 1.7;
-            color: #555;
-            margin-bottom: 1rem;
-        }
-
-        .content-section ul {
-            padding-left: 1.5rem;
-            line-height: 1.7;
-            color: #555;
-        }
-
-        .content-section li {
-            margin-bottom: 0.5rem;
-        }
-
-        .update-table {
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
-
-        .update-table table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        .update-table th,
-        .update-table td {
-            padding: 1rem;
-            text-align: left;
-            border: 1px solid #e1e8ed;
-        }
-
-        .update-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-            color: #495057;
+        /* Notionのページタイトルを非表示 */
+        #dynamicContent .page-title {
+            display: none;
         }
 
         .completion-section {
