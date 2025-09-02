@@ -1,0 +1,696 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Chapter 3 プロンプト作成時の注意点</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(174, 130, 0, 0.223); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="22a01625-9b2b-8115-b133-d87c34114baf" class="page sans"><header><h1 class="page-title">Chapter 3 プロンプト作成時の注意点</h1><p class="page-description"></p></header><div class="page-body"><p id="23201625-9b2b-8020-9f1a-e3dff3d0ee66" class="">ChatGPTをはじめとする生成AIを効果的に活用するには、プロンプトの設計が鍵となります。ただし、知らず知らずのうちにやってしまいがちな落とし穴も存在します。本チャプターでは、プロンプトを作成する際に押さえておくべき3つの重要なポイントを紹介します。</p><p id="24601625-9b2b-803d-8a6b-e79f34974607" class="">これらのポイントを意識しながら、AIとの対話を繰り返すことで、どのようなプロンプトがどんな出力を生むのか、感覚的に理解できるようになります。</p><blockquote id="24601625-9b2b-80d3-a662-dee41253fe99" class=""><mark class="highlight-blue"><strong>1 . 指示はできる限り具体的に</strong></mark></blockquote><p id="24601625-9b2b-8050-889f-d87a1d5dd1c3" class="">プロンプトを作る際は、曖昧な表現を避け、明確で詳細な内容を盛り込むことが大切です。</p><p id="24601625-9b2b-80d1-9492-f2db80121e3e" class="">人と話す場合は多少の言い回しや省略があっても意図が伝わることがありますが、生成AIはユーザーの個人的な背景や状況を理解していません。そのため、必要な情報を丁寧に盛り込み、形容詞や副詞、数字などを活用して、より精緻なプロンプトを作成しましょう。以下に、友人の結婚式に送るメッセージを例に示します。</p><p id="24b01625-9b2b-80b1-b534-efc427e2c476" class="">
+</p><p id="24601625-9b2b-802b-ac2d-dbed94ee1e82" class=""><strong>【曖昧な指示の例】</strong></p><table id="24801625-9b2b-8066-b839-f24b174abe90" class="simple-table"><tbody><tr id="24801625-9b2b-80d0-b668-eaeabbb6b1d1"><td id="BnPF" class="" style="width:137.99999237060547px">プロンプト</td><td id="zxT~" class="" style="width:957px">友達の結婚式へのメッセージを書いて</td></tr><tr id="24801625-9b2b-80c0-ba35-e7408ac2d9dd"><td id="BnPF" class="" style="width:137.99999237060547px">ChatGPTの出力</td><td id="zxT~" class="" style="width:957px">親愛なる[友達の名前]へ、<br/><br/>この特別な日に、心からのお祝いを贈ります。2人の結婚は、愛と絆の美しい旅の始まりです。これから先、どんな時も、互いを深く理解し、支え合って歩んでいくことでしょう。<br/>[友達の名前]、あなたが選んだパートナーとの未来が、喜びと幸福で満たされることを心から願っています。2人の愛が日々強くなり、素晴らしい思い出で彩られる人生を築いていってください。<br/>常にお互いを尊重し、愛し合うことで、この結婚が2人にとって最高の冒険となりますように。2人の新しい章が始まるこの日に、最高の幸運を祈っています。<br/>愛を込めて、<br/><br/>[あなたの名前]</td></tr></tbody></table><p id="24601625-9b2b-808e-9433-ec11313cd5e2" class=""><strong>【具体的な指示の例】</strong></p><table id="24801625-9b2b-803d-86b7-ccd7df3708f0" class="simple-table"><tbody><tr id="24801625-9b2b-8079-bd25-cf64965ef71e"><td id="OVu@" class="" style="width:137.99999237060547px">プロンプト</td><td id="qAng" class="" style="width:955.9943237304688px">10年以上付き合いのある仲の良い男友達の結婚式でのお祝いスピーチを、心のこもった言葉で書いてください。<br/>彼との思い出は高校時代の野球部での出来事です。<br/>チームメンバーとして切磋琢磨しあいながら、3年間共に過ごした経験は宝物です。</td></tr><tr id="24801625-9b2b-8062-bf08-e96357e8c0e6"><td id="OVu@" class="" style="width:137.99999237060547px">ChatGPTの出力</td><td id="qAng" class="" style="width:955.9943237304688px">皆さん、こんにちは。<br/><br/>今日は、私の心から愛する友人であり、10年以上もの間一緒に過ごしてきた男、〇〇（友人の名前）の結婚式に参加できて光栄です。私たちは高校時代、野球部で出会いました。あの日々は、私にとって宝物のようなものでした。<br/><br/>〇〇は、野球の試合では常にチームの中心に立ち、私たちを勇気づけてくれました。彼のリーダーシップと情熱は、私たち全員に強い影響を与えました。彼と一緒にプレーすることは、決して容易ではありませんでしたが、その経験から多くを学びました。彼は私たちに、努力と情熱が成功への鍵であることを教えてくれました。<br/><br/>結婚という新たな旅路に出る〇〇に対して、私は誇りを感じています。彼はこれまでの人生で多くの困難に立ち向かい、克服してきました。彼の人生の新たな章が、幸福で満ちたものとなることを心から願っています。彼のパートナーは、彼の素晴らしい人柄と情熱に惹かれることでしょう。<br/><br/>〇〇、あなたの結婚式の日に立ち会えることを誇りに思います。あなたとの思い出は私にとって宝物であり、これからの人生もずっと大切にしていきます。幸せな結婚生活をお祈りしています。今日はあなたと愛する人との新たな始まりの日です。おめでとう！</td></tr></tbody></table><p id="24601625-9b2b-8025-8366-e3bb26596070" class="">このように、背景や文脈を丁寧に伝えることで、意図に即した内容が得られやすくなります。</p><p id="24b01625-9b2b-8024-8df1-c1c6e41b7ae3" class="">
+</p><blockquote id="24601625-9b2b-803f-80fb-cb4501331a0e" class=""><mark class="highlight-blue"><strong>2. 一度に多くを求めすぎない</strong></mark></blockquote><p id="24801625-9b2b-806b-b330-e0373cc6b503" class="">生成AIを活用する際は、「一度の指示ですべてを完結させようとしない」ことがポイントです。</p><p id="24801625-9b2b-80ef-9c98-facbe5807cff" class="">ChatGPTのような生成AIは、複数のリクエストを同時に受け取ると、それぞれの内容に対して表面的な応答になりやすい傾向があります。これは、与えられたすべての情報にバランスよく対応しようとするため、個々のテーマについて深掘りする余裕がなくなるためです。</p><p id="24801625-9b2b-8075-896a-d6ec177f5c9d" class="">たとえば、観光名所に関する記事の作成を依頼した場合、各スポットについての説明は簡略的で浅い内容になりがちです。</p><p id="24801625-9b2b-80fe-aa32-ee65292627a5" class="">そのため、生成AIを使う際には、対話を通じて1つひとつのテーマに分けて順番に指示を出していくことで、より深みのある有益な情報を引き出すことが可能になります。</p><p id="24b01625-9b2b-80fc-9243-f5f2b873a37e" class="">
+</p><p id="24801625-9b2b-809f-8e29-f364c0146bd0" class=""><strong>【一度にたくさんの情報を要求した場合】</strong></p><table id="24801625-9b2b-80c5-804d-f83c5ec0bd8c" class="simple-table"><tbody><tr id="24801625-9b2b-80f9-9f76-d7aa535429ee"><td id="[\v}" class="" style="width:135.99999237060547px">プロンプト</td><td id="`qHv" class="" style="width:969.99853515625px">関西の観光名所を教えてください。<br/>ターゲットは日本の古い文化や街並みに興味を持っている外国人旅行者です。<br/>また、それぞれの観光名所のお勧めポイントも説明して、ブログ記事にしてください。<br/>ブログの読者は海外から関西への旅行を検討している20代〜30代の女性です。<br/>日本への旅行が初めてで日本の文化や食に関する知識が少ないため、初めての旅行者でも体験内容をありありとイメージできて、関西に旅行したくなる内容にしてください。</td></tr><tr id="24801625-9b2b-8010-9e4c-fe6517305f9c"><td id="[\v}" class="" style="width:135.99999237060547px">ChatGPTの回答</td><td id="`qHv" class="" style="width:969.99853515625px">関西地方は日本の古都として知られ、外国人旅行者に人気の観光地が数多くあります。その中でも特にお勧めの観光名所を紹介します。<br/><br/>京都（Kyoto）:<br/>お勧めポイント: 京都は日本の歴史と伝統文化が色濃く残る都市です。金閣寺や清水寺などの仏教寺院、伏見稲荷大社の千本鳥居、嵐山の竹林など、美しい景観が魅力です。また、着物レンタルや茶道体験など、日本文化を体験できる機会も豊富です。<br/>奈良（Nara）:<br/>お勧めポイント: 奈良は日本の古都であり、奈良時代の首都でした。東大寺の大仏や鹿と共に歩く奈良公園など、歴史的な名所が多くあります。鹿せんべいを鹿に与える体験は特に外国人に人気があります。<br/>大阪（Osaka）:<br/>お勧めポイント: 大阪は活気溢れる大都市で、食文化やエンターテイメントが充実しています。道頓堀や新世界では、お好み焼きやたこ焼きなどのローカルフードを楽しめます。また、大阪城や通天閣などの観光名所も訪れる価値があります。<br/>これらの観光地は日本の古い文化や街並みを体験するのに最適であり、関西への旅行を計画している女性にとって魅力的な場所です。</td></tr></tbody></table><p id="24801625-9b2b-8088-9e34-ee917ca63a02" class="">このように、一度に多くの情報を求めると、各観光地の紹介がどうしても表面的な内容にとどまりがちです。</p><p id="24801625-9b2b-80ae-8a0b-ffaba0e6fee1" class="">しかし、情報をテーマごとに分けて、1つずつ丁寧に指示を出していけば、それぞれの観光地についてより深く掘り下げた内容に仕上げることができます。</p><p id="24b01625-9b2b-8085-b9d0-db93e16195fc" class="">
+</p><p id="24801625-9b2b-80fb-b9c1-fa9a2f183265" class=""><strong>【少しずつ情報を要求した場合】</strong></p><table id="24801625-9b2b-80f5-ac0e-d0cf8d64dcb4" class="simple-table"><tbody><tr id="24801625-9b2b-80d3-a155-eb3ffb7ad9e5"><td id="YMXK" class="" style="width:137.9971466064453px">プロンプト①</td><td id="Tc}K" class="" style="width:964.9943237304688px">関東の観光名所を教えてください。<br/>ターゲットは日本の古い文化や街並みに興味を持っている外国人旅行者です。</td></tr><tr id="24801625-9b2b-8068-8d09-d448779a05c0"><td id="YMXK" class="" style="width:137.9971466064453px">ChatGPTの回答①</td><td id="Tc}K" class="" style="width:964.9943237304688px">■ 外国人旅行者向け：関東の歴史文化を感じる観光名所<br/>1. 日光東照宮（栃木県）<br/>特徴：徳川家康を祀る世界遺産。極彩色の彫刻と豪華な装飾が魅力。<br/><br/>文化的価値：江戸幕府の権威を象徴する神社建築の粋。<br/><br/>おすすめポイント：外国人には、陽明門の緻密な装飾や「見ざる言わざる聞かざる」の彫刻が人気。<br/><br/>2. 川越（埼玉県）<br/>特徴：「小江戸」と称される蔵造りの町並み。<br/><br/>文化的価値：江戸時代の商人文化が色濃く残る街。<br/><br/>おすすめポイント：時の鐘、菓子屋横丁など、写真映えスポットが多数。<br/><br/>3. 鎌倉（神奈川県）<br/>特徴：武家政権発祥の地。寺社と古道が多い。<br/><br/>文化的価値：鎌倉時代の仏教文化と禅の精神。<br/><br/>おすすめポイント：鶴岡八幡宮、長谷寺、建長寺など歴史的建造物が点在。<br/><br/>4. 浅草（東京都）<br/>特徴：東京で最も有名な下町文化の中心地。<br/><br/>文化的価値：江戸の庶民文化を今に伝える。<br/><br/>おすすめポイント：浅草寺、仲見世通りでの和風土産や食べ歩き。<br/><br/>5. 佐原（千葉県）<br/>特徴：江戸時代の運河と町人文化が残る。<br/><br/>文化的価値：江戸の物流と地方経済の拠点だった町。<br/><br/>おすすめポイント：伊能忠敬旧宅や小野川沿いの風景が趣深い。<br/><br/>6. 日光街道・奥日光（栃木県）<br/>特徴：古道と自然が融合したエリア。<br/><br/>文化的価値：江戸時代の参詣道として整備された歴史ある街道。<br/><br/>おすすめポイント：中禅寺湖や華厳の滝などと併せて訪れると、自然と文化の両方を楽しめる。</td></tr></tbody></table><table id="24801625-9b2b-8039-8d6e-c345804e6718" class="simple-table"><tbody><tr id="24801625-9b2b-8005-9840-eefadb484b6f"><td id="aPvz" class="" style="width:139.94601440429688px">プロンプト②</td><td id="Svb]" class="" style="width:963px">それぞれの観光名所のお勧めポイントを教えて下さい。<br/>お勧めポイントは20代〜30代の外国人女性が魅力的に感じられるポイントを抽出してください。</td></tr><tr id="24801625-9b2b-807f-84ab-e201e70b74a0"><td id="aPvz" class="" style="width:139.94601440429688px">ChatGPTの回答②</td><td id="Svb]" class="" style="width:963px">了解しました。以下に、20代〜30代の外国人女性旅行者が魅力的に感じるであろうポイントを、それぞれの観光名所ごとに抽出してお伝えします。<br/>視点としては、インスタ映え・伝統的な雰囲気・文化体験・ロマンティックな風景などを重視しています。<br/><br/>1. 日光東照宮（栃木県）<br/>豪華絢爛な建築と色鮮やかな彫刻は、写真映え間違いなし。特に「陽明門」は細部まで美しく、アート好きにも刺さる。<br/><br/>神聖で静謐な空間は、パワースポットとしても人気。スピリチュアルな体験ができる。<br/><br/>着物レンタルでの参拝体験ができる施設もあり、日本の伝統美を体感できる。<br/><br/>2. 川越（埼玉県）<br/>江戸時代の蔵造りの町並みが続き、まるで映画のセットのよう。浴衣での街歩きが特に人気。<br/><br/>菓子屋横丁では、カラフルでレトロなお菓子が手に入り、写真にぴったり。<br/><br/>小さなカフェや和雑貨屋が点在しており、のんびりとした時間が楽しめる。<br/><br/>3. 鎌倉（神奈川県）<br/>鶴岡八幡宮や長谷寺など、自然と寺社の融合が美しい。季節ごとの花（紫陽花・紅葉）が特にロマンティック。<br/><br/>古民家カフェやオーガニックな食事処が多く、ヘルシー志向の旅行者にも人気。<br/><br/>江ノ電に乗って海沿いを走るローカル体験は、旅情とノスタルジーに溢れる。<br/><br/>4. 浅草（東京都）<br/>浅草寺と雷門は日本文化の象徴的存在で、伝統とモダンが交差するスポット。<br/><br/>仲見世通りの和スイーツ（抹茶アイス、たい焼き、団子など）は、見た目も可愛くて大人気。<br/><br/>着物レンタルでの街歩きが外国人に大人気。和風髪型のヘアセットも体験できる。<br/><br/>5. 佐原（千葉県）<br/>小野川沿いの歴史的な町並みは、舟下り体験と相性抜群。水郷情緒あふれる風景はとても絵になる。<br/><br/>観光客が少なく、ゆったりとした雰囲気が楽しめる穴場スポット。<br/><br/>昔ながらの町家カフェや和紙・陶器の店など、手仕事の美に触れられる。<br/><br/>6. 奥日光・日光街道（栃木県）<br/>神秘的な自然と歴史ある神社仏閣の組み合わせは、心が洗われるような体験に。<br/><br/>特に秋の紅葉や春の新緑の時期は、カメラ女子にとって最高の季節。<br/><br/>湯元温泉などの温泉地が近くにあり、リラックスした滞在ができる。<br/><br/></td></tr></tbody></table><table id="24801625-9b2b-800f-a2a2-ce77158fb05f" class="simple-table"><tbody><tr id="24801625-9b2b-80c8-916e-ebe6039b9ded"><td id="|REG" class="" style="width:141px">プロンプト③</td><td id="?&lt;OC" class="" style="width:958.99853515625px">それでは上記の情報をブログ記事にしてください。<br/>ブログの読者は海外から関東への旅行を検討している20代〜30代の女性です。<br/>日本への旅行が初めてで日本の文化や食に関する知識が少ないため、初めての旅行者でも体験内容をありありとイメージできて、関東に旅行したくなる内容にしてください。</td></tr><tr id="24801625-9b2b-809f-9be5-c628b8a6ea27"><td id="|REG" class="" style="width:141px">ChatGPTの回答③</td><td id="?&lt;OC" class="" style="width:958.99853515625px">【日本旅行ガイド】関東で出会う“レトロで美しい日本”6選｜初めての女子旅にぴったり！<br/>こんにちは！<br/>この記事では、日本の「古い文化」や「伝統的な街並み」が好きなあなたにぴったりの、関東地方のおすすめ観光スポットを紹介します。<br/><br/>もしあなたが日本への旅を計画中で、<br/>「インスタ映えする場所に行きたい」<br/>「着物を着て日本っぽい体験がしたい」<br/>「歴史や文化に触れながら、のんびり楽しみたい」<br/><br/>――そう思っているなら、ぜひ読み進めてください！<br/><br/>1. 日光東照宮（栃木県）｜カラフルで神秘的な神社<br/>まるでおとぎ話に出てくるようなカラフルな建物、繊細な彫刻、森の中にひっそりと佇む神社――それが日光東照宮です。<br/><br/>ここは江戸時代の偉大な将軍「徳川家康」を祀る場所。日本の伝統建築の美しさとパワースポットの神秘が同居しています。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>金と赤の彫刻がフォトジェニック！特に「陽明門」は必見。<br/><br/>“見ざる言わざる聞かざる”の彫刻は世界的にも有名。<br/><br/>着物レンタル＋森の中での写真撮影が人気。<br/><br/>2. 川越（埼玉県）｜江戸の風情が残る“小江戸”の町<br/>一歩足を踏み入れると、まるでタイムスリップしたような気分に。<br/>蔵造りの古い町並みが続き、日本の昔の暮らしを体感できます。<br/><br/>カラフルな和菓子やレトロなお店が並ぶ「菓子屋横丁」は、まさにインスタ映えの宝庫！<br/><br/>🧡 おすすめ体験ポイント<br/><br/>レンタル浴衣を着て、町をのんびり散策。<br/><br/>昔ながらの駄菓子屋でキュートなお菓子をゲット！<br/><br/>小さな和雑貨店でお土産探しも楽しい。<br/><br/>3. 鎌倉（神奈川県）｜自然と歴史が調和する癒しの町<br/>鎌倉は、古いお寺や神社が自然に溶け込むように建っている街。海の近くにあるため、山と海、両方の景色が楽しめます。<br/><br/>オーガニックなカフェや古民家レストランも多く、ヘルシー志向の女性にもぴったりです。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>紫陽花（6月）や紅葉（11月）の季節は最高に美しい！<br/><br/>鶴岡八幡宮や長谷寺では日本の仏教文化に触れられる。<br/><br/>江ノ電（ローカル電車）で海沿いの旅もロマンティック。<br/><br/>4. 浅草（東京都）｜東京で最も“和”を感じるエリア<br/>浅草は、東京の中でも「これぞ日本！」という雰囲気が味わえる場所。<br/>雷門、浅草寺、仲見世通り…どこを見ても絵になります。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>浅草寺でお参りしながら、日本の宗教文化に触れる。<br/><br/>抹茶アイスやたい焼きなど、和スイーツの食べ歩きが楽しい！<br/><br/>着物体験＋髪型セットで、フォトジェニックな一日を。<br/><br/>5. 佐原（千葉県）｜運河沿いの静かな町で過ごす非日常<br/>まだあまり知られていない“穴場スポット”を探しているなら、佐原がおすすめ。<br/>古い町並みと川が流れるこのエリアでは、まるで映画の中にいるような時間が過ごせます。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>舟に乗って、レトロな街並みを水上から楽しめる。<br/><br/>地元の手作り雑貨や工芸品に触れられる。<br/><br/>観光客が少ないため、静かでリラックスできる！<br/><br/>6. 奥日光・日光街道（栃木県）｜自然と歴史が交差する神秘のエリア<br/>奥日光は、山と湖と神社が共存する癒しのエリア。日光東照宮から少し足を伸ばすと、もっとディープな日本が待っています。<br/><br/>特に紅葉の時期（10〜11月）や春の新緑は、写真好きにはたまらない絶景が広がります。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>中禅寺湖や華厳の滝など、大自然と神社巡りを一緒に楽しめる。<br/><br/>湯元温泉で、日本の温泉文化を体験。<br/><br/>ハイキングや森林浴で心と体をリフレッシュ。<br/><br/>✨おわりに｜“古き良き日本”で、忘れられない旅を<br/>関東には、東京の都会的な魅力だけでなく、<br/>伝統と自然が調和する心癒されるスポットがたくさんあります。<br/><br/>今回紹介した場所は、初めて日本に来るあなたにも安心して楽しめる場所ばかり。<br/>どこも英語案内が整っていたり、外国人観光客向けのサービスも充実しています。<br/><br/>あなたの日本の旅が、思い出に残る素敵な体験になりますように💕</td></tr></tbody></table><blockquote id="24601625-9b2b-8046-97d9-ded50f0dc88d" class=""><mark class="highlight-blue"><strong>3. フィードバックは具体的に伝える</strong></mark></blockquote><p id="24601625-9b2b-80f5-b047-f15477e5e463" class="">生成AIが出した内容に対してフィードバックをする際には、「良い」「ダメ」といった抽象的な表現ではなく、「どこが良くて」「どこをどう直してほしいか」を具体的に伝えるようにしましょう。</p><p id="24b01625-9b2b-801b-abf4-e368860580fa" class="">
+</p><p id="24601625-9b2b-8063-842d-f35adf9114dd" class=""><strong>【曖昧に肯定、否定した場合】</strong></p><table id="24801625-9b2b-80fa-b96a-db81d5bb2f2f" class="simple-table"><tbody><tr id="24801625-9b2b-8051-a25b-ce577eea84b2"><td id=":~Cs" class="" style="width:138.99999237060547px">プロンプト</td><td id="jtQD" class="" style="width:960.9971313476562px">全然ダメです。しっかり書き直して下さい。</td></tr><tr id="24801625-9b2b-806a-90ff-e6ef46383611"><td id=":~Cs" class="" style="width:138.99999237060547px">ChatGPTの回答</td><td id="jtQD" class="" style="width:960.9971313476562px">ありがとうございます。そのフィードバックを受けて、以下の点を改善し、より読者に響く、プロ品質の旅行ブログ記事としてしっかり構成し直しました。<br/><br/>🌸【保存版】はじめての日本旅行に！関東で“古き良き日本”を感じる6つの街歩きスポット｜20代〜30代女性のための旅ガイド<br/>🇯🇵「日本の伝統文化を感じたい」<br/>📸「フォトジェニックな街並みを歩きたい」<br/>💕「着物で和スイーツを食べ歩きしたい」<br/><br/>そんなあなたにぴったりの、日本・関東地方にある歴史とレトロな魅力が溢れる観光地を6つご紹介します。<br/>この記事は、日本旅行が初めての20〜30代の外国人女性を対象に、<br/>文化的な背景や過ごし方がしっかりイメージできるように丁寧にガイドしています。<br/><br/>1. ⛩️ 日光東照宮（栃木県）｜神聖で華やかな神社で「日本の美」に触れる<br/>関東を代表する世界遺産、日光東照宮。<br/>極彩色の建築、繊細な彫刻、そして森の中に佇むその姿は、まさに“神聖なアート”。<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>ゴールド×レッドの豪華な門「陽明門」は、まるでジュエリーのように美しい。<br/><br/>「見ざる・言わざる・聞かざる」の猿の彫刻は、文化的にもSNS的にもキャッチー。<br/><br/>着物レンタル＆森の中の神社という組み合わせは、写真映え最強コンビ。<br/><br/>🎯 旅のヒント：<br/>境内を歩くときは、空気が変わるような“静けさ”を感じてみて。<br/>心がすっと整う、そんな瞬間が待っています。<br/><br/>2. 🎐 川越（埼玉県）｜江戸時代の面影が残る“タイムスリップ”タウン<br/>「小江戸」と呼ばれる川越は、江戸時代の街並みがそのまま残る珍しい町。<br/>カラフルな和菓子、レトロな商家、浴衣姿で歩く観光客たち――それだけで映画のワンシーンのよう。<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>菓子屋横丁には、カラフルで可愛い和スイーツがずらり（写真必須！）<br/><br/>浴衣レンタルで町を歩けば、まるで江戸時代のヒロイン。<br/><br/>おしゃれな古民家カフェで、抹茶ラテを飲みながらのんびり過ごせる。<br/><br/>🎯 旅のヒント：<br/>週末は人が多いので、平日午前中の訪問がベスト。レトロ×静けさを満喫できます。<br/><br/>3. 🏯 鎌倉（神奈川県）｜歴史、自然、海…すべてを欲張りに楽しめる町<br/>鎌倉は800年以上の歴史を持つ、武士の街。<br/>だけど今は、おしゃれカフェと歴史的なお寺が混在する、洗練されたカルチャータウンに進化しています。<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>季節ごとに花が美しいお寺がたくさん（特に紫陽花と紅葉の季節は必見）<br/><br/>江ノ電というローカル電車で海沿いを旅する時間が、感性を刺激する。<br/><br/>古民家を改装したカフェで、ヴィーガン和食やオーガニック甘味も味わえる。<br/><br/>🎯 旅のヒント：<br/>「長谷寺」の展望台からは海が見えて、特に夕方は絶景。ひとり旅にもおすすめの癒し空間です。<br/><br/>4. 🎊 浅草（東京都）｜“伝統”と“にぎわい”が交差する東京の原風景<br/>東京の中心にありながら、江戸時代の空気が残るのが浅草。<br/>ここは日本の伝統文化と現代的な賑わいが交差する場所。まさに「The 日本」体験のスタート地点！<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>雷門＆浅草寺の赤い建築は、インスタ映え間違いなし。<br/><br/>仲見世通りでは、和雑貨・着物・スイーツなど、旅の思い出が全部そろう。<br/><br/>着物体験＋プロのヘアセットで「和のプリンセス」に大変身！<br/><br/>🎯 旅のヒント：<br/>早朝の浅草寺は静かで神秘的。人が少なくて写真もきれいに撮れますよ。<br/><br/>5. 🚤 佐原（千葉県）｜観光地化されすぎていない、本物の江戸風情<br/>東京から電車で約2時間。<br/>人混みから離れたいなら、ここが“正解の町”。<br/>運河沿いの町並み、ゆったり進む舟、風にそよぐ柳の葉…。五感で「和」を感じる、知る人ぞ知る隠れスポットです。<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>昔の商家がそのまま残る街並みは、まるで時が止まっているかのよう。<br/><br/>舟に乗って運河から見る町の景色は、他の観光地では味わえない体験。<br/><br/>和紙、陶器、地元作家のアクセサリーなど、日本らしいお土産もたくさん。<br/><br/>🎯 旅のヒント：<br/>週末でも混雑が少なく、ゆったりと日本文化に浸りたい人におすすめ。<br/><br/>6. 🍁 奥日光・日光街道（栃木県）｜自然と歴史が融合する神秘のリトリート<br/>神社めぐりだけでは物足りないあなたには、奥日光の大自然と歴史的街道の旅を。<br/>湖、滝、温泉――日本の“癒し”がここに詰まっています。<br/><br/>📌 初めてのあなたにおすすめしたい理由：<br/><br/>華厳の滝や中禅寺湖の絶景は、まさに大自然の芸術。<br/><br/>湯元温泉で、和風の露天風呂に入れば、心も体もリセット。<br/><br/>紅葉や新緑の季節は、カメラを止めるのが難しいほどの美しさ。<br/><br/>🎯 旅のヒント：<br/>宿泊込みで訪れると◎。星空と温泉は、心の奥までリラックスさせてくれます。<br/><br/>💼 まとめ｜“日本らしさ”を感じたいなら、まず関東から始めよう<br/>初めての日本旅行、どこから行くか迷っているあなたへ。<br/>関東は、アクセスが便利で、しかも文化・歴史・自然・グルメがすべて詰まったエリアです。<br/><br/>紹介した6スポットは、すべて「歩いて楽しめる」＆「写真で思い出を残せる」場所。<br/>さらに、英語案内や外国人向けサービスも整っているので、安心して訪れることができます。</td></tr></tbody></table><p id="24801625-9b2b-8047-9b50-eb77897a4374" class="">このような否定では、AIは何をどう改善すべきか分からず、同じような内容を再出力する可能性があります。</p><p id="24b01625-9b2b-8055-ba4d-f8a08eb20831" class="">
+</p><p id="24601625-9b2b-80eb-b7fb-cae06fcd0265" class=""><strong>【明確なフィードバック例】</strong></p><table id="24801625-9b2b-80e4-b5ac-c403d758a65b" class="simple-table"><tbody><tr id="24801625-9b2b-802c-85d5-dcc57d611580"><td id="iLBi" class="" style="width:142.99999237060547px">プロンプト</td><td id="[B[u" class="" style="width:960px">ありがとうございます。<br/>日本の古い文化を感じられる内容が反映されているのはとても良いです。 ただ、浅草や鎌倉のお寺など日本の象徴的な文化に関する記載がないため、その点を加えることで関東の良さを更に魅力的に表現できると思います。</td></tr><tr id="24801625-9b2b-802e-8b42-cdeb8307e5de"><td id="iLBi" class="" style="width:142.99999237060547px">ChatGPTの回答</td><td id="[B[u" class="" style="width:960px">【初めての日本旅行に】関東で体験する“伝統と美”｜女子旅にぴったりな6つのレトロな街並みと文化体験<br/>こんにちは！<br/>「初めて日本に行くなら、伝統を感じられる場所に行きたい」「インスタ映えする景色だけでなく、本物の文化に触れたい」――そんな風に思っているあなたにぴったりの旅先、それが「関東地方」です。<br/><br/>関東は東京を中心としたエリアですが、都会だけじゃないんです。<br/>歴史、神社仏閣、着物、川のある町並み、和スイーツ――どれも日本の“古き良き文化”を肌で感じられる、魅力いっぱいのスポットがあります。<br/><br/>今回は、日本の伝統文化に興味がある20代〜30代の外国人女性に向けて、「関東に行く理由」をぎゅっと詰め込んでご紹介します！<br/><br/>1. 日光東照宮（栃木県）｜神話のように美しい、極彩色の神社<br/>森の中に広がる金色と赤の世界。まるで絵巻物の中を歩いているかのような神社が「日光東照宮」です。<br/>ここは日本の歴史上最も有名な将軍、徳川家康を祀った神聖な場所で、世界遺産にも登録されています。<br/><br/>複雑で美しい彫刻の数々は、アートとしても見応えがあります。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>「陽明門」の豪華な彫刻は必見！一枚の写真では収まりきらない美しさ。<br/><br/>世界的に有名な“三猿”（見ざる、言わざる、聞かざる）を探してみて。<br/><br/>着物を着て、深い緑と歴史的な建物を背景にした撮影も人気！<br/><br/>2. 川越（埼玉県）｜江戸時代の香りが残る“小江戸”の町<br/>「江戸時代ってどんな時代？」と思ったら、川越に行ってみてください。<br/>ここは“東京の昔の姿”がそのまま残っているような町で、「小江戸」と呼ばれています。<br/><br/>レトロな蔵造りの建物が並び、カラフルな和菓子や浴衣姿の人々に出会える、写真好きにはたまらないエリアです。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>菓子屋横丁で、昔ながらのお菓子をカラフルに撮影！<br/><br/>浴衣レンタルをして、江戸の町を歩いてみよう。<br/><br/>小さな雑貨屋やカフェで、おしゃれなお土産探しも楽しい。<br/><br/>3. 鎌倉（神奈川県）｜仏教と自然が息づく“精神の町”<br/>鎌倉は、13世紀に日本初の「武士の政府」が置かれた歴史の舞台。<br/>この町には今も多くの寺社があり、日本の精神文化――特に禅と仏教の世界が今も息づいています。<br/><br/>「座禅」「写経」「抹茶体験」など、心を整える文化に触れることができ、内面の豊かさに気づける旅になるかもしれません。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>鶴岡八幡宮：鎌倉の象徴。武士たちが心を寄せた神聖な神社。<br/><br/>長谷寺・建長寺：仏像と庭園、四季の花々に癒される。<br/><br/>江ノ電で海沿いの旅を。レトロな列車と湘南の海は相性抜群！<br/><br/>4. 浅草（東京都）｜東京で最も“日本”を感じる場所<br/>東京にいながら、まるで江戸時代に迷い込んだような感覚が味わえる場所、それが浅草です。<br/>中心にある「浅草寺（せんそうじ）」は約1400年の歴史を持ち、今も多くの日本人が信仰を続けています。<br/><br/>香の煙に手をかざして願い事をしたり、五重塔を背景に着物で写真を撮ったり――まさに“日本らしさ”がぎゅっと詰まった空間です。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>浅草寺でのお参りと、伝統的な儀式を体験。<br/><br/>仲見世通りで抹茶スイーツ、たい焼き、和雑貨めぐり。<br/><br/>着物体験＋和髪スタイリングで、自分が“日本文化の一部”に。<br/><br/>5. 佐原（千葉県）｜舟と町屋と静けさが広がる水の町<br/>日本の古い町の魅力は、必ずしも大都市にあるとは限りません。<br/>佐原は知る人ぞ知る、江戸時代の雰囲気が静かに残る運河の町。<br/><br/>観光客が比較的少なく、自分だけの“秘密の旅先”を見つけたい人におすすめです。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>小舟に乗って、江戸時代のような町並みを水上から眺める。<br/><br/>伝統的な町屋でのカフェタイム。陶器や和紙など手仕事も体験できる。<br/><br/>フォトジェニックな橋や石畳で、ナチュラルな旅写真が撮れる！<br/><br/>6. 奥日光・日光街道（栃木県）｜大自然と神仏が出会う聖地<br/>都会の喧騒を離れて、心も身体もリフレッシュしたいなら奥日光へ。<br/>ここでは、湖、滝、森林、そして神社がすべて一体となった、日本の自然と信仰が融合する世界が広がっています。<br/><br/>日本人にとって「山や川」は神聖な存在。奥日光では、その意味が感じ取れるはずです。<br/><br/>🧡 おすすめ体験ポイント<br/><br/>中禅寺湖でボートを漕いだり、華厳の滝で自然の力を体感。<br/><br/>湯元温泉で、日本の温泉文化をじっくり味わえる。<br/><br/>日光街道を散策しながら、江戸時代の旅人気分を味わおう。<br/><br/>✨おわりに｜あなたの旅が“日本文化との出会い”になりますように<br/>関東は、単なる観光地ではなく、**本物の日本文化を体験できる“舞台”**です。<br/>建物、食べ物、風習、自然――どれもが深い意味を持ち、あなたの感性を刺激してくれるでしょう。<br/><br/>この旅が、あなたの“感動の始まり”になりますように。<br/>そして日本が、あなたの“心の中の特別な場所”になりますように。<br/><br/>🌸 旅の準備で不安があれば、ぜひ質問してくださいね！</td></tr></tbody></table><p id="24801625-9b2b-8097-ad8f-fd4fedf35c22" class="">こうしたフィードバックはAIにとって理解しやすく、修正の方向性も明確になります。</p><p id="24601625-9b2b-806f-86ed-ef3b01f9fcc2" class="">具体的なフィードバックを心がけることで、AIとの対話の質が高まり、より望ましい出力を引き出すことができるようになります。</p><p id="24601625-9b2b-801c-8e5a-ec550cc7e3df" class="">以上の3つのポイントを踏まえることで、プロンプトの精度が上がり、生成AIの能力をより効果的に活用できるようになります。次のレッスンでは、これらの注意点を踏まえた具体的なプロンプト設計の技法を学びます。</p><p id="24b01625-9b2b-802d-978c-ff6729c8010c" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

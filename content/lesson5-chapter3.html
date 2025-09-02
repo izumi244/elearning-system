@@ -1,0 +1,694 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Chapter 3 売れるプロンプトやGPTsをつくる方法</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(174, 130, 0, 0.223); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="22a01625-9b2b-81c9-8a85-f7c56bbee824" class="page sans"><header><h1 class="page-title">Chapter 3 売れるプロンプトやGPTsをつくる方法</h1><p class="page-description"></p></header><div class="page-body"><p id="24601625-9b2b-805f-88e7-c5e05ff67eef" class="">これまでに、プロンプトやGPTsの販売方法を学んできましたが、実際に収益化を目指すには「どんなプロンプトやGPTsが求められ、売れる可能性が高いのか」を理解しておく必要があります。このChapterでは、ニーズに合致し、収益化につながりやすいプロンプトやGPTsの特徴について学びましょう。</p><h2 id="24601625-9b2b-8057-90a5-f13fc78ac4e3" class="block-color-blue_background">　自分の専門知識を活かすことが鍵</h2><hr id="24b01625-9b2b-80b2-9b4a-e7130e180280"/><p id="24601625-9b2b-8023-9726-d6ffaa566e25" class="">ChatGPTをはじめとする生成AIは、幅広い業務に対応できる汎用性を備えています。特に有料で提供するコンテンツでは、業務に対する理解や深い知見が求められます。</p><p id="24a01625-9b2b-8079-a838-fa0056d9ffe6" class="">つまり、あなた自身の専門領域の知識を活かしたプロンプトやGPTsは、非常に効果的で価値が高いということです。以下の2点を意識することが重要です。</p><ul id="24601625-9b2b-801e-90fe-c5e5f95a3b64" class="bulleted-list"><li style="list-style-type:disc"><strong>業務経験に裏打ちされた信頼性</strong><br/>自身が培ってきた専門分野の深い知識は、プロンプトに説得力と信頼性をもたらします。専門家としての視点を反映した分析や洞察が含まれていれば、利用者から「信頼できる情報源」として高く評価されやすくなります。</li></ul><ul id="24601625-9b2b-809a-a935-c1a78a15456b" class="bulleted-list"><li style="list-style-type:disc"><strong>独自のニッチ領域をつくる<br/></strong>高度な知見を持つことで、他と差別化されたニッチなテーマを開拓できます。これは競合が多いマーケットで、自分のプロンプトやGPTsを目立たせる大きな武器になります。</li></ul><h2 id="24601625-9b2b-806f-ace2-c1392a09bbd6" class="block-color-blue_background">　明確なターゲットと具体的なタスク設定</h2><hr id="24b01625-9b2b-80bb-b338-d040e23b715f"/><p id="24601625-9b2b-8034-acbd-cc42109b46c2" class="">漠然とプロンプトを作成するのではなく、対象とする利用者と解決したい業務上の課題を明確にすることが、実務に即した有用なプロンプトを生む鍵となります。</p><p id="24601625-9b2b-8057-a096-e5bfa1d9da4a" class="">自身が現場で感じている課題や改善点からヒントを得るのも効果的ですが、生成AIの力を借りてアイデアを広げていくことも可能です。ここでは、「医療機関や健診センターの運営担当者・スタッフ」をターゲットに設定し、その業務上の課題やAIで支援可能なタスクを、Lesson5で習得した「発散・収束」のプロンプト設計手法を活用して掘り下げていきます。</p><p id="24b01625-9b2b-8057-913d-efa1858f2153" class="">
+</p><table id="24601625-9b2b-801f-bcde-da44e8fb7d02" class="simple-table"><tbody><tr id="24601625-9b2b-809a-be14-c1dc9490d304"><td id="wCT=" class="" style="width:153px">プロンプト</td><td id="eAHJ" class="" style="width:979.991455078125px">#命令<br/>医療機関や健診センターで活用できる価値の高いプロンプトやGPTsをつくるために、現場での課題を10個洗い出してください。<br/><br/>#ターゲット<br/>医療機関または健診センターの運営担当者・スタッフ<br/><br/>#出力形式<br/>・業務上の課題<br/>・具体的なシーン<br/>・ChatGPTなどの生成AIとの相性</td></tr><tr id="24601625-9b2b-8094-92cf-ec536ec47b51"><td id="wCT=" class="" style="width:153px">ChatGPTの出力例</td><td id="eAHJ" class="" style="width:979.991455078125px">1. 業務上の課題：受診者からのよくある問い合わせ対応に時間が取られる<br/><br/>具体的なシーン：予約方法、持ち物、当日の流れ、結果の見方などの電話・メール対応が頻繁<br/><br/>ChatGPTとの相性：◎（FAQ自動化、チャットボット構築による業務軽減が可能）<br/><br/>2. 業務上の課題：健診結果報告書の説明がわかりにくい<br/><br/>具体的なシーン：医師が忙しく、スタッフも専門用語を解説できないため、受診者が結果に不安を抱える<br/><br/>ChatGPTとの相性：◎（用語のわかりやすい翻訳・ナビゲーションガイドの自動生成が可能）<br/><br/>3. 業務上の課題：予約や来院前の案内メール・LINE配信の作成に時間がかかる<br/><br/>具体的なシーン：キャンセル対応・リマインダーなどの文章作成や個別対応にリソースを割けない<br/><br/>ChatGPTとの相性：◎（文面自動生成・パターン管理・A/Bテスト支援）<br/><br/>4. 業務上の課題：問診票の内容が曖昧で、医師の診断補助がしづらい<br/><br/>具体的なシーン：受診者の自由記述が多く、看護師や医師が内容を要約・補完する必要がある<br/><br/>ChatGPTとの相性：〇（自由記述の要約・カテゴリ分類に活用可能）<br/><br/>5. 業務上の課題：医療用文書や帳票作成（紹介状・報告書等）が煩雑<br/><br/>具体的なシーン：定型文が多いが一部だけ手入力が必要で、転記ミスや作業負荷が大きい<br/><br/>ChatGPTとの相性：◎（テンプレート補完・文書生成支援が可能）<br/><br/>6. 業務上の課題：医療機関のWebサイトやSNSの情報更新が滞る<br/><br/>具体的なシーン：季節性のお知らせや最新機器導入のお知らせがタイムリーに発信できない<br/><br/>ChatGPTとの相性：◎（広報文・お知らせ文章・SNS投稿文の自動生成が可能）<br/><br/>7. 業務上の課題：健診や検査の説明がスタッフによってバラつく<br/><br/>具体的なシーン：検査前の注意点や禁忌事項の説明が不十分で、トラブルにつながる<br/><br/>ChatGPTとの相性：〇（音声ガイド・Q&amp;Aデータベース整備支援が可能）<br/><br/>8. 業務上の課題：外国人受診者への対応が困難<br/><br/>具体的なシーン：受付・問診・説明時に通訳が必要で、対応できるスタッフが限られる<br/><br/>ChatGPTとの相性：◎（多言語翻訳・多言語チャット対応が可能）<br/><br/>9. 業務上の課題：新入職スタッフへのマニュアルやOJTの整備不足<br/><br/>具体的なシーン：ベテランが口頭で教えるため、習熟度に差が出る<br/><br/>ChatGPTとの相性：〇（QA形式でマニュアル整備・OJTチャット支援が可能）<br/><br/>10. 業務上の課題：クレーム・ヒヤリハットの記録と振り返りの負荷<br/><br/>具体的なシーン：スタッフが書く報告がばらつきがあり、集計や共有が難しい<br/><br/>ChatGPTとの相性：〇（文章の要約・分類・改善提案の自動化が可能）</td></tr></tbody></table><p id="24601625-9b2b-80b9-9c78-e1ddb45b8569" class="">上記で出力された課題を「発散」することで、ChatGPTの活用方法を幅広く検討してみましょう。<br/>ここでは、「課題1：受診者からのよくある問い合わせ対応に時間が取られる」をもとに「発散」を進めていきます。</p><p id="24a01625-9b2b-8054-982e-c7b6bbd5c9fe" class="">
+</p><table id="24601625-9b2b-80a0-916b-dda4a0c7e3b4" class="simple-table"><tbody><tr id="24601625-9b2b-80e1-903a-c16001265860"><td id="lF[S" class="" style="width:149px">プロンプト</td><td id="zgaQ" class="" style="width:984px">「業務上の課題：受診者からのよくある問い合わせ対応に時間が取られる」に関して、ChatGPTが活用できる具体的な業務を10個あげてください。</td></tr><tr id="24601625-9b2b-8084-bab2-f7b55c4e527a"><td id="lF[S" class="" style="width:149px">ChatGPTの出力例</td><td id="zgaQ" class="" style="width:984px">「業務上の課題：受診者からのよくある問い合わせ対応に時間が取られる」という問題に対して、ChatGPTが実際に活用できる具体的な業務を以下に10個提示します。単なるFAQ生成にとどまらず、運用の現場に即した実務支援レベルで設計しています。<br/><br/>1. よくある質問（FAQ）データベースの構築と更新支援<br/>ChatGPTが受診者からの問い合わせ履歴や過去のQ&amp;Aを整理・要約し、項目別に再構成。<br/><br/>更新時も新しい質問内容に応じて自然な文体で追記可能。<br/><br/>2. 予約に関するチャットボット対応の文生成<br/>「電話予約とWeb予約の違い」「検査前の注意事項」「空き状況の確認方法」など、予約前後の一連の問い合わせに対して、定型文を生成。<br/><br/>3. 自動応答テンプレートの作成（メール・LINE・チャット対応用）<br/>受診者からの問い合わせに対し、文面を自動整形（例：「キャンセル方法を教えてください」への丁寧な応答文など）。<br/><br/>4. 複雑な質問に対するナレッジ分岐フローの設計支援<br/>「胃カメラは麻酔あり？なし？」「妊娠中だけど健診可能か？」など条件分岐が必要な質問に対して、対話型ナビゲーションのフロー設計を支援。<br/><br/>5. 検査別の「前日・当日準備」案内文のカスタマイズ生成<br/>大腸内視鏡、胃部X線、血液検査など、それぞれの検査に合わせた準備内容の案内文を生成（食事制限、服装、来院時間など）。<br/><br/>6. 問い合わせ履歴の分析とカテゴリ分類<br/>過去の問い合わせ内容を自動でジャンル分けし、「改善すべき説明項目」や「案内が不足しているタイミング」などを可視化。<br/><br/>7. 多言語対応の自動翻訳応答<br/>英語・中国語・ベトナム語など、受診者の言語に応じたFAQの翻訳や、簡単な問い合わせへの自動応答を生成。<br/><br/>8. 誤解を防ぐ説明文のリライト支援<br/>医療専門用語を含む回答文を、受診者が理解しやすい文に書き換える（例：「事前絶食が必要です」を「検査の〇時間前からは食事を控えてください」など）。<br/><br/>9. 受付スタッフ向けの問い合わせ対応マニュアル作成<br/>よくある質問に対する標準応答をChatGPTで整備し、スタッフが即時確認できるようにマニュアル形式で整理。<br/><br/>10. AIチャットボット連携による24時間自動対応<br/>ChatGPT APIを既存チャットツールに組み込み、夜間や業務外の問い合わせにも自動で初期対応（緊急性のない内容の一次対応など）。</td></tr></tbody></table><p id="24601625-9b2b-8030-8f3f-f8c3ea7466f1" class="">続いて、上記の活用方法を2つに分類して「収束」することで、様々あるアイデアの方向性を定めましょう。</p><p id="24a01625-9b2b-808f-a617-d1d53f671507" class="">
+</p><table id="24601625-9b2b-80fe-8ff4-d328e1f21bbe" class="simple-table"><tbody><tr id="24601625-9b2b-8079-9de1-ff679d46e5c1"><td id="|Wc]" class="" style="width:149px">プロンプト</td><td id="&gt;ozW" class="" style="width:1113px">上記の活用方法を2つにグルーピングしてください。</td></tr><tr id="24601625-9b2b-80e9-ace2-feacf5491d1c"><td id="|Wc]" class="" style="width:149px">ChatGPTの出力例</td><td id="&gt;ozW" class="" style="width:1113px">グループ①：受診者への直接対応を自動化・高度化する活用<br/>目的：受診者からの問い合わせに対し、人的対応を減らしながら質の高い回答を自動で提供する。<br/><br/>① よくある質問（FAQ）データベースの構築と更新支援<br/><br/>② 予約に関するチャットボット対応の文生成<br/><br/>③ 自動応答テンプレートの作成（メール・LINE・チャット対応用）<br/><br/>④ 複雑な質問に対するナレッジ分岐フローの設計支援<br/><br/>⑤ 検査別の「前日・当日準備」案内文のカスタマイズ生成<br/><br/>⑧ 誤解を防ぐ説明文のリライト支援<br/><br/>⑩ AIチャットボット連携による24時間自動対応<br/><br/>→ 主な成果：問い合わせ数の削減、スタッフの負担軽減、受診者満足度の向上<br/><br/>グループ②：内部業務・対応品質の改善に役立つ活用<br/>目的：スタッフの対応力を標準化・強化し、組織としての業務効率を高める。<br/><br/>⑥ 問い合わせ履歴の分析とカテゴリ分類<br/><br/>⑦ 多言語対応の自動翻訳応答<br/><br/>⑨ 受付スタッフ向けの問い合わせ対応マニュアル作成<br/><br/>→ 主な成果：教育・引継ぎの効率化、業務の属人化防止、内部改善のサイクル形成</td></tr></tbody></table><p id="24601625-9b2b-8061-8df2-de65e9f5db0f" class="">2つに分類したグループの一つを再度「発散」することで、受診者からの問い合わせ対応におけるChatGPTの活用方法を深く広く検討してみましょう。</p><p id="24a01625-9b2b-809a-bc15-e7f973347165" class="">
+</p><table id="24601625-9b2b-800b-a2b6-c897d66032d8" class="simple-table"><tbody><tr id="24601625-9b2b-8087-8438-fd61c1c0de20"><td id="sRS&lt;" class="" style="width:150px">プロンプト</td><td id="vTvC" class="" style="width:1114px">「受診者への直接対応を自動化・高度化する活用」のグループに関して、ChatGPTの具体的な活用方法を10個考えてください。</td></tr><tr id="24601625-9b2b-80ae-bd3f-eacca110109a"><td id="sRS&lt;" class="" style="width:150px">ChatGPTの出力例</td><td id="vTvC" class="" style="width:1114px">以下に、「受診者への直接対応を自動化・高度化する活用」という視点で、ChatGPTの具体的な活用方法を10個提示します。単なるFAQ対応ではなく、受診者体験を向上させるAIの応用に重点を置いています。<br/><br/>1. **会話型FAQチャットボットの構築（シナリオ分岐型）<br/>**<br/>受診者が「胃カメラの準備について教えて」と入力すると、ChatGPTが対話形式で必要な情報を順に案内（例：「麻酔の有無」「前日の絶食時間」など）する。<br/><br/>2. 検査種類ごとの案内文のカスタマイズ生成<br/>同じ「健診予約」でも、CT検査・内視鏡・心電図など検査種別によって注意点が異なる。ChatGPTが検査内容と年齢・性別に応じた準備案内を自動生成。<br/><br/>3. キャンセル・変更時の自動案内メッセージ作成<br/>「予定が入ったので健診をキャンセルしたい」といったメッセージに対し、受付ルールを反映した丁寧なキャンセル案内文をChatGPTがその場で作成。<br/><br/>4. LINEやSMSで送るリマインド文のパーソナライズ生成<br/>受診予定日の前日に送るメッセージを、検査種別や曜日・天気に応じて変化させ、「当日は雨予報のため早めの来院をおすすめします」など動的生成。<br/><br/>5. 結果報告書に対する「わかりやすい説明文」の自動生成<br/>受診者が結果表を見ても意味が分からない項目（例：「HDLコレステロール：低値」）に対し、ChatGPTが平易な文章で解説。<br/><br/>6. 複雑な問い合わせの要点抽出と適切なナビゲーション提示<br/>「今週末に血液検査を予約しているが、前日の夜にワインを飲んでもいいか？」という自由文から要点（日時・検査内容・飲酒）を抽出し、的確な注意事項を提示。<br/><br/>7. チャット画面での多言語翻訳（双方向）による問い合わせ対応<br/>英語・中国語などで送られてきた受診者からの質問を自動で翻訳・回答し、さらにChatGPTが翻訳文を返信文として生成。簡易的な通訳として機能。<br/><br/>8. 24時間対応の「緊急度判定付き」案内支援<br/>深夜に送られた質問（例：「血便が出たが予約は必要か？」）に対して、緊急性を示す表現で対応文を生成し、必要であれば「明日の外来をおすすめします」など具体的案内。<br/><br/>9. 受診者ごとの問い合わせ履歴に基づく文面提案<br/>繰り返し来院している受診者には、過去の問い合わせ傾向（例：毎回、持ち物について質問）を踏まえたパーソナライズされた案内文をChatGPTが提示。<br/><br/>10. 「よくあるミス」への注意喚起メッセージの自動挿入<br/>例えば「当日朝に水を飲んでしまう」「薬を飲み忘れる」などよくあるミスに対し、受診者の検査内容と時間帯に応じて注意喚起の一文をメッセージ内に自動追加。</td></tr></tbody></table><p id="24601625-9b2b-80de-a0d2-cb67787b0bf1" class="">この中でも、「会話型FAQチャットボットの構築」や「多言語対応の問い合わせ自動応答」は、ChatGPTの高度な自然言語処理能力と文脈理解力を最大限に活かせる領域であり、<strong>現場の業務負荷を確実に軽減しながら、受診者体験の質を大幅に向上させる</strong>ことが可能です。単なる情報提供ではなく、利用者の質問意図を即時に把握し、適切な流れで案内する「対話的ナビゲーション」は、人手では難しい即応性と一貫性を実現できます。</p><p id="24601625-9b2b-805e-9701-d5007a14800f" class="">さらに、プロンプトやGPTsを販売する際には、「健診予約の問い合わせ対応時間を50%削減する自動応答テンプレート」や「外国人受診者の満足度を高める3言語対応FAQ生成プロンプト」といったように、<strong>成果を明示する数値やターゲットの課題に直結するキーワードをタイトルに含めることが重要です</strong>。これは、単なる機能説明よりも遥かに説得力があり、購入検討者の“自分ごと化”を促進する強力な手法です。</p><p id="24601625-9b2b-8005-a45b-d8957c0ad24a" class="">つまり、ChatGPTの強みと現場ニーズの接点を明確に打ち出し、「<strong>何が、どれだけ、どう変わるか</strong>」を具体的に訴求することが、プロンプト販売で成果を上げる鍵となります。</p><h2 id="24601625-9b2b-800d-9ee4-d61a9f67dab5" class="block-color-blue_background">　価値の高いプロンプトの要素とは</h2><hr id="24b01625-9b2b-8015-8a7f-e6219b396565"/><p id="24601625-9b2b-805d-9e0d-c5fed4dec4c4" class="">実用性の高い生成AIプロンプトをつくるには、自分ならではのノウハウや現場感覚を反映した、具体的かつ丁寧な指示が求められます。特に重要なのは、次の4つの要素を明確に盛り込むことです。</p><p id="24601625-9b2b-8067-8307-d80e4d8811d8" class=""><strong>【目的】</strong><br/>そのプロンプトが何のために存在するのか。自身の実務経験をもとに、解決したいことを明確に言語化しましょう。</p><p id="24601625-9b2b-8055-86b8-cfc951faf759" class=""><strong>【制約事項】</strong><br/>業務で注意すべき点や前提条件など、タスクを進めるうえで考慮すべき要素を、余すことなく制約として組み込みます。</p><p id="24601625-9b2b-807d-a98c-c7e5a2277717" class=""><strong>【ステップ】</strong><br/>タスクをどう進めるかを手順として整理します。実務に即したフローを分解して記載することで、再現性が高まります。</p><p id="24601625-9b2b-809e-9fc2-de6d1fd22235" class=""><strong>【出力形式】</strong><br/>完成形としてどのような形式で出力すれば使いやすいかを定めます。Excel、表、箇条書きなど、目的に合ったフォーマットを選びましょう。</p><p id="24601625-9b2b-80e1-972f-d4778e189ecb" class="">これらの要素をしっかり押さえることで、より実践的で信頼性のあるプロンプトになります。そして完成したプロンプトは、そのままGPTsに組み込むことも可能です。提供形式も含めて事前に設計しておくと、販売や業務適用がスムーズになります。</p><p id="24601625-9b2b-800f-85bf-f0c736f293e8" class="">皆さんも自分の経験をもとに、実用性の高いプロンプトづくりに取り組んでみましょう。</p><p id="24a01625-9b2b-8089-9d19-cc7e526513a9" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

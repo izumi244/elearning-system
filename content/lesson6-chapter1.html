@@ -1,0 +1,693 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Chapter 1 ［演習課題①］生成AIで文章の修正をしてみよう</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(174, 130, 0, 0.223); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="22a01625-9b2b-81c5-80c6-f6fe3e6c9b2b" class="page sans"><header><h1 class="page-title">Chapter 1 ［演習課題①］生成AIで文章の修正をしてみよう</h1><p class="page-description"></p></header><div class="page-body"><p id="24601625-9b2b-80bd-bdfa-c25071d8f09c" class="">生成AIは文章の校正や修正が得意なツールです。このセクションでは、実務に即した報告書の例を使って、生成AIを活用した文章のチェックと改善を実践してみましょう。<br/>AIをうまく使うことで、書類作成にかかる時間を削減できるだけでなく、品質の向上や、レビューに必要な工数の軽減にもつながります。</p><h2 id="24601625-9b2b-80ca-a6b9-cc9101774bf8" class="block-color-blue_background"><strong>　例：報告書の作成</strong></h2><hr id="24b01625-9b2b-8022-939a-ffb32443dc3c"/><blockquote id="24601625-9b2b-80f4-96a8-c8332ef542e4" class=""><mark class="highlight-blue"><strong>【想定シーン】</strong></mark></blockquote><p id="24601625-9b2b-8019-ad94-cdb121c6b5dd" class="">あなたはクリニックの受付スタッフです。ある日、健診センターでの対応において、患者様を怒らせてしまう出来事が発生しました。この件について、責任者である上司へ報告書を提出する必要があります。しかし、文書の内容や表現に自信が持てず、報告書として適切かどうか不安があります。</p><p id="24601625-9b2b-8006-bbdc-e862e4f7ccdf" class="">下記は作成した報告書です。現在の懸念点は以下の通りです。</p><ul id="24601625-9b2b-8054-8535-ec36c046c74e" class="bulleted-list"><li style="list-style-type:disc">文章構成が整理されておらず、読みづらいのではないか</li></ul><ul id="24601625-9b2b-80c7-8217-f590a0f241b0" class="bulleted-list"><li style="list-style-type:disc">使用している言葉遣いが、ビジネス文書として適切か不安がある</li></ul><ul id="24601625-9b2b-80bd-b0a1-d977cd01b5f1" class="bulleted-list"><li style="list-style-type:disc">報告内容に漏れや曖昧な点があるかもしれない</li></ul><p id="24b01625-9b2b-80b8-a680-fdcbb3ad31dc" class="">
+</p><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="24601625-9b2b-80fb-a2dd-d913424ada46"><div style="width:100%"><p id="24601625-9b2b-8085-be54-e841f070c27b" class="">件名：患者さん対応のことについて</p><p id="24601625-9b2b-8039-a76a-f64efb7c5b51" class="">〇〇センター長へ</p><p id="24601625-9b2b-804c-821f-dfdd5540ce89" class="">こんにちは。受付の鈴木です。<br/>3月18日の朝10時ぐらいから、健診センターで受付をしていたのですが、その時にちょっとしたトラブルがありました。患者様が来られて、予約の確認がうまくいかなかったので、少し時間がかかってしまいました。それで、ちょっと待たせてしまって、なんか怒らせてしまったかもしれません。</p><p id="24601625-9b2b-80c9-a40a-cd4340fe5b00" class="">説明もちゃんとできてなかったので、患者様がちょっと困っていたように思います。それで、不満そうな感じで、「もっとちゃんとしてほしい」と言われてしまいました。あと、混んでいたのもあって、どうすればいいか説明もうまくできず、代わりの提案とかもできませんでした。</p><p id="24601625-9b2b-80f6-a081-c9bc1bae8eef" class="">看護師さんがその後少し話してくれて、その場はなんとかなったようです。いろいろ反省しています。<br/>今後はもっとちゃんとやるようにしたいです。とにかく、予約のこととか案内とか、丁寧にやっていきたいと思っています。患者様には後で謝っておこうと思っています。あと、受付のやり方もチームで話して改善していけたらいいなと考えています。</p><p id="24601625-9b2b-8040-8979-d9d6181482cc" class="">そんな感じで、今回のことについてでした。よろしくお願いします。</p><p id="24601625-9b2b-8088-87fc-dc1a1ff95270" class="">鈴木</p></div></figure><p id="24601625-9b2b-80a9-bb0a-dab23d412f70" class="">生成AIを活用する際は、まず報告書の構成を明確にし、その後に文面の内容や表現を改善していくプロセスを踏むことがポイントです。</p><p id="24a01625-9b2b-8029-ba1b-c82254a92ec9" class="">
+</p><blockquote id="24601625-9b2b-8014-834b-f0b1763d09f2" class=""><mark class="highlight-blue"><strong>プロンプト作成時のポイント</strong></mark></blockquote><ul id="24601625-9b2b-8066-ab6d-cb6749b38676" class="bulleted-list"><li style="list-style-type:disc">自身の役割や立場を明確に伝える<p id="24601625-9b2b-802e-b045-f3221fc0e673" class="">例：「私は〇〇クリニックの受付スタッフです」など、自分がどの立場で報告書を作成するのかを明記しましょう。</p></li></ul><ul id="24601625-9b2b-807c-a80b-cc4d2e5e462d" class="bulleted-list"><li style="list-style-type:disc">報告書が必要となった背景や状況を具体的に説明する<p id="24601625-9b2b-8042-a5b5-cb564cbf5151" class="">例：「健診当日に受付対応でトラブルが発生し、患者様からクレームをいただいたため、上司への報告が必要になりました」といった具合に、文脈をわかりやすく伝えます。</p></li></ul><ul id="24601625-9b2b-80f6-a815-f6c3c15ed360" class="bulleted-list"><li style="list-style-type:disc">作成したい内容と目的を明示する<p id="24601625-9b2b-8069-a0bf-e0d48bf710f3" class="">例：「上司への報告書として適切な形式の文章を作成したいです」「ビジネス文書としての構成・トーンを整えた報告書フォーマットが必要です」など、最終的に得たいアウトプットを明確に記載しましょう。</p></li></ul><ul id="24601625-9b2b-8023-8ca7-ea283735a59d" class="bulleted-list"><li style="list-style-type:disc">報告書の内容に不安がある旨を伝え、上司の視点からの改善提案を求める<p id="24601625-9b2b-8022-9ff7-ca5ecb83499b" class="">例：「自分の書いた報告書に漏れや不適切な表現がないか不安です。上司の立場で改善点やアドバイスをフィードバックしてください」と依頼することで、より実務的な視点からの助言を得られます。</p><p id="24b01625-9b2b-8091-bb75-deae35333d02" class="">
+</p></li></ul><table id="24601625-9b2b-805b-bf7a-fcd8b73931d3" class="simple-table"><tbody><tr id="24601625-9b2b-80c9-bdbb-de24721f49cd"><td id="kzST" class="" style="width:153px">プロンプト①</td><td id="ytIW" class="" style="width:1130.9921875px">#役割<br/>あなたは健診センターの受付担当者であり、上司に提出する報告書を作成する責任を担っています。<br/><br/>#文脈<br/>この報告書は、健診受付業務中に発生した患者様対応の不備により、クレームが発生した事案について、上司に対して詳細を正確に報告することを目的としています。<br/><br/>#ゴール<br/>問題の経緯と原因、今後の具体的な改善策を明示した、上司に適切に共有できる報告書フォーマットを作成すること。<br/><br/>#制約事項<br/>・報告書は医療機関内のビジネス文書としてふさわしく、読み手（上司）が状況を即座に把握できる言葉遣い・構成を用いること。<br/>・当日の状況を知らない方でも経緯が理解できるよう、時系列で整理された明確な記述とすること。<br/>・改善策は「誰が・いつまでに・何を行うか」が明示されたアクションプラン形式で記載すること。<br/>・不必要な表現は避け、重要な事実に絞って簡潔に記述すること。<br/><br/>#出力形式<br/>報告書フォーマット</td></tr><tr id="24601625-9b2b-8092-8c63-f5cb809d26d9"><td id="kzST" class="" style="width:153px">ChatGPTの出力例</td><td id="ytIW" class="" style="width:1130.9921875px">【クレーム対応報告書フォーマット】<br/>1. 件名<br/>健診受付対応に関するクレーム報告（●月●日発生）<br/><br/>2. 発生日・時間帯<br/>202●年●月●日（●曜日）　●時●分頃<br/><br/>3. 発生場所<br/>健診センター受付カウンター（●●窓口）<br/><br/>4. 当事者<br/>・対応スタッフ：氏名（所属）<br/>・クレーム申出者：受診者（氏名不明／性別／年齢※可能な範囲で記載）<br/><br/>5. 経緯（時系列）<br/>（例）<br/>●時●分：受診者が受付に来院、氏名確認後に案内開始<br/>●時●分：事前案内内容と異なる対応を受けたと指摘あり<br/>●時●分：対応スタッフが状況を確認しようとしたが、説明が不十分<br/>●時●分：受診者より「説明が不親切」「案内が間違っている」との苦情<br/>●時●分：責任者が謝罪・対応引き継ぎ<br/><br/>6. クレームの内容<br/>・案内内容と事前説明（予約時または案内文書）との不一致<br/>・職員による説明が不明瞭で、不安・不快感を与えた<br/>・待機時間についての案内不足<br/><br/>7. 原因分析<br/>・予約情報と当日の対応手順との連携不備<br/>・新人スタッフのマニュアル未熟・対応スキル不足<br/>・窓口間での情報共有が不十分であった<br/><br/>8. 対応内容<br/>・その場で責任者より謝罪<br/>・正確な案内を再実施し、受診を継続いただいた<br/>・スタッフ間で当該事象の情報共有を即日実施<br/><br/>9. 今後の改善策<br/>◾️アクションプラン①<br/>・誰が: 受付責任者（氏名）<br/>・何を: 受付マニュアルの内容点検および修正<br/>・いつまでに: 202●年●月●日<br/>・詳細: 案内手順が最新の予約フローと一致しているかを精査し、手順書を全スタッフに共有・周知徹底する。<br/><br/>◾️アクションプラン②<br/>・誰が: 教育担当者（氏名）<br/>・何を: 新人スタッフへの対応訓練強化<br/>・いつまでに: 202●年●月●日<br/>・詳細: 想定事例に基づくロールプレイ実施および指導記録を作成し、定着状況を1か月後に再確認する。<br/><br/>◾️アクションプラン③<br/>・誰が: 受付チームリーダー（氏名）<br/>・何を: 業務前ミーティングでの情報共有の徹底<br/>・いつまでに: 即日開始、継続実施<br/>・詳細: 前日分の注意事項や当日の変更点を必ず確認するチェックリストを導入し、記録として保管する。</td></tr></tbody></table><table id="24601625-9b2b-8067-947d-d11dc4c210cd" class="simple-table"><tbody><tr id="24601625-9b2b-80ea-a240-dd573caf15a9"><td id="&gt;c@w" class="" style="width:154px">プロンプト②</td><td id="Bntd" class="" style="width:1165px">#手順の実行プロセス<br/>- [C1] 以下のメール文章をビジネスで利用できるレベルの文章に修正する。<br/>- [C2] 報告書のフォーマットに従って修正した内容を整形してください。<br/>- [C3] 私の上司として報告書で不足している情報を指摘してください。<br/><br/>#出力形式<br/>実行プロセスに従って出力<br/><br/>#メール文章の叩き<br/>件名：患者さん対応のことについて<br/><br/>〇〇センター長へ<br/><br/>こんにちは。受付の鈴木です。<br/>3月18日の朝10時ぐらいから、健診センターで受付をしていたのですが、その時にちょっとしたトラブルがありました。患者様が来られて、予約の確認がうまくいかなかったので、少し時間がかかってしまいました。それで、ちょっと待たせてしまって、なんか怒らせてしまったかもしれません。<br/><br/>説明もちゃんとできてなかったので、患者様がちょっと困っていたように思います。それで、不満そうな感じで、「もっとちゃんとしてほしい」と言われてしまいました。あと、混んでいたのもあって、どうすればいいか説明もうまくできず、代わりの提案とかもできませんでした。<br/><br/>看護師さんがその後少し話してくれて、その場はなんとかなったようです。いろいろ反省しています。<br/>今後はもっとちゃんとやるようにしたいです。とにかく、予約のこととか案内とか、丁寧にやっていきたいと思っています。患者様には後で謝っておこうと思っています。あと、受付のやり方もチームで話して改善していけたらいいなと考えています。<br/><br/>そんな感じで、今回のことについてでした。よろしくお願いします。<br/><br/>鈴木</td></tr><tr id="24601625-9b2b-80a5-af78-c352531ac50e"><td id="&gt;c@w" class="" style="width:154px">ChatGPTの出力例</td><td id="Bntd" class="" style="width:1165px"><strong>[C1] メール文章のビジネスレベルへの修正</strong><br/>件名：健診センター受付における患者対応に関するご報告<br/><br/>〇〇センター長<br/><br/>お疲れ様です。受付担当の鈴木です。<br/>3月18日（月）午前10時頃、健診センター受付業務中に患者様対応において不備があり、結果としてクレームをいただく事態となりましたので、以下にご報告いたします。<br/><br/>当該患者様の予約確認作業に手間取り、受付対応に時間を要した結果、患者様を長時間お待たせすることとなりました。また、対応時のご案内や説明が不十分であったため、患者様から「もっときちんとしてほしい」とのお言葉を頂戴するなど、不信感を招いてしまいました。<br/><br/>当時、受付が混雑していたこともあり、状況説明や代替提案が十分に行えず、患者様の不安を解消することができませんでした。その後、看護師が状況を引き継ぎ、場は一旦収まりましたが、私としては自らの対応に大きな反省点を感じております。<br/><br/>今後は、予約情報の確認方法や案内手順の徹底、患者様への配慮をより意識し、同様の事態を招かぬよう努めてまいります。また、受付チーム内でも今回の件を共有し、改善策を話し合ってまいりたいと考えております。<br/><br/>まずは取り急ぎ、報告申し上げます。<br/><br/>受付担当<br/>鈴木<br/><br/><strong> [C2] 報告書フォーマットに整形</strong><br/>【クレーム対応報告書】<br/>1. 件名<br/>健診受付対応に関するクレーム報告（3月18日発生）<br/><br/>2. 発生日・時間帯<br/>2025年3月18日（月）　10時00分頃<br/><br/>3. 発生場所<br/>健診センター受付カウンター<br/><br/>4. 当事者<br/>・対応スタッフ：鈴木（受付担当）<br/>・クレーム申出者：患者様（氏名不明／性別不明／年齢不明）<br/><br/>5. 経緯（時系列）<br/>10:00　患者様来院、受付にて予約確認作業に時間がかかる<br/>10:05　説明が不十分なまま待機案内を行う<br/>10:10　患者様より「もっときちんとしてほしい」とのご指摘<br/>10:15　看護師が対応を引き継ぎ、状況収束<br/><br/>6. クレームの内容<br/>・予約確認に手間取り、受付対応に時間がかかった<br/>・説明不足により、患者様に不安と不満を与えた<br/>・忙しさを理由に代替案等の提案もできなかった<br/><br/>7. 原因分析<br/>・予約情報確認手順の習熟不足<br/>・応対時の説明スキル・配慮の欠如<br/>・受付業務の混雑時対応ルールが明確でない<br/><br/>8. 対応内容<br/>・看護師が現場対応を引き継ぎ、患者様との応対を実施<br/>・患者様には謝罪の意向あり（後日対応予定）<br/>・本件を本人が上司に自己報告し、改善意志を表明<br/><br/>9. 今後の改善策<br/>◾️ アクションプラン①<br/>・誰が: 鈴木（受付担当）<br/>・何を: 予約確認手順の再確認とマニュアル習熟<br/>・いつまでに: 2025年3月25日まで<br/>・詳細: 想定される予約パターン別に復習し、先輩職員とロールプレイ形式で確認を実施する<br/><br/>◾️ アクションプラン②<br/>・誰が: 受付チームリーダー<br/>・何を: 混雑時の受付対応マニュアル整備と共有<br/>・いつまでに: 2025年3月31日まで<br/>・詳細: 忙しい時間帯における代替案提示やフォロー体制を整理し、チーム全体に周知<br/><br/>◾️ アクションプラン③<br/>・誰が: 受付チーム全体<br/>・何を: 今回の事例を題材とした振り返りミーティング実施<br/>・いつまでに: 2025年4月5日まで<br/>・詳細: 実際の対応と理想の対応の差異を明確化し、今後の改善に活かす<br/><br/> [C3] 上司としての指摘：報告書に不足している情報<br/>以下の点が不足または曖昧なため、追加記載が望まれます：<br/><br/>1.患者情報の不足<br/>　氏名は難しくても、性別・年齢層（高齢者・成人・若年者など）が記載されると、状況把握がより明確になります。<br/><br/>2.予約内容の詳細<br/>　何の検査の予約だったか（人間ドック／婦人科健診等）が分かると、トラブルの背景が判断しやすくなります。<br/><br/>3.混雑状況の客観的説明<br/>　「混雑していた」とあるが、具体的な人数や対応中件数などの記述があると説得力が増します。<br/><br/>4.謝罪実施の有無<br/>　「後で謝る予定」とあるが、謝罪が実際に行われたか否かは重要です。完了報告も明示すべきです。<br/><br/>5.再発防止の継続確認体制<br/>　改善策の実行後、どうやって再発が防げたか評価・検証する体制の記載があると、上層部にとって信頼性が高まります。</td></tr></tbody></table><p id="24601625-9b2b-80b3-9c68-ead284ddcbd5" class="">このように、生成AIを活用することで、報告書をより読みやすく整理された形式に整えることが可能です。また、文章の不備や不足点も明確になったため、必要な情報を追加で入力することで、さらに完成度の高い報告書へとブラッシュアップできます。</p><h2 id="24601625-9b2b-8086-b38b-c9a7e38e6493" class="block-color-blue_background"><strong>　［演習課題①］生成AIで成果報告書を修正しよう</strong></h2><hr id="24601625-9b2b-805f-90a5-e4576782375f"/><blockquote id="24601625-9b2b-80e6-b765-f058e6aaf597" class=""><mark class="highlight-blue"><strong>【想定シーン】</strong></mark></blockquote><p id="24601625-9b2b-80ea-985e-e6afed448d1c" class="">あなたは、ある健診センターで実施された「健診受診促進キャンペーン」の担当を任された看護師です。キャンペーン終了後、その実施内容や成果について、センター長へ報告書を提出する必要があります。</p><p id="24601625-9b2b-8021-852f-cf7524be7f46" class="">自分なりに成果報告書を作成しましたが、伝えたい内容が整理されておらず、読み手に正しく伝わるか不安が残る状態です。</p><p id="24601625-9b2b-80e9-82e9-cc14d61c794d" class="">そこで、生成AIを活用して報告書の内容を整理・修正し、より明確で説得力のある文書に仕上げていきましょう。</p><hr id="24b01625-9b2b-808f-8b9e-c055913cc189"/><blockquote id="24601625-9b2b-8016-93a5-f276f600308b" class=""><mark class="highlight-blue"><strong>【実施手順】</strong></mark></blockquote><ol type="1" id="24601625-9b2b-80f3-a50d-fdea0bacfb1e" class="numbered-list" start="1"><li><strong>報告書フォーマットの作成</strong><p id="24601625-9b2b-80db-b13e-feed06a407d2" class="">まずは、医療機関の報告書として適切な構成（タイトル、宛名、日付、目的、実施概要、結果、分析、改善策・今後の方針）を生成AIに依頼して整えます。</p></li></ol><ol type="1" id="24601625-9b2b-8047-a64a-de6fd65188b6" class="numbered-list" start="2"><li><strong>報告書の内容修正と確認</strong><p id="24601625-9b2b-80d6-a005-d474fcb3016f" class="">自身で作成した成果報告書をもとに、文章の構成や表現を生成AIでチェック・修正します。読みやすさ、伝わりやすさ、表現の適切さなどを見直します。</p></li></ol><ol type="1" id="24601625-9b2b-80d2-b019-e92fcd92e54c" class="numbered-list" start="3"><li><strong>不足情報の洗い出し</strong><p id="24601625-9b2b-8046-adee-d407562e0bcb" class="">修正後の報告書を確認し、受診者数や反応率、活用したツールや改善点など、伝えるべき情報に抜け漏れがないかを確認。不足している要素は追加で指示して完成度を高めましょう。</p></li></ol><p id="24a01625-9b2b-8004-b0ec-fc5d1c0cd8f6" class="">
+</p><p id="24601625-9b2b-80ae-835b-e92ec7409123" class=""><strong>【作成した報告書の叩き】</strong></p><figure class="block-color-yellow_background callout" style="white-space:pre-wrap;display:flex" id="24601625-9b2b-8026-a1d5-f363bfa892f4"><div style="width:100%"><p id="24601625-9b2b-80cf-b9d8-c8e50a970480" class="">件名：健診キャンペーンの結果の報告</p><p id="24601625-9b2b-8048-9fbc-c5f9cd3d6253" class="">〇〇センター長へ</p><p id="24601625-9b2b-803d-8fce-ef6dfd8a3fc0" class="">こんにちは。看護師の佐藤です。<br/>3月から5月にかけて、健診センターでやった健診受診促進キャンペーンの結果を一応ご報告します。なんかいろいろ頑張ったので、そこそこうまくいった気がします。具体的には、受診者の数が前より増えたような感じがしました。まだ正確な人数はよく分かってませんが、たぶん10〜15％くらい増えたんじゃないかな〜と思います。たぶん。</p><p id="24601625-9b2b-8003-911f-d20b144aae13" class="">あと、チラシを配ったのがけっこう効果あったっぽくて、「見たよ」って言ってくれる人も何人かいました。でも、それがどれだけ影響したかは特に調べてません。あとSNSも使ってみましたけど、どのくらい見られたのかは、実際のところよく分かってません。キャンペーン用のポスターも貼ったりしましたが、それについての感想とかはあまり聞けてないです。</p><p id="24601625-9b2b-8028-8a83-e2fe71f1945d" class="">今後のことですが、とりあえずSNSとかはまた使えそうだし、もっといろんな人に知ってもらえるようにしたいなと思ってます。でも、何をどう改善するかはまだ全然決まってなくて、なんとなく考え中です。あと、アンケートとか取ってみてもいいかもしれません。</p><p id="24601625-9b2b-801f-938a-fc02bd79a8f6" class="">まだ全体的な結果ははっきりしてませんけど、今回の取り組みは悪くなかったんじゃないかなーという気がします。もう少しちゃんと分析とかできればいいんですけど、とりあえず報告までです。</p><p id="24601625-9b2b-80da-b7b9-cce5fec27ed8" class="">健診センター<br/>佐藤花子</p></div></figure><hr id="24b01625-9b2b-80fd-8e98-d4339db4610c"/><blockquote id="24601625-9b2b-80b6-9931-fcae6ba1a0ba" class=""><mark class="highlight-blue"><strong>【提出方法】</strong></mark></blockquote><p id="24601625-9b2b-80e4-a478-c41c0b74b54c" class=""><strong>演習課題の入力先シート</strong></p><p id="24601625-9b2b-8072-84d6-c2283a7f74a2" class="">：「提出ファイル」&gt;「Lesson7_［演習課題①］生成AIで成果報告書を修正しよう」</p><p id="24601625-9b2b-8095-bc2e-c4c8610b3bef" class=""><strong>提出方法</strong></p><p id="24601625-9b2b-8078-9439-cf2798b6e3d5" class="">：SlackチャンネルにてSlackワークフローを使用し、メンターに提出しましょう。<br/>詳細はLesson1 &gt; Chapter4 「質問・課題レビューサポートを活用しよう」 を参考に提出しましょう。</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

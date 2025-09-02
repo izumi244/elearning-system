@@ -1,0 +1,693 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Chapter 4 ［演習課題④］生成AIで契約書を作成してみよう</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.highlight-default_background {
+	color: rgba(50, 48, 44, 1);
+}
+.highlight-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.highlight-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(115, 114, 110, 1);
+	fill: rgba(115, 114, 110, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(205, 60, 58, 1);
+	fill: rgba(205, 60, 58, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(248, 248, 247, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(248, 243, 252, 1);
+}
+.block-color-pink_background {
+	background: rgba(252, 241, 246, 1);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(174, 130, 0, 0.223); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 99, 174, 0.172); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="22a01625-9b2b-8157-8d62-fe170a40ad14" class="page sans"><header><h1 class="page-title">Chapter 4 ［演習課題④］生成AIで契約書を作成してみよう</h1><p class="page-description"></p></header><div class="page-body"><p id="24601625-9b2b-80bc-b7c0-c95112b479a2" class="">生成AIを活用すれば、法律に詳しくない方でも、まるで専門家が作成したかのようなクオリティの契約書を作ることが可能です。これは、ChatGPTが多様なテキストデータをもとに学習しており、その中には法律用語や契約書の定型表現なども含まれているため、利用者の意図や条件に応じて適切な文章を構成できるからです。その結果、専門家のサポートを受けなくても、一定レベルの契約書を自力で整えることができます。</p><p id="24601625-9b2b-80e2-98a7-c62bb117dacb" class="">とはいえ、契約書は法的拘束力を持つ重要書類であるため、最終的には必ず専門家のチェックを受ける必要があります。それでも、ChatGPTを使えば契約書のたたき台を短時間で整えることができ、法律の知識が乏しくても作成作業をスムーズに進められます。これにより、専門家は確認や修正といった本質的な作業に集中できるため、契約書作成の全体工程が効率化され、時間とコストの削減にもつながります。</p><h2 id="24601625-9b2b-8042-b79a-dbba6dbb84a5" class="block-color-blue_background"><strong>　例：医療業務委託契約書の作成</strong></h2><hr id="24b01625-9b2b-80bc-9b56-ecbe669228d5"/><blockquote id="24601625-9b2b-805e-bddc-e088e42908b7" class=""><mark class="highlight-blue"><strong>想定シーン</strong></mark></blockquote><p id="24601625-9b2b-8090-ad43-d939b0f95f8b" class="">あなたの医療機関では、新たに地域連携を強化するためのプロジェクトが立ち上がることになりました。プロジェクトの予算はすでに確保されているものの、院内の人員だけでは対応が難しいため、外部の医療関係者をパートナーとして迎える必要があります。採用活動を経て、数名の専門スタッフ（医師・看護師・医療ITの専門家など）が業務委託という形でプロジェクトに参画することになりました。ただし、現時点では業務委託契約書が未作成のため、これを速やかに整備する必要があります。</p><p id="24601625-9b2b-804c-878a-d6fe03353e00" class="">そこで、生成AIを使って、医療業務に適した業務委託契約書を作成することにしました。</p><p id="24601625-9b2b-80b9-a45d-e89b1f19a832" class="">まずは、生成AIに相談しながら、契約書に含めるべき要素をリストアップしてみましょう。</p><p id="24a01625-9b2b-8016-80a9-e48bb3d6e61f" class="">
+</p><blockquote id="24601625-9b2b-80f1-93de-ccf12d1a8866" class=""><mark class="highlight-blue"><strong>プロンプト作成時のポイント</strong></mark></blockquote><ul id="24601625-9b2b-8073-88df-ca3057a89efa" class="bulleted-list"><li style="list-style-type:disc">回答者の役割を「医療法務に詳しい専門家」と明確に指定する</li></ul><ul id="24601625-9b2b-80c8-a991-d9a54c2bddb4" class="bulleted-list"><li style="list-style-type:disc">どのような契約書を作成したいか（例：地域連携プロジェクトに関する医療業務の委託契約書）を具体的に伝える</li></ul><p id="24a01625-9b2b-8056-9eca-da1958be0880" class="">
+</p><table id="24601625-9b2b-8091-b613-c5f678f3e340" class="simple-table"><tbody><tr id="24601625-9b2b-8053-829d-d24ea0eaa0b1"><td id="@Sn@" class="" style="width:155px">プロンプト</td><td id="W^qs" class="" style="width:1136.9921875px">#役割<br/>あなたは、医療機関における法務チームの一員であり、医療法務に精通した専門家です。<br/><br/>#ゴール<br/>地域連携プロジェクトに外部の医師・看護師・医療IT専門家などを業務委託で迎えるにあたり、契約書に盛り込むべき項目を洗い出してください。<br/><br/>#制約事項<br/>医療機関における委託契約であることを踏まえ、法的に必要かつ実務上重要な要素を網羅的に列挙してください。<br/><br/>#出力形式<br/>箇条書き</td></tr><tr id="24601625-9b2b-80c2-b073-e13a16b6db71"><td id="@Sn@" class="" style="width:155px">ChatGPTの出力例</td><td id="W^qs" class="" style="width:1136.9921875px">1. <strong>契約当事者の明確化</strong><br/>　氏名・住所・法人番号・資格保有の有無などを明示し、当事者を特定。<br/><br/>2. <strong>契約の目的と業務内容の明示</strong><br/>　地域連携プロジェクトにおける業務範囲、遂行方法、成果物の定義を明確に。<br/><br/>3. <strong>契約期間および更新・終了条件</strong><br/>　契約開始日、終了日、自動更新の有無、中途解約の条件と方法。<br/><br/>4. <strong>報酬および支払条件</strong><br/>　報酬の形態（定額、時間単価、成果報酬等）、支払時期、税務取扱い（源泉徴収、消費税）。<br/><br/>5. <strong>秘密保持義務（NDA）</strong><br/>　患者情報・医療機関内部情報・技術情報などの守秘義務を明示。<br/><br/>6. <strong>個人情報保護および医療情報の取扱い</strong><br/>　個人情報保護法・医療法に基づく取扱い、漏洩・再提供の禁止、再委託先の管理義務。<br/><br/>7. <strong>成果物の知的財産権の帰属</strong><br/>　資料、プログラム、システム等の成果物に関する著作権・特許等の権利帰属先を定める。<br/><br/>8. <strong>業務遂行に必要な資格・免許の保持義務</strong><br/>　医師・看護師等の法定資格が有効かつ業務に適合していることを義務付ける。<br/><br/>9. <strong>指揮命令系統および業務報告の方法</strong><br/>　誰が指示を出すのか、報告頻度、書面/口頭の形式などを定める。<br/><br/>10. <strong>再委託の可否と条件</strong><br/>　原則禁止か、事前承諾制とするか。委託先に対する責任の所在。<br/><br/>11. <strong>業務遂行上の安全配慮義務・コンプライアンス遵守</strong><br/>　感染対策、患者の権利保護、倫理規範などの遵守。<br/><br/>12. <strong>労務提供義務と雇用関係不存在の明記</strong><br/>　業務委託であり、労働契約でない旨を明確化（偽装請負・労災リスクへの対策）。<br/><br/>13. <strong>契約違反時の対応（違約金・損害賠償等）</strong><br/>　損害発生時の責任範囲、違反時の違約金、契約解除条件。<br/><br/>14. <strong>契約終了後の情報返還・破棄義務</strong><br/>　保有していた患者情報や業務資料等の返還・消去の義務。<br/><br/>15. <strong>紛争解決条項</strong><br/>　準拠法（通常は日本法）、合意管轄裁判所（所在地の地裁など）、協議義務の明記。<br/><br/>16. <strong>反社会的勢力の排除条項</strong><br/>　相手方が反社でないこと、発覚時の契約解除など。<br/><br/>17. <strong>感染症・災害等による業務不能時の取扱い（不可抗力条項）</strong><br/>　COVID-19などの事象で業務が遂行不能となった場合の対応。<br/><br/>18. <strong>保険加入義務の有無（損害賠償保険・賠償責任保険等）</strong><br/>　医療事故・情報漏洩等による損害に備えた保険の加入義務。<br/><br/>19. <strong>医療安全・感染対策マニュアル等の遵守義務</strong><br/>　医療機関が定めるマニュアル・ガイドラインの遵守義務を明文化。</td></tr></tbody></table><p id="24601625-9b2b-80c9-91f2-e31e9b4568cb" class="">これにより、業務委託契約書に盛り込むべき内容の方針が定まりました。この内容を盛り込んだ、実際の業務委託契約書を作成してみましょう。</p><p id="24a01625-9b2b-805e-b711-d40a0bef1733" class="">
+</p><blockquote id="24601625-9b2b-80ad-bb57-f4242dc4774a" class=""><mark class="highlight-blue"><strong>プロンプト作成時のポイント</strong></mark></blockquote><ul id="24601625-9b2b-8021-b74c-e52aef2f1392" class="bulleted-list"><li style="list-style-type:disc">役割を「医療機関の法務担当者」と指定すること</li></ul><ul id="24601625-9b2b-8023-888f-cbfe21987c53" class="bulleted-list"><li style="list-style-type:disc">目的で成果物を明確に提示すること</li></ul><ul id="24601625-9b2b-8006-a8ad-d65774d87147" class="bulleted-list"><li style="list-style-type:disc">業務委託契約書に盛り込むべき要素を提示すること</li></ul><ul id="24601625-9b2b-8084-b860-cce4ef4f3d60" class="bulleted-list"><li style="list-style-type:disc">制約事項を明示すること</li></ul><p id="24a01625-9b2b-8035-a12b-c7e1cfdd870c" class="">
+</p><table id="24601625-9b2b-804c-8679-df917edeb281" class="simple-table"><tbody><tr id="24601625-9b2b-808c-bb49-eb0bf92007f4"><td id="Ze;l" class="" style="width:148px">プロンプト</td><td id="vvTr" class="" style="width:1149px">#役割<br/>あなたは医療機関の法務担当であり、外部専門家との業務委託契約書の作成を担っています。<br/><br/>#文脈<br/>・地域連携を強化するための新たな医療プロジェクトが始動します。予算は確保済みですが、院内のリソースだけでは対応が難しい状況です。<br/>・外部から専門的な知見を持つ医師・看護師・医療ITエンジニアなどの協力を得ることが決定され、採用活動の結果、数名が業務委託という形でプロジェクトに参画する予定です。<br/>・現時点では、これらの方々と締結する業務委託契約書が未作成のため、早急に整備する必要があります。<br/><br/>#ゴール<br/>医療機関における業務委託契約書を作成すること。<br/><br/>#業務委託契約書に盛り込むべき要素<br/>1.　契約当事者の特定<br/>・委託者（医療機関）の名称・所在地・代表者名<br/>・受託者（外部協力者）の氏名・住所・連絡先<br/>2.	契約の目的<br/>・地域医療連携プロジェクトに関する業務委託の背景と目的<br/>・委託業務の概要と範囲<br/>3.	業務の詳細<br/>・医療支援・技術提供等の具体的内容<br/>・作業スケジュールや期日<br/>・実施場所（院内・リモートなど）と手段<br/>4.	報酬と支払い条件<br/>・報酬額・計算方法<br/>・支払い期日・方法<br/>・税金の扱い（消費税・源泉徴収など）<br/>5.	費用負担<br/>・通信費・交通費・備品など、業務に伴う実費の負担区分<br/>・精算方法と請求フロー<br/>6.	契約期間<br/>・開始日と終了日<br/>・更新や延長の条件<br/>7.	契約の解除<br/>・任意解除の条件・通知方法<br/>・契約違反時の解除とその処理<br/>8.	業務の再委託<br/>・第三者への再委託の可否<br/>・再委託時の責任と条件<br/>9.	秘密保持<br/>・医療情報を含む機密情報の定義<br/>・情報の取扱いルール<br/>・義務期間<br/>10.	知的財産権<br/>・業務成果物の権利帰属（例：システム設計、教育資料など）<br/>・権利移転または使用許諾の明記<br/>11.	損害賠償<br/>・契約違反による損害への責任範囲<br/>・除外・制限事項<br/>12.	不可抗力<br/>・自然災害、感染症拡大などによる影響時の対応<br/>13.	反社会的勢力の排除<br/>・関係遮断に関する確認条項と契約解除の条件<br/>14.	紛争解決<br/>・協議・調停の手順<br/>・管轄裁判所の指定<br/>15.	その他<br/>・契約の変更・修正方法<br/>・連絡手段・通知先<br/>・契約書の署名欄と押印欄<br/><br/>#制約事項<br/>・医療機関の法務文書として法的効力を持つこと<br/>・上記すべての要素を過不足なく盛り込むこと<br/>・専門用語の使いすぎを避け、明確かつ簡潔に表現すること</td></tr><tr id="24601625-9b2b-8038-b863-c6bc4f26a26b"><td id="Ze;l" class="" style="width:148px">ChatGPTの出力例</td><td id="vvTr" class="" style="width:1149px">業務委託契約書<br/><br/>本契約は、以下のとおり業務委託契約（以下「本契約」という）を締結する。<br/><br/>第1条（契約当事者）<br/>委託者：〇〇医療法人〇〇病院<br/>所在地：〒XXX-XXXX 東京都〇〇区〇〇町〇丁目〇番〇号<br/>代表者：理事長 〇〇〇〇<br/><br/>受託者：〇〇〇〇（以下「受託者」という）<br/>住所：〒XXX-XXXX 〇〇県〇〇市〇〇町〇丁目〇番〇号<br/>電話番号：XXX-XXXX-XXXX<br/>メールアドレス：XXXX@example.com<br/><br/>第2条（契約の目的）<br/>本契約は、地域医療連携を推進する新規プロジェクト（以下「本プロジェクト」という）において、専門知識を有する受託者に対し、特定の業務を委託することを目的とする。<br/><br/>第3条（業務の内容）<br/>受託者が行う業務は以下のとおりとする：<br/>　① 医療支援（診療補助、地域医療ネットワークへの助言等）<br/>　② 医療ITに関する技術提供（システム設計、機器導入支援等）<br/>　③ 教育・研修の実施 ほか<br/><br/>実施場所：〇〇病院内、またはオンライン<br/><br/>作業スケジュール：別紙「作業計画書」に定める<br/><br/>第4条（報酬および支払条件）<br/>報酬：月額〇〇円（消費税別）または作業単位制（業務内容による）<br/><br/>支払方法：指定口座へ翌月末日までに振込<br/><br/>源泉徴収税については法令に従い委託者が控除する<br/><br/>第5条（費用負担）<br/>通信費・交通費等の業務遂行上必要な実費については、事前承認のうえ委託者が負担する<br/><br/>精算は月次で受託者からの請求書提出に基づき行う<br/><br/>第6条（契約期間）<br/>契約期間：令和〇年〇月〇日から令和〇年〇月〇日まで<br/>※更新の必要がある場合、満了30日前までに書面で協議する<br/><br/>第7条（契約の解除）<br/>両当事者は30日前の書面通知により任意に本契約を解除できる<br/><br/>契約違反があった場合、是正要求後も改善がない場合には即時解除可能<br/><br/>第8条（業務の再委託）<br/>受託者は委託業務の全部または一部を第三者に再委託してはならない<br/><br/>やむを得ず再委託する場合は委託者の書面承諾が必要であり、受託者はその責任を負う<br/><br/>第9条（秘密保持）<br/>医療情報を含む機密情報は第三者に漏洩してはならない<br/><br/>義務は契約期間中および終了後3年間継続する<br/><br/>第10条（知的財産権）<br/>業務により生じた成果物の著作権その他一切の権利は委託者に帰属する<br/><br/>委託者は必要に応じて受託者に対し、成果物の使用を許諾することがある<br/><br/>第11条（損害賠償）<br/>受託者の故意または重過失による損害について、受託者は賠償責任を負う<br/><br/>通常かつ直接の損害に限り責任を負い、逸失利益等の間接損害は除外される<br/><br/>第12条（不可抗力）<br/>地震、洪水、感染症の拡大等、不可抗力により業務遂行が困難となった場合、双方協議のうえ対応方法を定めるものとする<br/><br/>第13条（反社会的勢力の排除）<br/>双方は、自らが反社会的勢力でないことを表明し保証する<br/><br/>万一関係が判明した場合は通知なく契約を解除できる<br/><br/>第14条（紛争解決）<br/>本契約に関する紛争は誠意をもって協議し解決を図る<br/><br/>協議により解決しない場合、〇〇地方裁判所を第一審の専属的合意管轄裁判所とする<br/><br/>第15条（その他）<br/>本契約の変更・修正は書面による合意を必要とする<br/><br/>通知・連絡は書面またはメールにより行い、最新の通知先に送付された時点で有効とする<br/><br/>以上、本契約の成立を証するため、契約書2通を作成し、各当事者が署名・押印のうえ1通ずつ保有する<br/><br/>【委託者】<br/>〇〇医療法人〇〇病院<br/>代表者：〇〇〇〇　　　　 印<br/><br/>【受託者】<br/>氏名：〇〇〇〇　　　　　 印</td></tr></tbody></table><p id="24601625-9b2b-80fb-a0d3-c52878db4c46" class="">このように、生成AIを活用することで、業務委託契約に必要な項目を洗い出し、契約書の型として作成することが可能です。</p><h2 id="24601625-9b2b-804f-ae9c-f3f1ec09732d" class="block-color-blue_background"><strong>　［演習課題④］生成AIで秘密保持契約書を作成してみよう</strong></h2><hr id="24b01625-9b2b-8038-a121-fe3dbe4912dc"/><blockquote id="24601625-9b2b-8017-b991-fc9f0bf7c556" class=""><mark class="highlight-blue"><strong>想定シーン</strong></mark></blockquote><p id="24601625-9b2b-8024-99af-e28c17489537" class="">地域連携や医療サービスの質向上を目的とした新規プロジェクトが、あなたの医療機関で始動することになりました。プロジェクトには、外部の医師や看護師、医療ITの専門家などの協力が不可欠であり、すでに候補者との調整が進んでいます。</p><p id="24601625-9b2b-80b5-ae62-ee9ffb66c237" class="">こうした中、ある外部候補者から「業務委託契約の前に、プロジェクト内容について詳しく知りたい」との申し出がありました。プロジェクトの適切な推進のためには、一定の院内情報を共有する必要がありますが、これには患者情報や診療方針など、医療機関として特に慎重に扱うべき機密が含まれる可能性があります。</p><p id="24601625-9b2b-804e-af92-db567c8cc6cc" class="">そこで、情報提供に先立ち、秘密保持契約（NDA：Non-Disclosure Agreement）を結ぶ必要が生じました。しかし現在、法務担当者は業務委託契約書の対応に追われており、すぐにNDAを作成する余裕がありません。</p><p id="24601625-9b2b-8031-9592-c02865c00892" class="">そこで、法律の専門知識を持たないあなた自身が生成AIを活用して、秘密保持契約書のたたき台を作成し、法務に確認を依頼することで、締結プロセスの迅速化を図ります。</p><hr id="24b01625-9b2b-8026-880f-c24339947f5d"/><blockquote id="24601625-9b2b-808c-885c-e6b93d779857" class=""><mark class="highlight-blue"><strong>【実施手順】</strong></mark></blockquote><ol type="1" id="24601625-9b2b-8045-a3f7-e8d70b0054c2" class="numbered-list" start="1"><li>秘密保持契約書に盛り込むべき要素の洗い出しをしましょう</li></ol><ol type="1" id="24601625-9b2b-802d-ac0c-fbebc3d263b2" class="numbered-list" start="2"><li>秘密保持契約書の生成をしましょう</li></ol><hr id="24b01625-9b2b-8004-8f51-ffd0cf2119d9"/><blockquote id="24601625-9b2b-8017-afaa-c26735d186d6" class=""><mark class="highlight-blue"><strong>【提出方法】</strong></mark></blockquote><p id="24601625-9b2b-80ae-bd15-f5e4485838bc" class=""><strong>演習課題の入力先シート</strong></p><p id="24601625-9b2b-8054-b14d-ee66e179f2a3" class="">：「提出ファイル」&gt;「Lesson7_［演習課題④］生成AIで秘密保持契約書を作成しよう」</p><p id="24601625-9b2b-80ec-b80a-e94a43ea51ef" class=""><strong>提出方法</strong></p><p id="24601625-9b2b-8048-90d1-ec5807efaf3f" class="">：SlackチャンネルにてSlackワークフローを使用し、メンターに提出しましょう。<br/>詳細はLesson1 &gt; Chapter4 「質問・課題レビューサポートを活用しよう」 を参考に提出しましょう。</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
