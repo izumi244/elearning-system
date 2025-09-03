@@ -1,4 +1,4 @@
-/* リセットCSS */
+﻿/* リセットCSS */
 * {
     margin: 0;
     padding: 0;
@@ -15,7 +15,7 @@ body {
 
 /* ホームページ用スタイル */
 .home-container {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 2rem;
 }
@@ -515,3 +515,4 @@ body {
     background: #218838;
     transform: translateY(-2px);
 }
+
