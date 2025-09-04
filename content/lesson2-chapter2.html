@@ -14,10 +14,7 @@ body {
 	margin: 0;
 	padding: 0;
 }
-@media only screen {
-	body {
-		margin: 2em auto;
-		max-width: 1200px;
+@media only screen { body { margin: 2em auto;
 		color: rgb(55, 53, 47);
 	}
 }
@@ -692,3 +689,4 @@ blockquote.quote-large {
 </p><blockquote id="24601625-9b2b-80a9-bccb-fbd50be0be9c" class=""><mark class="highlight-blue"><strong>フューショット（Few-shot）とは</strong></mark></blockquote><p id="24601625-9b2b-80ee-bd78-c1683c41819d" class="">フューショットは、プロンプト内にいくつかの具体例を提示することで、AIにタスクのパターンを学習させながら実行させる方法です。ゼロショットに比べて、意図に沿った精度の高い出力が期待できます。</p><p id="24601625-9b2b-8032-bf0e-d473015e4a2f" class="">たとえば「『鍋』の季節はいつか？」という質問に対し、ゼロショットで問いかけた場合は以下のようになります。</p><p id="24801625-9b2b-805c-8ff6-f99500d85ed1" class="">
 </p><p id="24601625-9b2b-8080-ba1e-c5792e5b06c0" class=""><strong>【ゼロショットでの指示例】</strong></p><table id="24801625-9b2b-8012-aea4-e2d81929c0f8" class="simple-table"><tbody><tr id="24801625-9b2b-8087-bb17-ccb2e4ecdc6f"><td id="=&lt;JG" class="" style="width:137.99999237060547px">プロンプト</td><td id=":hL^" class="" style="width:928.991455078125px">鍋は？</td></tr><tr id="24801625-9b2b-8076-9ebd-dd031c9b0228"><td id="=&lt;JG" class="" style="width:137.99999237060547px">ChatGPTの回答</td><td id=":hL^" class="" style="width:928.991455078125px">鍋は料理を調理するための道具であり、通常は金属や陶器で作られています。<br/>鍋は液体を加熱し、その中で食材を調理するのに使用されます。<br/>さまざまな種類の鍋があり、それぞれ異なる料理や調理法に適しています。<br/>例えば、鍋の種類には鍋、フライパン、圧力鍋、鍋、蒸し器などがあります。</td></tr></tbody></table><p id="24601625-9b2b-8004-9f55-f3b67dc4c742" class="">このように、AIは「鍋＝調理器具」と解釈してしまい、意図した「季節としての鍋料理」に関する回答にはなりません。</p><p id="24801625-9b2b-804f-9e19-f7b720b6e21d" class="">
 </p><p id="24601625-9b2b-8000-8118-ec5ff2735f92" class=""><strong>【フューショットでの指示例】</strong></p><table id="24801625-9b2b-806d-85ea-f56df6e1df6f" class="simple-table"><tbody><tr id="24801625-9b2b-8031-a617-fa2b906d8775"><td id="@GNH" class="" style="width:139.99999237060547px">プロンプト</td><td id="n}bC" class="" style="width:925.9942626953125px">『雪合戦』の季節は冬である。<br/>『桜』の季節は春である。<br/>『キャンプ』の季節は夏である。『秋刀魚』の季節は秋である。<br/>『鍋』は？</td></tr><tr id="24801625-9b2b-8011-8715-db07971d144b"><td id="@GNH" class="" style="width:139.99999237060547px">ChatGPTの回答</td><td id="n}bC" class="" style="width:925.9942626953125px">『鍋』の季節は冬です。<br/>鍋料理は寒い冬に温かい料理を囲んで食べることが多く、日本では冬の風物詩として親しまれています。<br/>したがって、『鍋』の季節は冬と考えられます。</td></tr></tbody></table><p id="24601625-9b2b-80e0-9412-f81b518510a7" class="">このように、いくつかの例を示すことで、AIはそのパターンを踏まえて適切に回答を導き出します。フューショットは、より精度の高い応答を引き出したいときに有効な手法です。</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
+

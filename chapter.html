@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -22,9 +22,7 @@
         <nav class="chapter-sidebar" id="chapterSidebar">
             <div class="sidebar-header">
                 <h3>基礎マスターコース</h3>
-                <button class="sidebar-toggle" onclick="toggleSidebar()">
-                    <span>≡</span>
-                </button>
+                
             </div>
             <div class="sidebar-content">
                 <!-- JavaScriptで動的に生成 -->
@@ -82,7 +80,7 @@
                 <div class="chapter-navigation">
                     <div class="nav-buttons">
                         <button class="nav-button prev" id="prevButton" onclick="navigateToPrevious()">
-                            ← 前のチャプター
+                            ← 前のChapter
                         </button>
                         <button class="nav-button back-to-curriculum" onclick="backToCurriculum()">
                             📋 コース一覧に戻る
@@ -191,7 +189,7 @@
             }
         }
 
-        function generateSidebar() {
+        function scrollToCurrentChapter() { setTimeout(() => { const currentChapter = document.querySelector(".chapter-sidebar-item.current"); const sidebar = document.getElementById("chapterSidebar"); if (currentChapter && !sidebar.classList.contains("collapsed")) { currentChapter.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" }); } }, 100); } function generateSidebar() {
             const curriculumData = progressManager.getCurriculumData();
             const course = curriculumData.basic_course;
             const currentUser = authSystem.getCurrentUser();
@@ -226,7 +224,7 @@
                 `;
             });
 
-            sidebarContent.innerHTML = sidebarHTML;
+            sidebarContent.innerHTML = sidebarHTML; scrollToCurrentChapter();
         }
 
         function displayChapterInfo() {
@@ -246,7 +244,7 @@
                     progressManager.isChapterCompleted(currentUser.userId, currentLessonId, ch.id)
                 ).length;
                 document.getElementById('chapterProgressInfo').textContent = 
-                    `${currentLessonId.toUpperCase()} - ${completedCount}/${lesson.chapters.length} チャプター完了`;
+                    `${currentLessonId.toUpperCase()} - ${completedCount}/${lesson.chapters.length} Chapter完了`;
             }
         }
 
@@ -355,10 +353,7 @@
             window.location.href = 'curriculum.html';
         }
 
-        function toggleSidebar() {
-            const sidebar = document.getElementById('chapterSidebar');
-            sidebar.classList.toggle('collapsed');
-        }
+        
 
         function showSuccessMessage(message) {
             const successDiv = document.createElement('div');
@@ -452,16 +447,14 @@
             transition: all 0.3s ease;
         }
 
-        .chapter-sidebar.collapsed {
-            width: 60px;
-        }
+        
 
         .sidebar-header {
             padding: 1.5rem;
             border-bottom: 1px solid #e1e8ed;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
         }
 
         .sidebar-header h3 {
@@ -470,14 +463,7 @@
             margin: 0;
         }
 
-        .sidebar-toggle {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            cursor: pointer;
-            padding: 0.25rem;
-            color: #666;
-        }
+        
 
         .sidebar-content {
             padding: 1rem 0;
@@ -511,7 +497,7 @@
 
         .chapter-link {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             padding: 0.75rem 1.5rem;
             color: #495057;
             text-decoration: none;
@@ -559,17 +545,15 @@
             max-width: calc(100vw - 300px);
             display: flex;
             flex-direction: column;
-            align-items: center; /* 中央寄せ */
+            align-items: flex-start; /* 左寄せに変更 */
         }
 
-        .chapter-header {
-            margin-bottom: 2rem;
-        }
+        .breadcrumb { max-width: min(1400px, 100%); margin: 0 auto 1rem auto; width: 100%; } .chapter-header { max-width: min(1400px, 100%); margin: 0 auto 2rem auto; text-align: left; width: 100%; }
 
         .chapter-meta {
             display: flex;
             gap: 1rem;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 1rem;
         }
 
@@ -588,18 +572,9 @@
             margin-bottom: 0.5rem;
         }
 
-        .chapter-content {
-            max-width: 1000px; /* 幅を広げる */
-        }
+        .chapter-content { max-width: min(1400px, 100%); width: 100%; margin: 0 auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
 
-        .content-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-            margin-bottom: 2rem;
-            max-width: 100%; /* 最大幅を100%に */
-        }
+        .content-card { background: white; border-radius: 15px; padding: 2.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); width: 100%; }
 
         /* Notionコンテンツ内の画像スタイリング */
         #dynamicContent img {
@@ -643,7 +618,7 @@
 
         .completion-status {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
             gap: 0.75rem;
             margin-bottom: 1.5rem;
@@ -688,8 +663,8 @@
 
         .nav-buttons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: center;
+            align-items: flex-start;
             gap: 1rem;
         }
 
@@ -752,9 +727,7 @@
                 padding: 1rem;
             }
             
-            .content-card {
-                padding: 1.5rem;
-            }
+            .content-card { background: white; border-radius: 15px; padding: 2.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); width: 100%; }
             
             .chapter-title {
                 font-size: 1.5rem;
@@ -768,3 +741,20 @@
     </style>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -23,12 +23,12 @@ class ProgressManager {
                         title: "Lesson 1 生成AIの基礎知識",
                         estimatedTime: "2.2時間",
                         chapters: [
-                            { id: "chapter1", title: "生成AIとは何か", estimatedTime: "0.3時間" },
-                            { id: "chapter2", title: "生成AIが与えた影響", estimatedTime: "0.4時間" },
-                            { id: "chapter3", title: "ChatGPTが向いている・向いていない作業とは", estimatedTime: "0.5時間" },
-                            { id: "chapter4", title: "生成AI利用時の注意事項", estimatedTime: "0.4時間" },
-                            { id: "chapter5", title: "[確認テスト①] テキスト生成AIの出力を体験してみよう", estimatedTime: "0.3時間" },
-                            { id: "chapter6", title: "[確認テスト②] ChatGPTで解決してみたいことを考えてみよう", estimatedTime: "0.3時間" }
+                            { id: "chapter1", title: "生成AIとは何か", estimatedTime: "0.25時間" },
+                            { id: "chapter2", title: "生成AIが与えた影響", estimatedTime: "0.25時間" },
+                            { id: "chapter3", title: "ChatGPTが向いている・向いていない作業とは", estimatedTime: "0.25時間" },
+                            { id: "chapter4", title: "生成AI利用時の注意事項", estimatedTime: "0.25時間" },
+                            { id: "chapter5", title: "[確認テスト①] テキスト生成AIの出力を体験してみよう", estimatedTime: "0.5時間" },
+                            { id: "chapter6", title: "[確認テスト②] ChatGPTで解決してみたいことを考えてみよう", estimatedTime: "0.5時間" }
                         ]
                     },
                     {
@@ -36,10 +36,10 @@ class ProgressManager {
                         title: "Lesson 2 プロンプトエンジニアリング入門",
                         estimatedTime: "2.7時間",
                         chapters: [
-                            { id: "chapter1", title: "プロンプトエンジニアリングの重要性", estimatedTime: "0.7時間" },
-                            { id: "chapter2", title: "プロンプトエンジニアリングのテクニック", estimatedTime: "0.8時間" },
-                            { id: "chapter3", title: "プロンプト作成時の注意点", estimatedTime: "0.7時間" },
-                            { id: "chapter4", title: "[確認テスト] 提示されたプロンプトを注意点に沿って修正しよう", estimatedTime: "0.5時間" }
+                            { id: "chapter1", title: "プロンプトエンジニアリングの重要性", estimatedTime: "0.25時間" },
+                            { id: "chapter2", title: "プロンプトエンジニアリングのテクニック", estimatedTime: "0.25時間" },
+                            { id: "chapter3", title: "プロンプト作成時の注意点", estimatedTime: "1.0時間" },
+                            { id: "chapter4", title: "[確認テスト] 提示されたプロンプトを注意点に沿って修正しよう", estimatedTime: "1.0時間" }
                         ]
                     },
                     {
@@ -48,9 +48,9 @@ class ProgressManager {
                         estimatedTime: "3.7時間",
                         chapters: [
                             { id: "chapter1", title: "プロンプトは「構造化」が鍵", estimatedTime: "1.0時間" },
-                            { id: "chapter2", title: "[確認テスト①] 構造化されたプロンプトを作成しよう", estimatedTime: "0.9時間" },
-                            { id: "chapter3", title: "生成AIに指定の出力フォーマットで回答させよう", estimatedTime: "0.9時間" },
-                            { id: "chapter4", title: "[確認テスト②] ChatGPTに指定のフォーマットで回答させてみよう", estimatedTime: "0.9時間" }
+                            { id: "chapter2", title: "[確認テスト①] 構造化されたプロンプトを作成しよう", estimatedTime: "1.0時間" },
+                            { id: "chapter3", title: "生成AIに指定の出力フォーマットで回答させよう", estimatedTime: "0.5時間" },
+                            { id: "chapter4", title: "[確認テスト②] ChatGPTに指定のフォーマットで回答させてみよう", estimatedTime: "1.0時間" }
                         ]
                     },
                     {
@@ -72,10 +72,10 @@ class ProgressManager {
                         title: "Lesson 5 プロンプトエンジニアリングの収益化",
                         estimatedTime: "1.2時間",
                         chapters: [
-                            { id: "chapter1", title: "プロンプトの販売", estimatedTime: "0.3時間" },
-                            { id: "chapter2", title: "OpenAIが展開するプラットフォーム「GPT Store」も収益源になる可能性", estimatedTime: "0.3時間" },
-                            { id: "chapter3", title: "売れるプロンプトやGPTsをつくる方法", estimatedTime: "0.3時間" },
-                            { id: "chapter4", title: "[確認テスト] 売れるプロンプトを実際に作成しよう", estimatedTime: "0.3時間" }
+                            { id: "chapter1", title: "プロンプトの販売", estimatedTime: "0.18時間" },
+                            { id: "chapter2", title: "OpenAIが展開するプラットフォーム「GPT Store」も収益源になる可能性", estimatedTime: "0.18時間" },
+                            { id: "chapter3", title: "売れるプロンプトやGPTsをつくる方法", estimatedTime: "0.25時間" },
+                            { id: "chapter4", title: "[確認テスト] 売れるプロンプトを実際に作成しよう", estimatedTime: "0.5時間" }
                         ]
                     },
                     {
@@ -88,8 +88,8 @@ class ProgressManager {
                             { id: "chapter3", title: "[演習課題③] 生成AIで英語のメールのやり取りをしてみよう", estimatedTime: "1.0時間" },
                             { id: "chapter4", title: "[演習課題④] 生成AIで契約書を作成してみよう", estimatedTime: "1.0時間" },
                             { id: "chapter5", title: "[演習課題⑤] 生成AIでコールセンターの立ち上げ準備をしてみよう", estimatedTime: "1.0時間" },
-                            { id: "chapter6", title: "[演習課題⑥] 生成AIでプログラミングしてみよう", estimatedTime: "1.5時間" },
-                            { id: "chapter7", title: "[演習課題⑦] 生成AIでアプリを作成してみよう", estimatedTime: "1.5時間" },
+                            { id: "chapter6", title: "[演習課題⑥] 生成AIでプログラミングしてみよう", estimatedTime: "1.0時間" },
+                            { id: "chapter7", title: "[演習課題⑦] 生成AIでアプリを作成してみよう", estimatedTime: "1.0時間" },
                             { id: "chapter8", title: "[演習課題⑧] 生成AIでチャットボットを作成してみよう", estimatedTime: "1.0時間" },
                             { id: "chapter9", title: "[演習課題⑨] 生成AIでアイデアを出してみよう", estimatedTime: "1.0時間" }
                         ]
