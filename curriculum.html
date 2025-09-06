@@ -90,8 +90,8 @@
             const course = curriculumData.basic_course;
             const currentUser = authSystem.getCurrentUser();
             const lessonsList = document.getElementById('lessonsList');
-
-            let lessonsHTML = '';
+            if (!lessonsList) return;
+            lessonsList.innerHTML = ''; // Clear existing content
 
             course.lessons.forEach((lesson, index) => {
                 const completionRate = progressManager.getLessonCompletionRate(currentUser.userId, lesson.id);
@@ -99,65 +99,125 @@
                     progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id)
                 ).length;
 
-                lessonsHTML += `
-                    <div class="lesson-card" data-lesson-id="${lesson.id}">
-                        <div class="lesson-header">
-                            <div class="lesson-info">
-                                <h3 class="lesson-title">${lesson.title}</h3>
-                                <div class="lesson-meta">
-                                    <span class="lesson-time">学習時間の目安: ${lesson.estimatedTime}</span>
-                                    <span class="lesson-status ${completionRate === 100 ? 'completed' : completionRate > 0 ? 'in-progress' : 'not-started'}">
-                                        ${completionRate === 100 ? '完了' : completionRate > 0 ? '学習中' : '未実施'}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="lesson-progress">
-                                <div class="lesson-progress-text">
-                                    ${completedChapters} / ${lesson.chapters.length} チャプター完了
-                                </div>
-                                <div class="progress-bar small">
-                                    <div class="progress-fill" style="width: ${completionRate}%"></div>
-                                </div>
-                            </div>
-                        </div>
+                // Create elements
+                const lessonCard = document.createElement('div');
+                lessonCard.className = 'lesson-card';
+                lessonCard.dataset.lessonId = lesson.id;
 
-                        <div class="chapters-list">
-                            ${lesson.chapters.map((chapter, chapterIndex) => {
-                                const isCompleted = progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id);
-                                return `
-                                    <div class="chapter-item ${isCompleted ? 'completed' : ''}" 
-                                         data-chapter-id="${chapter.id}"
-                                         onclick="openChapter('${lesson.id}', '${chapter.id}', '${encodeURIComponent(chapter.title)}')">
-                                        <div class="chapter-info">
-                                            <div class="chapter-number">Chapter ${chapterIndex + 1}</div>
-                                            <div class="chapter-title">${chapter.title}</div>
-                                        </div>
-                                        <div class="chapter-status">
-                                            ${isCompleted ? '✓' : '▶'}
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-                `;
+                const lessonHeader = document.createElement('div');
+                lessonHeader.className = 'lesson-header';
+                
+                const lessonInfo = document.createElement('div');
+                lessonInfo.className = 'lesson-info';
+                
+                const lessonTitle = document.createElement('h3');
+                lessonTitle.className = 'lesson-title';
+                lessonTitle.textContent = lesson.title;
+                
+                const lessonMeta = document.createElement('div');
+                lessonMeta.className = 'lesson-meta';
+                
+                const lessonTime = document.createElement('span');
+                lessonTime.className = 'lesson-time';
+                lessonTime.textContent = `学習時間の目安: ${lesson.estimatedTime}`;
+                
+                let statusText = '未実施';
+                let statusClass = 'not-started';
+                if (completionRate === 100) {
+                    statusText = '完了';
+                    statusClass = 'completed';
+                } else if (completionRate > 0) {
+                    statusText = '学習中';
+                    statusClass = 'in-progress';
+                }
+                const lessonStatus = document.createElement('span');
+                lessonStatus.className = `lesson-status ${statusClass}`;
+                lessonStatus.textContent = statusText;
+
+                const lessonProgress = document.createElement('div');
+                lessonProgress.className = 'lesson-progress';
+
+                const lessonProgressText = document.createElement('div');
+                lessonProgressText.className = 'lesson-progress-text';
+                lessonProgressText.textContent = `${completedChapters} / ${lesson.chapters.length} チャプター完了`;
+
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar small';
+                const progressFill = document.createElement('div');
+                progressFill.className = 'progress-fill';
+                progressFill.style.width = `${completionRate}%`;
+                
+                // Assemble lesson header
+                lessonMeta.appendChild(lessonTime);
+                lessonMeta.appendChild(lessonStatus);
+                lessonInfo.appendChild(lessonTitle);
+                lessonInfo.appendChild(lessonMeta);
+                progressBar.appendChild(progressFill);
+                lessonProgress.appendChild(lessonProgressText);
+                lessonProgress.appendChild(progressBar);
+                lessonHeader.appendChild(lessonInfo);
+                lessonHeader.appendChild(lessonProgress);
+
+                // Create chapters list
+                const chaptersList = document.createElement('div');
+                chaptersList.className = 'chapters-list';
+
+                lesson.chapters.forEach((chapter, chapterIndex) => {
+                    const isCompleted = progressManager.isChapterCompleted(currentUser.userId, lesson.id, chapter.id);
+
+                    const chapterItem = document.createElement('div');
+                    chapterItem.className = `chapter-item ${isCompleted ? 'completed' : ''}`;
+                    chapterItem.dataset.chapterId = chapter.id;
+                    chapterItem.onclick = () => openChapter(lesson.id, chapter.id, chapter.title);
+
+                    const chapterInfo = document.createElement('div');
+                    chapterInfo.className = 'chapter-info';
+
+                    const chapterNumber = document.createElement('div');
+                    chapterNumber.className = 'chapter-number';
+                    chapterNumber.textContent = `Chapter ${chapterIndex + 1}`;
+
+                    const chapterTitleDiv = document.createElement('div');
+                    chapterTitleDiv.className = 'chapter-title';
+                    chapterTitleDiv.textContent = chapter.title;
+
+                    chapterInfo.appendChild(chapterNumber);
+                    chapterInfo.appendChild(chapterTitleDiv);
+
+                    const chapterStatus = document.createElement('div');
+                    chapterStatus.className = 'chapter-status';
+                    chapterStatus.textContent = isCompleted ? '✓' : '▶';
+
+                    chapterItem.appendChild(chapterInfo);
+                    chapterItem.appendChild(chapterStatus);
+                    chaptersList.appendChild(chapterItem);
+                });
+
+                // Assemble final card
+                lessonCard.appendChild(lessonHeader);
+                lessonCard.appendChild(chaptersList);
+                lessonsList.appendChild(lessonCard);
             });
-
-            lessonsList.innerHTML = lessonsHTML;
         }
 
         function displayCourseProgress() {
             const currentUser = authSystem.getCurrentUser();
+            if (!currentUser) return;
             const progress = progressManager.getUserProgress(currentUser.userId);
             
             const completed = progress.completedChapters.length;
             const total = progress.totalChapters;
             const percentage = progress.completionRate;
-            
-            document.querySelector('#courseProgressStats .completed').textContent = completed;
-            document.querySelector('#courseProgressStats .total').textContent = total;
-            document.getElementById('courseProgressFill').style.width = percentage + '%';
-            document.getElementById('courseProgressPercentage').textContent = percentage + '%';
+
+            const completedEl = document.querySelector('#courseProgressStats .completed');
+            const totalEl = document.querySelector('#courseProgressStats .total');
+            const fillEl = document.getElementById('courseProgressFill');
+            const percentageEl = document.getElementById('courseProgressPercentage');
+
+            if (completedEl) completedEl.textContent = completed;
+            if (totalEl) totalEl.textContent = total;
+            if (fillEl) fillEl.style.width = percentage + '%';
+            if (percentageEl) percentageEl.textContent = percentage + '%';
         }
 
         function openChapter(lessonId, chapterId, chapterTitle) {
