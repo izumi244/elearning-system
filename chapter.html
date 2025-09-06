@@ -10,6 +10,10 @@
     <!-- ヘッダー -->
     <header class="header">
         <div class="logo">【ロゴ】</div>
+        <!-- ハンバーガーメニューボタン -->
+        <button class="hamburger-menu" onclick="toggleSidebar()">
+            <span>☰</span>
+        </button>
         <div class="user-info">
             <div class="user-avatar" id="userAvatar">U</div>
             <span class="user-name" id="userName">ユーザー</span>
@@ -22,7 +26,9 @@
         <nav class="chapter-sidebar" id="chapterSidebar">
             <div class="sidebar-header">
                 <h3>基礎マスターコース</h3>
-                
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <span>≡</span>
+                </button>
             </div>
             <div class="sidebar-content">
                 <!-- JavaScriptで動的に生成 -->
@@ -80,7 +86,7 @@
                 <div class="chapter-navigation">
                     <div class="nav-buttons">
                         <button class="nav-button prev" id="prevButton" onclick="navigateToPrevious()">
-                            ← 前のChapter
+                            ← 前のチャプター
                         </button>
                         <button class="nav-button back-to-curriculum" onclick="backToCurriculum()">
                             📋 コース一覧に戻る
@@ -189,7 +195,7 @@
             }
         }
 
-        function scrollToCurrentChapter() { setTimeout(() => { const currentChapter = document.querySelector(".chapter-sidebar-item.current"); const sidebar = document.getElementById("chapterSidebar"); if (currentChapter && !sidebar.classList.contains("collapsed")) { currentChapter.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" }); } }, 100); } function generateSidebar() {
+        function generateSidebar() {
             const curriculumData = progressManager.getCurriculumData();
             const course = curriculumData.basic_course;
             const currentUser = authSystem.getCurrentUser();
@@ -224,7 +230,14 @@
                 `;
             });
 
-            sidebarContent.innerHTML = sidebarHTML; scrollToCurrentChapter();
+            sidebarContent.innerHTML = sidebarHTML;
+            setTimeout(() => {
+                const currentChapter = document.querySelector('.chapter-sidebar-item.current');
+                const sidebar = document.getElementById('chapterSidebar');
+                if (currentChapter && !sidebar.classList.contains('collapsed')) {
+                    currentChapter.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                }
+            }, 100);
         }
 
         function displayChapterInfo() {
@@ -244,7 +257,7 @@
                     progressManager.isChapterCompleted(currentUser.userId, currentLessonId, ch.id)
                 ).length;
                 document.getElementById('chapterProgressInfo').textContent = 
-                    `${currentLessonId.toUpperCase()} - ${completedCount}/${lesson.chapters.length} Chapter完了`;
+                    `${currentLessonId.toUpperCase()} - ${completedCount}/${lesson.chapters.length} チャプター完了`;
             }
         }
 
@@ -353,7 +366,10 @@
             window.location.href = 'curriculum.html';
         }
 
-        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('chapterSidebar');
+            sidebar.classList.toggle('collapsed');
+        }
 
         function showSuccessMessage(message) {
             const successDiv = document.createElement('div');
@@ -378,383 +394,6 @@
                 successDiv.remove();
             }, 3000);
         }
-
-        // CSS アニメーション
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes slideIn {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
-
-    <style>
-        .loading-message {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-            font-style: italic;
-        }
-
-        .error-message {
-            text-align: center;
-            padding: 2rem;
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            color: #856404;
-        }
-
-        .error-message h3 {
-            color: #856404;
-            margin-bottom: 1rem;
-        }
-
-        .error-message p {
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        /* 文字色の改善 */
-        .chapter-time {
-            color: #2c3e50 !important; /* 濃い色に変更 */
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .chapter-progress-info {
-            color: #2c3e50 !important; /* 濃い色に変更 */
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        /* チャプターページ専用スタイル */
-        .chapter-layout {
-            display: flex;
-            min-height: calc(100vh - 80px);
-        }
-
-        .chapter-sidebar {
-            width: 300px;
-            background: white;
-            border-right: 1px solid #e1e8ed;
-            overflow-y: auto;
-            position: sticky;
-            top: 80px;
-            height: calc(100vh - 80px);
-            transition: all 0.3s ease;
-        }
-
-        
-
-        .sidebar-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid #e1e8ed;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .sidebar-header h3 {
-            font-size: 1rem;
-            color: #2c3e50;
-            margin: 0;
-        }
-
-        
-
-        .sidebar-content {
-            padding: 1rem 0;
-        }
-
-        .lesson-section {
-            margin-bottom: 1.5rem;
-        }
-
-        .lesson-header-sidebar {
-            padding: 0.75rem 1.5rem;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e1e8ed;
-        }
-
-        .lesson-header-sidebar h4 {
-            font-size: 0.9rem;
-            color: #495057;
-            margin: 0;
-        }
-
-        .chapters-sidebar {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .chapter-sidebar-item {
-            border-bottom: 1px solid #f1f3f4;
-        }
-
-        .chapter-link {
-            display: flex;
-            align-items: flex-start;
-            padding: 0.75rem 1.5rem;
-            color: #495057;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            gap: 0.75rem;
-        }
-
-        .chapter-link:hover {
-            background: #f8f9fa;
-            color: #667eea;
-        }
-
-        .chapter-sidebar-item.current .chapter-link {
-            background: #667eea;
-            color: white;
-        }
-
-        .chapter-sidebar-item.completed .chapter-link {
-            color: #28a745;
-        }
-
-        .chapter-sidebar-item.completed.current .chapter-link {
-            background: #28a745;
-            color: white;
-        }
-
-        .chapter-number {
-            min-width: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .chapter-title-sidebar {
-            flex: 1;
-            font-size: 0.9rem;
-        }
-
-        .chapter-status-icon {
-            font-size: 0.9rem;
-        }
-
-        .chapter-main {
-            flex: 1;
-            padding: 2rem;
-            max-width: calc(100vw - 300px);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start; /* 左寄せに変更 */
-        }
-
-        .breadcrumb { max-width: min(1400px, 100%); margin: 0 auto 1rem auto; width: 100%; } .chapter-header { max-width: min(1400px, 100%); margin: 0 auto 2rem auto; text-align: left; width: 100%; }
-
-        .chapter-meta {
-            display: flex;
-            gap: 1rem;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .lesson-badge {
-            background: #667eea;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .chapter-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .chapter-content { max-width: min(1400px, 100%); width: 100%; margin: 0 auto; padding: 2rem; background: white; border-radius: 15px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); }
-
-        .content-card { background: white; border-radius: 15px; padding: 2.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); width: 100%; }
-
-        /* Notionコンテンツ内の画像スタイリング */
-        #dynamicContent img {
-            max-width: 100% !important;
-            height: auto !important;
-            display: block !important;
-            margin: 1.5rem auto !important; /* 中央寄せ */
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* Notionコンテンツ内のfigureスタイリング */
-        #dynamicContent figure {
-            margin: 2rem 0 !important;
-            text-align: center !important;
-            max-width: 100% !important;
-        }
-
-        /* Notionのページタイトルを非表示 */
-        #dynamicContent .page-title {
-            display: none;
-        }
-
-        .completion-section {
-            margin-bottom: 2rem;
-        }
-
-        .completion-card {
-            background: white;
-            border: 2px solid #e1e8ed;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .completion-card.completed {
-            border-color: #28a745;
-            background: #f8fff8;
-        }
-
-        .completion-status {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .status-icon {
-            font-size: 1.5rem;
-        }
-
-        .status-text {
-            font-size: 1.1rem;
-            color: #495057;
-        }
-
-        .complete-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .complete-button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .complete-button:disabled {
-            background: #6c757d;
-            cursor: not-allowed;
-        }
-
-        .chapter-navigation {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e1e8ed;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .nav-button {
-            padding: 0.75rem 1.5rem;
-            border: 2px solid #e1e8ed;
-            background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .nav-button:hover {
-            border-color: #667eea;
-            color: #667eea;
-            transform: translateY(-1px);
-        }
-
-        .nav-button.prev,
-        .nav-button.next {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .nav-button.prev:hover,
-        .nav-button.next:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        /* レスポンシブ対応 */
-        @media (max-width: 1024px) {
-            .chapter-sidebar {
-                width: 250px;
-            }
-            
-            .chapter-main {
-                max-width: calc(100vw - 250px);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .chapter-layout {
-                flex-direction: column;
-            }
-            
-            .chapter-sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-            }
-            
-            .chapter-main {
-                max-width: 100%;
-                padding: 1rem;
-            }
-            
-            .content-card { background: white; border-radius: 15px; padding: 2.5rem; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); width: 100%; }
-            
-            .chapter-title {
-                font-size: 1.5rem;
-            }
-            
-            .nav-buttons {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-    </style>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
