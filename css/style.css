@@ -103,7 +103,7 @@ body {
 .breadcrumb {
     max-width: min(1400px, 100%);
     width: 100%;
-    margin: 0 0 1rem 0;
+    margin: 0 auto 1rem auto;
     padding: 1rem 0;
     font-size: 0.9rem;
 }
@@ -127,11 +127,19 @@ body {
 }
 
 /* カードスタイル */
-.card {
+.card,
+.menu-card,
+.progress-card,
+.activity-list,
+.tips-card,
+.content-card {
     background: white;
     border-radius: 15px;
-    padding: 2rem;
     box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card {
+    padding: 2rem;
     border: 1px solid #e1e8ed;
     transition: all 0.3s ease;
 }
@@ -359,10 +367,7 @@ body {
 }
 
 .progress-card {
-    background: white;
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     gap: 2rem;
@@ -415,14 +420,13 @@ body {
 }
 
 .menu-card {
-    background: white;
     padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     cursor: pointer;
     transition: all 0.3s ease;
     border: 1px solid #e1e8ed;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .menu-card:hover {
@@ -471,11 +475,9 @@ body {
     margin-bottom: 2rem;
 }
 
-.activity-list {
-    background: white;
-    border-radius: 15px;
+.activity-list,
+.tips-card {
     padding: 2rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
 }
 
 .activity-item {
@@ -508,13 +510,6 @@ body {
     font-size: 0.9rem;
 }
 
-.tips-card {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-}
-
 .tips-card h3 {
     color: #2c3e50;
     margin-bottom: 1.5rem;
@@ -529,6 +524,408 @@ body {
 .tips-card li {
     color: #666;
     margin-bottom: 0.75rem;
+}
+
+/* カリキュラムページ */
+.curriculum-container {
+    max-width: min(1400px, 100%);
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.course-progress {
+    margin-bottom: 3rem;
+}
+
+.lessons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.lesson-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid #e1e8ed;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.lesson-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.lesson-header {
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e1e8ed;
+}
+
+.lesson-info {
+    flex: 1;
+}
+
+.lesson-title {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.lesson-time {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.lesson-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.lesson-status.not-started {
+    background: #6c757d;
+    color: white;
+}
+
+.lesson-status.in-progress {
+    background: #667eea;
+    color: white;
+}
+
+.lesson-status.completed {
+    background: #28a745;
+    color: white;
+}
+
+.lesson-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.lesson-progress-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.progress-bar.small {
+    height: 8px;
+    width: 150px;
+}
+
+.chapters-list {
+    padding: 1rem;
+}
+
+.chapter-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #e1e8ed;
+}
+
+.chapter-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.chapter-item.completed {
+    background: #f8fff8;
+    border-color: #28a745;
+}
+
+.chapter-item:last-child {
+    margin-bottom: 0;
+}
+
+.chapter-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.chapter-number {
+    background: #667eea;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+}
+
+.chapter-item.completed .chapter-number {
+    background: #28a745;
+}
+
+.chapter-title {
+    font-size: 1rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.chapter-status {
+    font-size: 1.2rem;
+    color: #667eea;
+}
+
+.chapter-item.completed .chapter-status {
+    color: #28a745;
+}
+
+/* PC初心者ページ */
+.pc-beginner-container {
+    max-width: min(1400px, 100%);
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.header-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.header-content {
+    text-align: center;
+}
+
+.course-description {
+    font-size: 1.1rem;
+    color: #666;
+    line-height: 1.7;
+    margin-top: 1rem;
+}
+
+.features-section,
+.curriculum-section,
+.tips-section,
+.updates-section,
+.support-section {
+    margin-bottom: 4rem;
+}
+
+.features-grid,
+.tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-card,
+.tip-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover,
+.tip-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.feature-icon,
+.tip-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3,
+.tip-card h3 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.feature-card p,
+.tip-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.curriculum-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 15px;
+    padding: 2rem;
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.notice-icon {
+    font-size: 2rem;
+}
+
+.notice-content h3 {
+    color: #856404;
+    margin-bottom: 1rem;
+}
+
+.notice-content p {
+    color: #856404;
+    margin-bottom: 0.5rem;
+}
+
+.preview-curriculum {
+    margin-top: 3rem;
+}
+
+.preview-title {
+    font-size: 1.5rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.preview-lessons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.preview-lesson {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+}
+
+.lesson-number {
+    background: #667eea;
+    color: white;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    min-width: 80px;
+    text-align: center;
+    height: fit-content;
+}
+
+.lesson-content {
+    flex: 1;
+}
+
+.lesson-content h4 {
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.lesson-content ul {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.lesson-content li {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.lesson-status.coming-soon {
+    background: #6c757d;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.updates-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    position: relative;
+}
+
+.timeline-item.current {
+    border-left: 4px solid #667eea;
+}
+
+.timeline-item.future {
+    opacity: 0.6;
+}
+
+.timeline-date {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #666;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.timeline-content h4 {
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.support-card {
+    background: white;
+    padding: 3rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.support-card h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.support-card p {
+    color: #666;
+    line-height: 1.7;
+    margin-bottom: 2rem;
+}
+
+.support-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
 }
 
 /* チャプターページ */
@@ -634,12 +1031,6 @@ body {
     color: white;
 }
 
-.chapter-number {
-    min-width: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
 .chapter-title-sidebar {
     flex: 1;
     font-size: 0.9rem;
@@ -687,7 +1078,7 @@ body {
 }
 
 .chapter-title {
-    font-size: 2rem;
+    font-size: 1rem;
     color: #2c3e50;
     margin-bottom: 0.5rem;
 }
@@ -709,10 +1100,7 @@ body {
 }
 
 .content-card {
-    background: white;
-    border-radius: 15px;
     padding: 2.5rem;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     margin-bottom: 2rem;
     width: 100%;
 }
@@ -958,61 +1346,12 @@ body {
         gap: 1rem;
     }
 
-    .chapter-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .chapter-number {
-        min-width: auto;
-    }
-
-    /* 管理者ページ */
-    .admin-container {
-        padding: 1rem;
-    }
-
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .admin-tabs {
-        flex-wrap: wrap;
-    }
-
-    .section-header {
-        flex-direction: column;
-        gap: 1rem;
+    .lesson-progress {
         align-items: flex-start;
     }
 
-    .admin-table {
-        font-size: 0.8rem;
-    }
-
-    .admin-table th,
-    .admin-table td {
-        padding: 0.5rem;
-    }
-
-    .progress-cell {
-        flex-direction: column;
-        gap: 0.5rem;
-        align-items: flex-start;
-    }
-
-    .user-detail-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .export-cards {
-        grid-template-columns: 1fr;
-    }
-
-    .options-grid {
-        grid-template-columns: 1fr;
+    .progress-bar.small {
+        width: 100%;
     }
 
     /* PC初心者ページ */
