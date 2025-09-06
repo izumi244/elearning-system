@@ -109,8 +109,9 @@ body {
 }
 
 .breadcrumb a {
-    color: #667eea;
+    color: #2c3e50; /* ヘッダーロゴと色を合わせ、視認性を向上 */
     text-decoration: none;
+    font-weight: 600; /* 少し太字にしてクリック可能を強調 */
 }
 
 .breadcrumb a:hover {
@@ -119,11 +120,11 @@ body {
 
 .breadcrumb-separator {
     margin: 0 0.5rem;
-    color: #666;
+    color: #333; /* 色を濃くして視認性を向上 */
 }
 
 .breadcrumb-current {
-    color: #666;
+    color: #333; /* 色を濃くして視認性を向上 */
 }
 
 /* カードスタイル */
@@ -946,7 +947,35 @@ body {
 }
 
 .chapter-sidebar.collapsed {
-    width: 60px;
+    width: 80px; /* アイコンが見やすいように少し幅を確保 */
+}
+
+@media (min-width: 769px) {
+    /* PC表示で折りたたまれた際、コンテンツエリアを非表示にする */
+    .chapter-sidebar.collapsed .sidebar-content {
+        display: none;
+    }
+
+    /* ヘッダーのタイトルも非表示にする */
+    .chapter-sidebar.collapsed .sidebar-header h3 {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* 開閉ボタンのアイコンを回転させる */
+.chapter-sidebar.collapsed .sidebar-toggle span {
+    display: inline-block;
+    transform: rotate(180deg);
+}
+
+/* サイドバーの状態に応じてメインコンテンツの幅を調整する */
+.chapter-main {
+    transition: max-width 0.3s ease;
+}
+
+.chapter-sidebar.collapsed + .chapter-main {
+    max-width: calc(100vw - 80px);
 }
 
 .sidebar-header {
@@ -1029,6 +1058,13 @@ body {
 .chapter-sidebar-item.completed.current .chapter-link {
     background: #28a745;
     color: white;
+}
+
+.chapter-number {
+    min-width: 100px; /* テキストが収まるように幅を確保 */
+    white-space: nowrap; /* テキストの改行を禁止 */
+    font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .chapter-title-sidebar {
@@ -1151,6 +1187,32 @@ body {
     display: none;
 }
 
+/* --- コンテンツ内テーブルの専用スタイル --- */
+#dynamicContent .simple-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95rem;
+}
+
+#dynamicContent .simple-table th,
+#dynamicContent .simple-table td {
+    border: 1px solid #e1e8ed; /* 薄いグレーの罫線 */
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: middle; /* デフォルトは中央揃え */
+}
+
+#dynamicContent .simple-table th {
+    background-color: #f8f9fa; /* ヘッダーの背景色 */
+    font-weight: 600;
+}
+
+/* 左端の列を上揃えにする */
+#dynamicContent .simple-table td:first-child {
+    vertical-align: top;
+}
+
 .completion-section {
     margin-bottom: 2rem;
 }
@@ -1267,6 +1329,33 @@ body {
 
 /* スマホ */
 @media (max-width: 768px) {
+    body {
+        overflow-wrap: break-word;
+    }
+
+    /* スマホでの読みやすさ向上のためのフォントサイズ調整 */
+    .page-title {
+        font-size: 1.75rem;
+        line-height: 1.3;
+    }
+    .section-title {
+        font-size: 1.4rem;
+        line-height: 1.3;
+    }
+    p, .course-description, .menu-card p {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+
+    /* スマホでの余白調整 */
+    .home-container,
+    .progress-card,
+    .menu-card,
+    .activity-list,
+    .tips-card {
+        padding: 1.5rem;
+    }
+
     /* ログインページ */
     .logo-section {
         top: 20px;
@@ -1304,7 +1393,7 @@ body {
         left: -100%;
         width: 280px;
         height: calc(100vh - 80px);
-        z-index: 1000;
+        z-index: 1100; /* ヘッダーより手前に表示 */
         transition: left 0.3s ease;
         box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     }

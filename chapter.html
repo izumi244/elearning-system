@@ -155,23 +155,28 @@
                     return response.text();
                 })
                 .then(htmlContent => {
-                    // HTMLを解析して必要な部分を抽出
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(htmlContent, 'text/html');
-                    const pageBody = doc.querySelector('.page-body');
-                    
-                    if (pageBody) {
-                        // 動的コンテンツエリアに挿入
-                        document.getElementById('dynamicContent').innerHTML = pageBody.innerHTML;
-                    } else {
-                        // フォールバック: 全体のarticle要素を取得
-                        const article = doc.querySelector('article');
-                        if (article) {
-                            document.getElementById('dynamicContent').innerHTML = article.innerHTML;
-                        } else {
-                            // 最後の手段: bodyの内容を取得
-                            document.getElementById('dynamicContent').innerHTML = doc.body.innerHTML;
+                    let contentNode = doc.querySelector('.page-body');
+
+                    // コンテンツが見つからない場合のフォールバック処理
+                    if (!contentNode) {
+                        contentNode = doc.querySelector('article');
+                    }
+                    if (!contentNode) {
+                        contentNode = doc.body;
+                    }
+
+                    const dynamicContent = document.getElementById('dynamicContent');
+                    dynamicContent.innerHTML = ''; // 既存のコンテンツをクリア
+
+                    if (contentNode) {
+                        // innerHTMLを使わず、DOMノードとして安全に追加する
+                        while (contentNode.firstChild) {
+                            dynamicContent.appendChild(contentNode.firstChild);
                         }
+                    } else {
+                        throw new Error("コンテンツファイル内に表示可能な要素が見つかりませんでした。");
                     }
                 })
                 .catch(error => {
