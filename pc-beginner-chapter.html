@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学習管理システム - PC初心者用カリキュラム</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header class="header">
+        <div class="logo">【ロゴ】</div>
+        <!-- ハンバーガーメニューボタン -->
+        <button class="hamburger-menu" onclick="toggleSidebar()">
+            <span>☰</span>
+        </button>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span class="user-name" id="userName">ユーザー</span>
+            <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
+        </div>
+    </header>
+
+    <!-- サイドナビゲーション -->
+    <div class="chapter-layout">
+        <nav class="chapter-sidebar" id="chapterSidebar">
+            <div class="sidebar-header">
+                <h3>PC初心者用カリキュラム</h3>
+                <button class="sidebar-toggle" onclick="toggleSidebar()">
+                    <span>≡</span>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <!-- JavaScriptで動的に生成 -->
+            </div>
+        </nav>
+
+        <!-- メインコンテンツ -->
+        <main class="chapter-main">
+            <!-- パンくずナビ -->
+            <nav class="breadcrumb">
+                <a href="home.html">ホーム</a>
+                <span class="breadcrumb-separator">></span>
+                <a href="pc-beginner.html">PC初心者用カリキュラム</a>
+                <span class="breadcrumb-separator">></span>
+                <span class="breadcrumb-current" id="currentChapterBreadcrumb">チャプター</span>
+            </nav>
+
+            <!-- チャプターヘッダー -->
+            <div class="chapter-header">
+                <div class="chapter-meta">
+                    <span class="lesson-badge" id="lessonBadge">STEP 1</span>
+                </div>
+                <h1 class="chapter-title" id="chapterTitle">チャプタータイトル</h1>
+            </div>
+
+            <!-- チャプター内容 -->
+            <div class="chapter-content">
+                <div class="content-card">
+                    <div id="dynamicContent">
+                        <!-- 動的に読み込まれるコンテンツがここに表示される -->
+                        <div class="loading-message">
+                            <p>コンテンツを読み込み中...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ナビゲーション（進捗管理なし） -->
+                <div class="chapter-navigation">
+                    <div class="nav-buttons">
+                        <button class="nav-button prev" id="prevButton" onclick="navigateToPrevious()">
+                            ← 前のSTEP
+                        </button>
+                        <button class="nav-button back-to-curriculum" onclick="backToCurriculum()">
+                            📋 コース一覧に戻る
+                        </button>
+                        <button class="nav-button next" id="nextButton" onclick="navigateToNext()">
+                            次のSTEP →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScriptファイル -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/hybrid-progress.js"></script>
+    <script>
+        let currentStepId = '';
+        let currentStepTitle = '';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 認証チェック
+            if (!authSystem.requireAuth()) {
+                return;
+            }
+
+            // URL パラメータから情報を取得
+            const urlParams = new URLSearchParams(window.location.search);
+            currentStepId = urlParams.get('step');
+            currentStepTitle = urlParams.get('title');
+
+            if (!currentStepId) {
+                window.location.href = 'pc-beginner.html';
+                return;
+            }
+
+            // ユーザー情報の表示
+            displayUserInfo();
+
+            // サイドバーの生成
+            generateSidebar();
+
+            // ステップ情報の表示
+            displayStepInfo();
+
+            // 動的コンテンツの読み込み
+            loadStepContent();
+
+            // ナビゲーションボタンの設定
+            setupNavigation();
+        });
+
+        function loadStepContent() {
+            // 学習目標は各STEPの最初のチャプター（chapter1）に配置される
+            const contentPath = `content/pc-${currentStepId}-chapter1.html`;
+
+            fetch(contentPath)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(htmlContent => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(htmlContent, 'text/html');
+                    let contentNode = doc.querySelector('.page-body');
+
+                    // コンテンツが見つからない場合のフォールバック処理
+                    if (!contentNode) {
+                        contentNode = doc.querySelector('article');
+                    }
+                    if (!contentNode) {
+                        contentNode = doc.body;
+                    }
+
+                    const dynamicContent = document.getElementById('dynamicContent');
+                    dynamicContent.innerHTML = ''; // 既存のコンテンツをクリア
+
+                    if (contentNode) {
+                        // innerHTMLを使わず、DOMノードとして安全に追加する
+                        while (contentNode.firstChild) {
+                            dynamicContent.appendChild(contentNode.firstChild);
+                        }
+
+                        // Google SlidesのURLをiframeに変換
+                        convertGoogleSlidesToEmbed();
+                    } else {
+                        throw new Error("コンテンツファイル内に表示可能な要素が見つかりませんでした。");
+                    }
+                })
+                .catch(error => {
+                    console.error('コンテンツの読み込みに失敗しました:', error);
+                    document.getElementById('dynamicContent').innerHTML = `
+                        <div class="error-message">
+                            <h3>コンテンツの読み込みに失敗しました</h3>
+                            <p>ファイルパス: ${contentPath}</p>
+                            <p>エラー詳細: ${error.message}</p>
+                            <p>Notionからエクスポートしたコンテンツを配置してください。</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function convertGoogleSlidesToEmbed() {
+            // .source クラスの要素を探す（Notion エクスポートのGoogle Slidesリンク）
+            const sourceElements = document.querySelectorAll('.source');
+
+            sourceElements.forEach(sourceEl => {
+                const url = sourceEl.textContent.trim();
+
+                // Google Slides URLかチェック
+                if (url.includes('docs.google.com/presentation')) {
+                    // URLから presentation ID を抽出
+                    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+
+                    if (match && match[1]) {
+                        const presentationId = match[1];
+                        const embedUrl = `https://docs.google.com/presentation/d/${presentationId}/embed?start=false&loop=false&delayms=3000`;
+
+                        // iframeを作成
+                        const iframe = document.createElement('iframe');
+                        iframe.src = embedUrl;
+                        iframe.width = '100%';
+                        iframe.height = '569';
+                        iframe.frameBorder = '0';
+                        iframe.allowFullscreen = true;
+                        iframe.style.border = '1px solid #e1e8ed';
+                        iframe.style.borderRadius = '8px';
+                        iframe.style.marginTop = '1rem';
+
+                        // 親要素（figure）を置き換え
+                        const figure = sourceEl.closest('figure');
+                        if (figure) {
+                            figure.parentNode.replaceChild(iframe, figure);
+                        }
+                    }
+                }
+            });
+
+            // Notionページへのリンク（.link-to-page）を削除
+            const linkToPageElements = document.querySelectorAll('.link-to-page');
+            linkToPageElements.forEach(link => {
+                link.remove();
+            });
+        }
+
+        function displayUserInfo() {
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+            }
+        }
+
+        function displayStepInfo() {
+            document.getElementById('lessonBadge').textContent = `STEP ${currentStepId.replace('step', '')}`;
+            document.getElementById('chapterTitle').textContent = decodeURIComponent(currentStepTitle);
+            document.getElementById('currentChapterBreadcrumb').textContent = decodeURIComponent(currentStepTitle);
+        }
+
+        function generateSidebar() {
+            const curriculum = progressManager.getCurriculumData().pc_beginner;
+            if (!curriculum) return;
+
+            const sidebarContent = document.querySelector('.sidebar-content');
+            let html = '<ul class="chapters-sidebar">';
+
+            curriculum.steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                const isCurrentStep = step.id === currentStepId;
+
+                html += `
+                    <li class="chapter-sidebar-item ${isCurrentStep ? 'current' : ''}">
+                        <a href="pc-beginner-chapter.html?step=${step.id}&title=${encodeURIComponent(step.title)}"
+                           class="chapter-link">
+                            <span class="chapter-number">${stepNumber}</span>
+                            <span class="chapter-title-sidebar">${step.title}</span>
+                        </a>
+                    </li>
+                `;
+            });
+
+            html += '</ul>';
+            sidebarContent.innerHTML = html;
+        }
+
+        function setupNavigation() {
+            const curriculum = progressManager.getCurriculumData().pc_beginner;
+            if (!curriculum) return;
+
+            const currentIndex = curriculum.steps.findIndex(step => step.id === currentStepId);
+
+            // 前へボタン
+            const prevButton = document.getElementById('prevButton');
+            if (currentIndex > 0) {
+                const prevStep = curriculum.steps[currentIndex - 1];
+                prevButton.onclick = () => {
+                    window.location.href = `pc-beginner-chapter.html?step=${prevStep.id}&title=${encodeURIComponent(prevStep.title)}`;
+                };
+            } else {
+                prevButton.disabled = true;
+                prevButton.style.opacity = '0.5';
+            }
+
+            // 次へボタン
+            const nextButton = document.getElementById('nextButton');
+            if (currentIndex < curriculum.steps.length - 1) {
+                const nextStep = curriculum.steps[currentIndex + 1];
+                nextButton.onclick = () => {
+                    window.location.href = `pc-beginner-chapter.html?step=${nextStep.id}&title=${encodeURIComponent(nextStep.title)}`;
+                };
+            } else {
+                nextButton.disabled = true;
+                nextButton.style.opacity = '0.5';
+            }
+        }
+
+        function navigateToPrevious() {
+            // setupNavigation() で設定済み
+        }
+
+        function navigateToNext() {
+            // setupNavigation() で設定済み
+        }
+
+        function backToCurriculum() {
+            window.location.href = 'pc-beginner.html';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('chapterSidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>

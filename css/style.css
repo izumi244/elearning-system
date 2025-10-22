@@ -558,6 +558,27 @@ body {
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
+/* クリック可能なカードのスタイル */
+.lesson-card.clickable-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.lesson-card.clickable-card:hover {
+    border-color: #667eea;
+}
+
+.lesson-card.clickable-card .lesson-title {
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.lesson-card.clickable-card:hover .lesson-title {
+    color: #667eea;
+}
+
 .lesson-header {
     padding: 2rem;
     display: flex;
@@ -1061,8 +1082,8 @@ body {
 }
 
 .chapter-number {
-    min-width: 100px; /* テキストが収まるように幅を確保 */
-    white-space: nowrap; /* テキストの改行を禁止 */
+    min-width: 100px;
+    white-space: nowrap;
     font-size: 0.8rem;
     font-weight: 600;
 }

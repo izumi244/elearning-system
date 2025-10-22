@@ -95,6 +95,27 @@ class ProgressManager {
                         ]
                     }
                 ]
+            },
+            "pc_beginner": {
+                title: "PC初心者用カリキュラム",
+                steps: [
+                    {
+                        id: "step1",
+                        title: "基礎的なIT用語を学ぼう"
+                    },
+                    {
+                        id: "step2",
+                        title: "パソコン基本操作(Mac編)"
+                    },
+                    {
+                        id: "step3",
+                        title: "パソコン基本操作(Windows編)"
+                    },
+                    {
+                        id: "step4",
+                        title: "Googleの便利ツールを学ぼう"
+                    }
+                ]
             }
         };
     }
@@ -356,4 +377,5 @@ class ProgressManager {
 }
 
 // グローバルに利用できるようにインスタンスを作成
-const progressManager = new ProgressManager();
+// const progressManager = new ProgressManager();
+// ↑ hybrid-progress.jsで作成されるため、ここではコメントアウト

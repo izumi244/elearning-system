@@ -1,0 +1,25 @@
+# 機密情報を含む設定ファイル
+js/config.js
+
+# OS関連
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# エディタ関連
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ログファイル
+*.log
+npm-debug.log*
+
+# 依存関係
+node_modules/
+
+# ビルド出力
+dist/
+build/
