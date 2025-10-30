@@ -1,8 +1,8 @@
 # Netlify設定ファイル
 
 [build]
-  # ビルドコマンド：環境変数からconfig.jsを生成
-  command = "chmod +x build.sh && ./build.sh"
+  # ビルドコマンド：環境変数からconfig.jsを生成（Node.js版）
+  command = "node build.js"
 
   # 公開ディレクトリ
   publish = "."
