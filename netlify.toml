@@ -11,15 +11,11 @@
   # Node.jsバージョン（必要に応じて）
   NODE_VERSION = "18"
 
-# リダイレクト設定（SPA用）
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-
-  # 静的ファイルは除外
-  conditions = {Role = ["admin"]}
+# リダイレクト設定（SPAではないため不要）
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
 
 # ヘッダー設定
 [[headers]]
