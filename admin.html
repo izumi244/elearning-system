@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>学習管理システム - 管理者画面</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-styles.css">
 </head>
 <body>
     <!-- ヘッダー -->
@@ -254,35 +255,71 @@
             updateStatistics();
         });
 
-        function loadAdminData() {
-            // 進捗データの取得
-            allProgressData = progressManager.getAllUsersProgress();
-            
-            // ログイン履歴の取得
-            allLoginHistory = JSON.parse(localStorage.getItem('loginHistory') || '[]');
-            
-            // テーブルの更新
-            updateProgressTable();
-            updateHistoryTable();
+        async function loadAdminData() {
+            try {
+                // Google Sheetsから進捗データを取得
+                console.log('📊 Google Sheetsから進捗データを取得中...');
+                const sheetsData = await hybridProgressManager.fetchFromGoogleSheetsAPI();
+
+                if (sheetsData && sheetsData.values && sheetsData.values.length > 1) {
+                    // ヘッダー行をスキップして変換
+                    allProgressData = sheetsData.values.slice(1).map(row => {
+                        return {
+                            userId: row[0] || '',
+                            userName: row[1] || '',
+                            totalChapters: parseInt(row[2]) || 34,
+                            completedChapters: [],
+                            completionRate: parseInt(row[4]) || 0,
+                            lastUpdated: row[5] || '',
+                            completedChaptersList: row[6] || ''
+                        };
+                    }).filter(user => user.userId); // 空行を除外
+
+                    console.log(`✅ ${allProgressData.length}件の進捗データを取得しました`);
+                } else {
+                    console.log('⚠️  進捗データが見つかりません');
+                    allProgressData = [];
+                }
+
+                // ログイン履歴の取得
+                allLoginHistory = JSON.parse(localStorage.getItem('loginHistory') || '[]');
+
+                // テーブルの更新
+                updateProgressTable();
+                updateHistoryTable();
+                updateStatistics();
+
+            } catch (error) {
+                console.error('❌ Google Sheetsからの同期エラー:', error);
+                alert('進捗データの読み込みに失敗しました。ネットワーク接続を確認してください。');
+                allProgressData = [];
+            }
         }
 
         function updateStatistics() {
-            const totalUsers = 30;
+            // 実際のデータから総受講者数を計算
+            const totalUsers = allProgressData.length;
             let activeUsers = 0;
             let completedUsers = 0;
+            let notStartedUsers = 0;
             let totalProgress = 0;
 
             allProgressData.forEach(user => {
-                if (user.completionRate > 0 && user.completionRate < 100) {
-                    activeUsers++;
-                } else if (user.completionRate === 100) {
+                const rate = parseInt(user.completionRate) || 0;
+
+                if (rate === 0) {
+                    notStartedUsers++;
+                } else if (rate === 100) {
                     completedUsers++;
+                } else {
+                    activeUsers++;
                 }
-                totalProgress += user.completionRate;
+
+                totalProgress += rate;
             });
 
-            const averageProgress = allProgressData.length > 0 ? 
-                Math.round(totalProgress / allProgressData.length) : 0;
+            const averageProgress = totalUsers > 0 ?
+                Math.round(totalProgress / totalUsers) : 0;
 
             document.getElementById('totalUsers').textContent = totalUsers;
             document.getElementById('activeUsers').textContent = activeUsers;
@@ -304,8 +341,10 @@
 
             let html = '';
             filteredData.forEach(user => {
-                const completedCount = user.completedChapters ? user.completedChapters.length : 0;
-                const lastUpdated = user.lastUpdated ? 
+                // completedChaptersListは "lesson1_1,lesson1_2" のような文字列
+                const completedCount = user.completedChaptersList && user.completedChaptersList.trim() !== '' ?
+                    user.completedChaptersList.split(',').filter(c => c.trim() !== '').length : 0;
+                const lastUpdated = user.lastUpdated ?
                     new Date(user.lastUpdated).toLocaleDateString('ja-JP') : '未学習';
                 
                 let status = '未開始';
@@ -423,14 +462,18 @@
             document.getElementById('modalLastLogin').textContent = lastLoginText;
 
             // 完了チャプターの表示
-            const completedChaptersHtml = user.completedChapters ? 
-                user.completedChapters.map(ch => `
+            let completedChaptersHtml = '';
+            if (user.completedChaptersList && user.completedChaptersList.trim() !== '') {
+                const chapters = user.completedChaptersList.split(',').filter(c => c.trim() !== '');
+                completedChaptersHtml = chapters.map(chapterId => `
                     <div class="completed-chapter-item">
-                        <span class="chapter-title">${ch.chapterTitle}</span>
-                        <span class="completion-date">${new Date(ch.completedAt).toLocaleDateString('ja-JP')}</span>
+                        <span class="chapter-title">${chapterId}</span>
                     </div>
-                `).join('') : '<div class="no-data">完了したチャプターがありません</div>';
-            
+                `).join('');
+            } else {
+                completedChaptersHtml = '<div class="no-data">完了したチャプターがありません</div>';
+            }
+
             document.getElementById('modalCompletedChapters').innerHTML = completedChaptersHtml;
             
             document.getElementById('userDetailModal').style.display = 'block';
@@ -479,7 +522,24 @@
         }
 
         function exportProgressCSV() {
-            const csvContent = progressManager.exportProgressToCSV();
+            let csvContent = 'ユーザーID,ユーザー名,総チャプター数,完了チャプター数,進捗率(%),最終更新日時\n';
+
+            allProgressData.forEach(user => {
+                const completedCount = user.completedChaptersList ?
+                    user.completedChaptersList.split(',').filter(c => c.trim() !== '').length : 0;
+
+                const row = [
+                    user.userId,
+                    user.userName,
+                    user.totalChapters,
+                    completedCount,
+                    user.completionRate,
+                    user.lastUpdated || ''
+                ].join(',');
+
+                csvContent += row + '\n';
+            });
+
             downloadCSV(csvContent, 'progress_data.csv');
         }
 

@@ -75,15 +75,15 @@ class HybridProgressManager extends ProgressManager {
 
         const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors', // Apps Scriptの制限により必要
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/plain',
             },
             body: JSON.stringify(data)
         });
 
-        // no-corsモードではレスポンスを読めないため、送信のみ確認
-        return true;
+        // レスポンスを確認
+        const result = await response.json();
+        return result.success || true;
     }
 
     /**
@@ -143,7 +143,7 @@ class HybridProgressManager extends ProgressManager {
     async fetchFromGoogleSheetsAPI() {
         // 既存スプレッドシート構造: A列～G列
         // userId | userName | totalChapters | completedChapters | completionRate | lastUpdated | completedChaptersList
-        const url = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}/values/Sheet1!A:G?key=${CONFIG.GOOGLE_API_KEY}`;
+        const url = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}/values/Progress!A:G?key=${CONFIG.GOOGLE_API_KEY}`;
 
         const response = await fetch(url, {
             method: 'GET',

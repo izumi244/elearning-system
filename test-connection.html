@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apps Script接続テスト</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button.test-login {
+            background: #2196F3;
+        }
+        button.test-login:hover {
+            background: #0b7dda;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .url-display {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 Apps Script 接続テスト</h1>
+        <p class="subtitle">Google Apps Scriptとの接続をテストします</p>
+
+        <div class="url-display">
+            <strong>Apps Script URL:</strong><br>
+            <span id="urlDisplay">Loading...</span>
+        </div>
+
+        <button onclick="testGetConnection()">1. GET接続テスト（基本）</button>
+        <button onclick="testGetConnectionDirect()">2. GET接続テスト（ブラウザで開く）</button>
+        <button class="test-login" onclick="testLoginRequest()">3. POSTテスト（ログインAPI）</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // URLを表示
+        document.getElementById('urlDisplay').textContent = CONFIG.APPS_SCRIPT_URL;
+
+        // 結果表示関数
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = message;
+        }
+
+        // 1. GET接続テスト（fetch使用）
+        async function testGetConnection() {
+            showResult('⏳ GET接続テスト実行中...', 'info');
+
+            try {
+                console.log('Fetching:', CONFIG.APPS_SCRIPT_URL);
+
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                showResult(
+                    `✅ GET接続成功！\n\n` +
+                    `Status: ${response.status}\n` +
+                    `Response:\n${JSON.stringify(data, null, 2)}`,
+                    'success'
+                );
+            } catch (error) {
+                console.error('GET接続エラー:', error);
+                showResult(
+                    `❌ GET接続失敗\n\n` +
+                    `Error: ${error.message}\n\n` +
+                    `詳細:\n${error.stack}`,
+                    'error'
+                );
+            }
+        }
+
+        // 2. ブラウザで直接開く
+        function testGetConnectionDirect() {
+            showResult('🌐 ブラウザで開いています...', 'info');
+            window.open(CONFIG.APPS_SCRIPT_URL, '_blank');
+            setTimeout(() => {
+                showResult(
+                    '📝 新しいタブでApps Scriptが開きました。\n\n' +
+                    'JSONレスポンスが表示されればデプロイは正常です。\n' +
+                    'エラーが表示される場合は、デプロイ設定を確認してください。',
+                    'info'
+                );
+            }, 500);
+        }
+
+        // 3. POSTテスト（ログインAPI）
+        async function testLoginRequest() {
+            showResult('⏳ ログインAPIテスト実行中...', 'info');
+
+            const testData = {
+                action: 'login',
+                userId: 'dev123',
+                password: 'dev123'
+            };
+
+            try {
+                console.log('POSTリクエスト送信:', testData);
+
+                const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                const data = await response.json();
+                console.log('Response data:', data);
+
+                if (data.success) {
+                    showResult(
+                        `✅ ログインAPIテスト成功！\n\n` +
+                        `ユーザー: ${data.name} (${data.userId})\n` +
+                        `権限: ${data.role}\n` +
+                        `初回ログイン: ${data.isFirstLogin}\n\n` +
+                        `Full Response:\n${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else {
+                    showResult(
+                        `⚠️  APIは応答しましたが認証に失敗\n\n` +
+                        `Error: ${data.error}\n\n` +
+                        `Response:\n${JSON.stringify(data, null, 2)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                console.error('POSTリクエストエラー:', error);
+                showResult(
+                    `❌ POSTリクエスト失敗\n\n` +
+                    `Error: ${error.message}\n\n` +
+                    `CORSエラーの可能性があります。\n` +
+                    `デプロイ設定で「アクセスできるユーザー」が「全員」になっているか確認してください。\n\n` +
+                    `詳細:\n${error.stack}`,
+                    'error'
+                );
+            }
+        }
+
+        // ページ読み込み時の情報表示
+        window.addEventListener('load', () => {
+            console.log('=== Apps Script 接続テスト ===');
+            console.log('Apps Script URL:', CONFIG.APPS_SCRIPT_URL);
+            console.log('Spreadsheet ID:', CONFIG.SPREADSHEET_ID);
+        });
+    </script>
+</body>
+</html>

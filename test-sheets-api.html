@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets API テスト</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .config-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Google Sheets API テスト</h1>
+        <p>Progressシートからのデータ取得をテストします</p>
+
+        <div class="config-display">
+            <strong>設定情報:</strong><br>
+            Spreadsheet ID: <span id="spreadsheetId"></span><br>
+            API Key: <span id="apiKey"></span><br>
+            API URL: <span id="apiUrl"></span>
+        </div>
+
+        <button onclick="testUsersSheet()">1. Usersシートをテスト</button>
+        <button onclick="testProgressSheet()">2. Progressシートをテスト</button>
+        <button onclick="testAllSheets()">3. 全シートを確認</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // 設定情報を表示
+        document.getElementById('spreadsheetId').textContent = CONFIG.SPREADSHEET_ID;
+        document.getElementById('apiKey').textContent = CONFIG.GOOGLE_API_KEY.substring(0, 20) + '...';
+
+        const baseUrl = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}`;
+        document.getElementById('apiUrl').textContent = baseUrl;
+
+        function showResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = `result ${type}`;
+            resultDiv.innerHTML = message;
+        }
+
+        // 1. Usersシートをテスト
+        async function testUsersSheet() {
+            showResult('⏳ Usersシートからデータを取得中...', 'info');
+
+            try {
+                const url = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}/values/Users!A:F?key=${CONFIG.GOOGLE_API_KEY}`;
+
+                console.log('Fetching URL:', url);
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+
+                console.log('Users data:', data);
+
+                if (data.values && data.values.length > 0) {
+                    let html = `✅ Usersシート取得成功！\n\n`;
+                    html += `行数: ${data.values.length}\n`;
+                    html += `列数: ${data.values[0].length}\n\n`;
+                    html += `データプレビュー:\n`;
+                    html += '<table>';
+
+                    data.values.slice(0, 10).forEach((row, index) => {
+                        html += '<tr>';
+                        row.forEach(cell => {
+                            const tag = index === 0 ? 'th' : 'td';
+                            html += `<${tag}>${cell || '(空)'}</${tag}>`;
+                        });
+                        html += '</tr>';
+                    });
+
+                    html += '</table>';
+
+                    showResult(html, 'success');
+                } else {
+                    showResult('⚠️  Usersシートにデータがありません', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(
+                    `❌ エラー発生\n\n` +
+                    `${error.message}\n\n` +
+                    `考えられる原因:\n` +
+                    `1. スプレッドシートIDが間違っている\n` +
+                    `2. APIキーが無効\n` +
+                    `3. シート名が "Users" ではない\n` +
+                    `4. スプレッドシートの共有設定が "リンクを知っている全員" になっていない`,
+                    'error'
+                );
+            }
+        }
+
+        // 2. Progressシートをテスト
+        async function testProgressSheet() {
+            showResult('⏳ Progressシートからデータを取得中...', 'info');
+
+            try {
+                const url = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}/values/Progress!A:G?key=${CONFIG.GOOGLE_API_KEY}`;
+
+                console.log('Fetching URL:', url);
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+
+                console.log('Progress data:', data);
+
+                if (data.values && data.values.length > 0) {
+                    let html = `✅ Progressシート取得成功！\n\n`;
+                    html += `行数: ${data.values.length}\n`;
+                    html += `列数: ${data.values[0].length}\n\n`;
+                    html += `データプレビュー:\n`;
+                    html += '<table>';
+
+                    data.values.slice(0, 10).forEach((row, index) => {
+                        html += '<tr>';
+                        row.forEach(cell => {
+                            const tag = index === 0 ? 'th' : 'td';
+                            html += `<${tag}>${cell || '(空)'}</${tag}>`;
+                        });
+                        html += '</tr>';
+                    });
+
+                    html += '</table>';
+
+                    showResult(html, 'success');
+                } else {
+                    showResult('⚠️  Progressシートにデータがありません', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(
+                    `❌ エラー発生\n\n` +
+                    `${error.message}\n\n` +
+                    `考えられる原因:\n` +
+                    `1. スプレッドシートIDが間違っている\n` +
+                    `2. APIキーが無効\n` +
+                    `3. シート名が "Progress" ではない\n` +
+                    `4. スプレッドシートの共有設定が "リンクを知っている全員" になっていない`,
+                    'error'
+                );
+            }
+        }
+
+        // 3. 全シートを確認
+        async function testAllSheets() {
+            showResult('⏳ スプレッドシート情報を取得中...', 'info');
+
+            try {
+                const url = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}?key=${CONFIG.GOOGLE_API_KEY}`;
+
+                console.log('Fetching URL:', url);
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+
+                const data = await response.json();
+
+                console.log('Spreadsheet metadata:', data);
+
+                if (data.sheets && data.sheets.length > 0) {
+                    let html = `✅ スプレッドシート情報取得成功！\n\n`;
+                    html += `スプレッドシート名: ${data.properties.title}\n`;
+                    html += `シート数: ${data.sheets.length}\n\n`;
+                    html += `シート一覧:\n`;
+                    html += '<table>';
+                    html += '<tr><th>シート名</th><th>シートID</th><th>行数</th><th>列数</th></tr>';
+
+                    data.sheets.forEach(sheet => {
+                        const props = sheet.properties;
+                        html += '<tr>';
+                        html += `<td><strong>${props.title}</strong></td>`;
+                        html += `<td>${props.sheetId}</td>`;
+                        html += `<td>${props.gridProperties.rowCount}</td>`;
+                        html += `<td>${props.gridProperties.columnCount}</td>`;
+                        html += '</tr>';
+                    });
+
+                    html += '</table>';
+
+                    showResult(html, 'success');
+                } else {
+                    showResult('⚠️  シートが見つかりません', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showResult(
+                    `❌ エラー発生\n\n` +
+                    `${error.message}\n\n` +
+                    `考えられる原因:\n` +
+                    `1. スプレッドシートIDが間違っている\n` +
+                    `2. APIキーが無効または期限切れ\n` +
+                    `3. Google Sheets APIが有効化されていない\n` +
+                    `4. スプレッドシートの共有設定が "リンクを知っている全員" になっていない`,
+                    'error'
+                );
+            }
+        }
+    </script>
+</body>
+</html>

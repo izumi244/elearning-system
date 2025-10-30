@@ -16,30 +16,6 @@ class AuthSystem {
         }
     }
 
-    // 有効なユーザーアカウントの定義
-    getValidUsers() {
-        const users = {};
-        
-        // 一般ユーザー（user001 - user030）
-        for (let i = 1; i <= 30; i++) {
-            const userId = `user${i.toString().padStart(3, '0')}`;
-            users[userId] = {
-                password: userId,
-                role: 'user',
-                name: `ユーザー${i}`
-            };
-        }
-        
-        // 管理者アカウント
-        users['admin'] = {
-            password: 'admin',
-            role: 'admin',
-            name: '管理者'
-        };
-        
-        return users;
-    }
-
     // ログインフォームのセットアップ
     setupLoginForm() {
         const loginForm = document.getElementById('loginForm');
@@ -60,53 +36,78 @@ class AuthSystem {
     }
 
     // ログイン処理
-    handleLogin() {
+    async handleLogin() {
         const userId = document.getElementById('userId').value.trim();
         const password = document.getElementById('password').value.trim();
         const errorMessage = document.getElementById('errorMessage');
-        
+
         // 入力チェック
         if (!userId || !password) {
             this.showError('ユーザーIDとパスワードを入力してください。');
             return;
         }
-        
-        // 認証チェック
-        const validUsers = this.getValidUsers();
-        const user = validUsers[userId];
-        
-        if (user && user.password === password) {
-            // ログイン成功
-            this.loginUser(userId, user);
-        } else {
-            // ログイン失敗
-            this.showError('ユーザーIDまたはパスワードが正しくありません。');
+
+        // Apps Script経由で認証
+        try {
+            const response = await fetch(CONFIG.APPS_SCRIPT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify({
+                    action: 'login',
+                    userId: userId,
+                    password: password
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // ログイン成功
+                const userInfo = {
+                    role: result.role,
+                    name: result.name,
+                    isFirstLogin: result.isFirstLogin
+                };
+                this.loginUser(userId, userInfo);
+            } else {
+                // ログイン失敗
+                this.showError(result.error || 'ユーザーIDまたはパスワードが正しくありません。');
+            }
+        } catch (error) {
+            console.error('ログインエラー:', error);
+            this.showError('ログイン処理中にエラーが発生しました。');
         }
     }
 
     // ログイン成功時の処理
     loginUser(userId, userInfo) {
         const loginTime = new Date().toISOString();
-        
+
         // セッション情報をLocalStorageに保存
         const sessionData = {
             userId: userId,
             name: userInfo.name,
             role: userInfo.role,
             loginTime: loginTime,
-            lastActivity: loginTime
+            lastActivity: loginTime,
+            isFirstLogin: userInfo.isFirstLogin
         };
-        
+
         localStorage.setItem('currentUser', JSON.stringify(sessionData));
-        
+
         // ログイン履歴を記録
         this.recordLoginHistory(userId, userInfo, loginTime);
-        
+
         // ユーザーの進捗データを初期化（存在しない場合）
         this.initializeUserProgress(userId);
-        
+
         // リダイレクト
-        if (userInfo.role === 'admin') {
+        if (userInfo.isFirstLogin === true || userInfo.isFirstLogin === 'TRUE') {
+            // 初回ログインの場合はパスワード変更画面へ
+            window.location.href = 'change-password.html';
+        } else if (userInfo.role === 'admin') {
             window.location.href = 'admin.html';
         } else {
             window.location.href = 'home.html';
