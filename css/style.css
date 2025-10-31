@@ -1079,9 +1079,9 @@ body {
         display: none;
     }
 
-    /* ハンバーガーメニューもデスクトップでは非表示 */
+    /* デスクトップ: ハンバーガーメニューを常に表示 */
     .hamburger-menu {
-        display: none !important;
+        display: flex !important;
     }
 }
 
