@@ -76,79 +76,37 @@ body {
     transform: translateY(-1px);
 }
 
-/* サイドバー切り替えタブボタン */
-.sidebar-toggle-tab {
-    position: fixed;
-    left: 0;
-    top: 100px;
-    width: 48px;
-    height: 64px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-left: none;
-    border-radius: 0 8px 8px 0;
-    cursor: pointer;
-    font-size: 1.5rem;
-    color: #2c3e50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1101;
-}
-
-.sidebar-toggle-tab:hover {
-    background: #f8f9fa;
-    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.15);
-    width: 52px;
-}
-
-.sidebar-toggle-tab:active {
-    background: #e9ecef;
-}
-
-.sidebar-toggle-tab span {
-    font-family: Arial, sans-serif;
-    font-weight: normal;
-    line-height: 1;
-}
-
 /* ハンバーガーメニューボタン */
 .hamburger-menu {
-    display: none; /* デフォルトは非表示 */
-    background: white;
-    border: 1px solid #e0e0e0;
-    font-size: 1.5rem;
+    display: none; /* PC版では非表示 */
+    background: transparent;
+    border: none;
+    font-size: 1.8rem;
     color: #2c3e50;
     cursor: pointer;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
+    padding: 0.5rem;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     line-height: 1;
     width: 44px;
     height: 44px;
     align-items: center;
     justify-content: center;
+    margin-right: 0.5rem;
 }
 
 .hamburger-menu:hover {
-    background: #f8f9fa;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px);
+    color: #667eea;
+    transform: scale(1.1);
 }
 
 .hamburger-menu:active {
-    transform: translateY(0);
+    transform: scale(0.95);
 }
 
-/* デスクトップ: サイドバーを閉じた時のみハンバーガーボタンを表示 */
-@media (min-width: 769px) {
-    .chapter-sidebar.collapsed ~ header .hamburger-menu,
-    body:has(.chapter-sidebar.collapsed) .hamburger-menu {
-        display: flex;
-    }
+.hamburger-menu span {
+    font-family: Arial, sans-serif;
+    font-weight: normal;
+    line-height: 1;
 }
 
 /* メインコンテンツ */
@@ -1104,11 +1062,6 @@ body {
 
 /* デスクトップ: collapsedクラスでサイドバーを非表示 */
 @media (min-width: 769px) {
-    /* デスクトップ: サイドバーが開いている時、タブボタンはサイドバーの右端に配置 */
-    .sidebar-toggle-tab {
-        left: 300px;
-    }
-
     .chapter-sidebar.collapsed {
         width: 0;
         border-right: none;
@@ -1121,15 +1074,14 @@ body {
         visibility: hidden;
     }
 
-    /* サイドバーが閉じている時、タブボタンは左端に配置 */
-    .chapter-sidebar.collapsed ~ .sidebar-toggle-tab,
-    body:has(.chapter-sidebar.collapsed) .sidebar-toggle-tab {
-        left: 0;
-    }
-
     /* サイドバーを閉じるボタンはデスクトップでは非表示 */
     .sidebar-close {
         display: none;
+    }
+
+    /* ハンバーガーメニューもデスクトップでは非表示 */
+    .hamburger-menu {
+        display: none !important;
     }
 }
 
@@ -1606,10 +1558,9 @@ body {
         opacity: 1;
     }
 
-    /* モバイル: タブボタンは常に左端に表示 */
-    .sidebar-toggle-tab {
-        left: 0 !important;
-        z-index: 1101;
+    /* モバイル/タブレット: ハンバーガーメニューを表示 */
+    .hamburger-menu {
+        display: flex !important;
     }
 
     /* モバイル: サイドバーはデフォルトで左に隠れている */
@@ -1628,13 +1579,6 @@ body {
     /* モバイル: openクラスでサイドバーを表示 */
     .chapter-sidebar.open {
         left: 0;
-    }
-
-    /* モバイル: サイドバーが開いている時はタブボタンを非表示（コンテンツに被らないように） */
-    .chapter-sidebar.open ~ * .sidebar-toggle-tab,
-    body:has(.chapter-sidebar.open) .sidebar-toggle-tab {
-        opacity: 0;
-        pointer-events: none;
     }
 
     /* モバイル: 閉じるボタンを表示 */

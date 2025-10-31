@@ -9,6 +9,9 @@
 <body>
     <!-- ヘッダー -->
     <header class="header">
+        <button class="hamburger-menu" onclick="toggleSidebar()" aria-label="メニュー">
+            <span>≡</span>
+        </button>
         <div class="logo"></div>
         <div class="user-info">
             <span class="user-name" id="userName">ユーザー</span>
@@ -21,11 +24,6 @@
 
     <!-- サイドナビゲーション -->
     <div class="chapter-layout">
-        <!-- サイドバーの右側に飛び出すタブ型ハンバーガーボタン -->
-        <button class="sidebar-toggle-tab" onclick="toggleSidebar()" aria-label="サイドバー切り替え">
-            <span>≡</span>
-        </button>
-
         <nav class="chapter-sidebar" id="chapterSidebar">
             <div class="sidebar-header">
                 <h3>基礎マスターコース</h3>
