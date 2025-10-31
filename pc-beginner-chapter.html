@@ -10,24 +10,25 @@
     <!-- ヘッダー -->
     <header class="header">
         <div class="logo"></div>
-        <!-- ハンバーガーメニューボタン -->
-        <button class="hamburger-menu" onclick="toggleSidebar()">
-            <span>☰</span>
-        </button>
         <div class="user-info">
             <span class="user-name" id="userName">ユーザー</span>
             <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
         </div>
     </header>
 
+    <!-- サイドバー用オーバーレイ -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <!-- サイドナビゲーション -->
     <div class="chapter-layout">
+        <!-- サイドバーの右側に飛び出すタブ型ハンバーガーボタン -->
+        <button class="sidebar-toggle-tab" onclick="toggleSidebar()" aria-label="サイドバー切り替え">
+            <span>≡</span>
+        </button>
+
         <nav class="chapter-sidebar" id="chapterSidebar">
             <div class="sidebar-header">
                 <h3>PC初心者用カリキュラム</h3>
-                <button class="sidebar-toggle" onclick="toggleSidebar()">
-                    <span>≡</span>
-                </button>
             </div>
             <div class="sidebar-content">
                 <!-- JavaScriptで動的に生成 -->
@@ -305,7 +306,17 @@
 
         function toggleSidebar() {
             const sidebar = document.getElementById('chapterSidebar');
-            sidebar.classList.toggle('collapsed');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isMobile = window.innerWidth <= 768;
+
+            if (isMobile) {
+                // モバイル: openクラスをトグル
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('active');
+            } else {
+                // デスクトップ: collapsedクラスをトグル
+                sidebar.classList.toggle('collapsed');
+            }
         }
     </script>
 </body>
