@@ -1630,6 +1630,13 @@ body {
         left: 0;
     }
 
+    /* モバイル: サイドバーが開いている時はタブボタンを非表示（コンテンツに被らないように） */
+    .chapter-sidebar.open ~ * .sidebar-toggle-tab,
+    body:has(.chapter-sidebar.open) .sidebar-toggle-tab {
+        opacity: 0;
+        pointer-events: none;
+    }
+
     /* モバイル: 閉じるボタンを表示 */
     .sidebar-close {
         display: flex !important;
