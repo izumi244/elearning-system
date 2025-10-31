@@ -284,9 +284,9 @@
 
                 html += `
                     <tr>
-                        <td>${user.userId}</td>
-                        <td>${user.userName}</td>
-                        <td>
+                        <td data-label="ユーザーID">${user.userId}</td>
+                        <td data-label="ユーザー名">${user.userName}</td>
+                        <td data-label="進捗率">
                             <div class="progress-cell">
                                 <div class="progress-bar small">
                                     <div class="progress-fill" style="width: ${user.completionRate}%"></div>
@@ -294,10 +294,10 @@
                                 <span>${user.completionRate}%</span>
                             </div>
                         </td>
-                        <td>${completedCount} / ${user.totalChapters}</td>
-                        <td>${lastUpdated}</td>
-                        <td><span class="status-badge ${statusClass}">${status}</span></td>
-                        <td>
+                        <td data-label="完了チャプター">${completedCount} / ${user.totalChapters}</td>
+                        <td data-label="最終更新">${lastUpdated}</td>
+                        <td data-label="ステータス"><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td data-label="アクション">
                             <button class="btn btn-small" onclick="showUserDetail('${user.userId}')">
                                 詳細
                             </button>
