@@ -9,13 +9,12 @@
 <body>
     <!-- ヘッダー -->
     <header class="header">
-        <div class="logo">【ロゴ】</div>
+        <div class="logo"></div>
         <!-- ハンバーガーメニューボタン -->
         <button class="hamburger-menu" onclick="toggleSidebar()">
             <span>☰</span>
         </button>
         <div class="user-info">
-            <div class="user-avatar" id="userAvatar">U</div>
             <span class="user-name" id="userName">ユーザー</span>
             <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
         </div>
@@ -222,8 +221,10 @@
         function displayUserInfo() {
             const currentUser = authSystem.getCurrentUser();
             if (currentUser) {
-                document.getElementById('userName').textContent = currentUser.name;
-                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+                const userNameEl = document.getElementById('userName');
+                if (userNameEl) {
+                    userNameEl.textContent = currentUser.name;
+                }
             }
         }
 

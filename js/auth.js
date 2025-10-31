@@ -40,11 +40,20 @@ class AuthSystem {
         const userId = document.getElementById('userId').value.trim();
         const password = document.getElementById('password').value.trim();
         const errorMessage = document.getElementById('errorMessage');
+        const loginButton = document.getElementById('loginButton');
+        const loginButtonText = document.getElementById('loginButtonText');
 
         // 入力チェック
         if (!userId || !password) {
             this.showError('ユーザーIDとパスワードを入力してください。');
             return;
+        }
+
+        // ローディング状態を開始
+        if (loginButton && loginButtonText) {
+            loginButton.disabled = true;
+            loginButton.classList.add('loading');
+            loginButtonText.textContent = 'ログイン中...';
         }
 
         // Apps Script経由で認証
@@ -74,10 +83,22 @@ class AuthSystem {
             } else {
                 // ログイン失敗
                 this.showError(result.error || 'ユーザーIDまたはパスワードが正しくありません。');
+                // ローディング状態を解除
+                if (loginButton && loginButtonText) {
+                    loginButton.disabled = false;
+                    loginButton.classList.remove('loading');
+                    loginButtonText.textContent = 'ログイン';
+                }
             }
         } catch (error) {
             console.error('ログインエラー:', error);
             this.showError('ログイン処理中にエラーが発生しました。');
+            // ローディング状態を解除
+            if (loginButton && loginButtonText) {
+                loginButton.disabled = false;
+                loginButton.classList.remove('loading');
+                loginButtonText.textContent = 'ログイン';
+            }
         }
     }
 

@@ -206,6 +206,49 @@ body {
     margin-bottom: 1rem;
 }
 
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #c3e6cb;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.password-tips {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e1e8ed;
+}
+
+.password-tips h3 {
+    font-size: 1rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.password-tips ul {
+    list-style: none;
+    padding: 0;
+}
+
+.password-tips li {
+    padding: 0.5rem 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.password-tips li::before {
+    content: "✓ ";
+    color: #27ae60;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
 /* ===== ページ専用セクション ===== */
 
 /* ログインページ */
@@ -328,6 +371,39 @@ body {
 .login-button span {
     position: relative;
     z-index: 2;
+}
+
+.login-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ローディングスピナー */
+.login-button .spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffffff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+.login-button.loading .spinner {
+    display: inline-block;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .login-help {

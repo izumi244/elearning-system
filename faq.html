@@ -9,9 +9,8 @@
 <body>
     <!-- ヘッダー -->
     <header class="header">
-        <div class="logo">【ロゴ】</div>
+        <div class="logo"></div>
         <div class="user-info">
-            <div class="user-avatar" id="userAvatar">U</div>
             <span class="user-name" id="userName">ユーザー</span>
             <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
         </div>
@@ -161,8 +160,8 @@
                     <div class="faq-answer">
                         <p>ログインできない場合は、以下をご確認ください：</p>
                         <ol>
-                            <li><strong>ユーザーIDの確認</strong>：user001からuser030の形式になっているか確認してください</li>
-                            <li><strong>パスワードの確認</strong>：パスワードはユーザーIDと同じです（例：user001のパスワードはuser001）</li>
+                            <li><strong>ユーザーIDとパスワードの確認</strong>：管理者から提供されたユーザーIDとパスワードを正しく入力してください</li>
+                            <li><strong>パスワードのルール</strong>：初回ログイン後、小文字英字3文字以上＋数字3文字以上を含むパスワードへの変更が必要です</li>
                             <li><strong>入力ミス</strong>：余計なスペースや全角文字が入っていないか確認してください</li>
                             <li><strong>ブラウザのキャッシュ</strong>：ブラウザのキャッシュをクリアして再度お試しください</li>
                         </ol>
@@ -217,14 +216,40 @@
                         <div class="toggle-icon">+</div>
                     </div>
                     <div class="faq-answer">
-                        <p>学習に関するサポートは以下の方法でご利用いただけます：</p>
+                        <p>学習に関するご質問や技術的な問題がある場合は、管理者にお問い合わせください。</p>
+                        <p>管理者は進捗状況の確認や、学習に関するサポートを提供いたします。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="account">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge account">アカウント</span>
+                            <h3>パスワードを忘れた場合はどうすればよいですか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>パスワードを忘れた場合は、管理者にご連絡ください。</p>
+                        <p>管理者がパスワードをリセットし、新しいパスワードを発行いたします。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" data-category="system">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <div class="question-content">
+                            <span class="category-badge system">システム</span>
+                            <h3>進捗データはどこに保存されますか？</h3>
+                        </div>
+                        <div class="toggle-icon">+</div>
+                    </div>
+                    <div class="faq-answer">
+                        <p>進捗データは以下の2つの場所に保存されます：</p>
                         <ul>
-                            <li><strong>Slackサポート</strong>：専用のSlackチャンネルでメンターに質問できます</li>
-                            <li><strong>課題レビュー</strong>：提出した課題に対してフィードバックを受けられます</li>
-                            <li><strong>オフィスアワー</strong>：定期的に開催される質問会に参加できます</li>
-                            <li><strong>メール</strong>：緊急の技術的問題については管理者にメールでお問い合わせください</li>
+                            <li><strong>ブラウザのローカルストレージ</strong>：オフラインでも学習を継続できます</li>
+                            <li><strong>Google Sheets</strong>：クラウド上に自動的にバックアップされます</li>
                         </ul>
-                        <p>学習で困った際は、遠慮なくサポートをご活用ください。</p>
+                        <p>両方のデータが同期されるため、別のデバイスからログインしても学習を継続できます。</p>
                     </div>
                 </div>
             </div>
@@ -233,15 +258,7 @@
             <div class="contact-section">
                 <div class="contact-card">
                     <h2>解決しない問題がありますか？</h2>
-                    <p>上記のFAQで解決しない問題がございましたら、お気軽にお問い合わせください。</p>
-                    <div class="contact-buttons">
-                        <button class="btn btn-primary" onclick="openSlackSupport()">
-                            💬 Slackで質問する
-                        </button>
-                        <button class="btn btn-secondary" onclick="contactAdmin()">
-                            📧 管理者に連絡
-                        </button>
-                    </div>
+                    <p>上記のFAQで解決しない問題がございましたら、管理者にお問い合わせください。</p>
                 </div>
             </div>
         </div>
@@ -266,8 +283,10 @@
         function displayUserInfo() {
             const currentUser = authSystem.getCurrentUser();
             if (currentUser) {
-                document.getElementById('userName').textContent = currentUser.name;
-                document.getElementById('userAvatar').textContent = currentUser.name.charAt(0);
+                const userNameEl = document.getElementById('userName');
+                if (userNameEl) {
+                    userNameEl.textContent = currentUser.name;
+                }
             }
         }
 
@@ -284,7 +303,8 @@
                 toggleIcon.textContent = '+';
             } else {
                 faqItem.classList.add('open');
-                answer.style.maxHeight = answer.scrollHeight + 'px';
+                // 余裕を持った高さを設定
+                answer.style.maxHeight = (answer.scrollHeight + 50) + 'px';
                 toggleIcon.textContent = '−';
             }
 
@@ -336,13 +356,6 @@
             }
         }
 
-        function openSlackSupport() {
-            alert('Slackサポートチャンネルへのリンクを開きます。\n（実際の運用時には適切なSlackリンクを設定してください）');
-        }
-
-        function contactAdmin() {
-            alert('管理者への連絡フォームを開きます。\n（実際の運用時には適切な連絡先を設定してください）');
-        }
     </script>
 
     <style>
@@ -437,6 +450,9 @@
             border: 1px solid #e1e8ed;
             overflow: hidden;
             transition: all 0.3s ease;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
         .faq-item:hover {
@@ -461,6 +477,12 @@
             align-items: center;
             gap: 1rem;
             flex: 1;
+            min-width: 0;
+        }
+
+        .question-content h3 {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .category-badge {
@@ -514,16 +536,23 @@
             overflow: hidden;
             transition: all 0.3s ease;
             border-top: 1px solid #f1f3f4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .faq-item.open .faq-answer {
             padding: 1.5rem;
+            padding-bottom: 1.5rem;
+            max-height: none;
+            overflow: visible;
         }
 
         .faq-answer p {
             margin: 0 0 1rem 0;
             line-height: 1.6;
             color: #555;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         .faq-answer ul,

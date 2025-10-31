@@ -120,25 +120,94 @@ function updateUserProgress(data) {
  * ユーザーIDからユーザー名を取得
  */
 function getUserName(userId) {
-  // ユーザーマスタシートから取得
+  // Usersシートから取得
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const userSheet = ss.getSheetByName('ユーザーマスタ');
+  const usersSheet = ss.getSheetByName('Users');
 
-  if (userSheet) {
-    const data = userSheet.getDataRange().getValues();
+  if (usersSheet) {
+    const data = usersSheet.getDataRange().getValues();
     for (let i = 1; i < data.length; i++) {
       if (data[i][0] === userId) {
-        return data[i][1];
+        return data[i][3]; // name列（D列）
       }
     }
   }
 
-  // ユーザーマスタがない場合
-  if (userId.startsWith('user')) {
-    return `ユーザー${userId.replace('user', '')}`;
+  return userId;
+}
+
+/**
+ * Usersシートに新しいユーザーが追加・編集されたときに自動実行
+ * Progressシートに初期データを作成または既存データを更新
+ */
+function onUsersSheetEdit(e) {
+  const sheet = e.source.getActiveSheet();
+
+  // Usersシート以外は処理しない
+  if (sheet.getName() !== 'Users') return;
+
+  const range = e.range;
+  const startRow = range.getRow();
+  const numRows = range.getNumRows();
+
+  // ヘッダー行は無視
+  if (startRow === 1 && numRows === 1) return;
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const progressSheet = ss.getSheetByName('Progress');
+
+  if (!progressSheet) {
+    Logger.log('❌ Progressシートが見つかりません');
+    return;
   }
 
-  return userId;
+  // Progressシートの既存データを取得
+  const progressData = progressSheet.getDataRange().getValues();
+
+  // 編集された範囲の各行を処理
+  for (let i = 0; i < numRows; i++) {
+    const currentRow = startRow + i;
+
+    // ヘッダー行はスキップ
+    if (currentRow === 1) continue;
+
+    // 編集された行のデータを取得
+    const userId = sheet.getRange(currentRow, 1).getValue();
+    const userName = sheet.getRange(currentRow, 4).getValue();
+
+    // userIdとuserNameが両方入力されている場合のみ処理
+    if (!userId || !userName) continue;
+
+    // Progressシートで該当ユーザーを検索
+    let userRowIndex = -1;
+    for (let j = 1; j < progressData.length; j++) {
+      if (progressData[j][0] === userId) {
+        userRowIndex = j;
+        break;
+      }
+    }
+
+    if (userRowIndex === -1) {
+      // 新規追加
+      const newRow = [
+        userId,           // A: userId
+        userName,         // B: userName
+        34,               // C: totalChapters（基礎マスターコースのチャプター数）
+        0,                // D: completedChapters
+        0,                // E: completionRate
+        Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss\'Z\''), // F: lastUpdated
+        ''                // G: completedChaptersList
+      ];
+
+      progressSheet.appendRow(newRow);
+      Logger.log(`✅ ${userId} (${userName}) をProgressシートに追加しました`);
+    } else {
+      // 既存ユーザーのuserNameを更新
+      const actualRowIndex = userRowIndex + 1; // シートの実際の行番号
+      progressSheet.getRange(actualRowIndex, 2).setValue(userName); // B列（userName）を更新
+      Logger.log(`✅ ${userId} のuserNameを「${userName}」に更新しました`);
+    }
+  }
 }
 
 /**
@@ -169,20 +238,36 @@ function doPost(e) {
       throw new Error('No POST data received');
     }
 
-    // 必須フィールドの確認
-    if (!requestData.userId) {
-      throw new Error('Missing userId');
+    // アクションによって処理を分岐
+    const action = requestData.action;
+
+    if (action === 'login') {
+      // ログイン認証
+      return handleLogin(requestData);
+    } else if (action === 'changePassword') {
+      // パスワード変更
+      return handleChangePassword(requestData);
+    } else if (action === 'updateProgress') {
+      // 進捗更新処理
+      if (!requestData.userId) {
+        throw new Error('Missing userId');
+      }
+      const result = updateUserProgress(requestData);
+      Logger.log(`✅ 進捗保存成功: ${requestData.userId} - ${requestData.chapterTitle}`);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    } else {
+      // 後方互換性のため、actionがない場合は進捗更新として扱う
+      if (!requestData.userId) {
+        throw new Error('Missing userId');
+      }
+      const result = updateUserProgress(requestData);
+      Logger.log(`✅ 進捗保存成功: ${requestData.userId} - ${requestData.chapterTitle}`);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
     }
-
-    // 進捗更新処理
-    const result = updateUserProgress(requestData);
-
-    Logger.log(`✅ 進捗保存成功: ${requestData.userId} - ${requestData.chapterTitle}`);
-
-    // レスポンス返却
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
     Logger.log('❌ doPost error: ' + error.toString());
@@ -197,6 +282,138 @@ function doPost(e) {
       .createTextOutput(JSON.stringify(errorResponse))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+/**
+ * ログイン認証処理
+ */
+function handleLogin(data) {
+  const userId = data.userId;
+  const password = data.password;
+
+  if (!userId || !password) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'ユーザーIDとパスワードを入力してください'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const usersSheet = ss.getSheetByName('Users');
+
+  if (!usersSheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'Usersシートが見つかりません'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const usersData = usersSheet.getDataRange().getValues();
+
+  // ユーザー検索（ヘッダー行をスキップ）
+  for (let i = 1; i < usersData.length; i++) {
+    const row = usersData[i];
+    if (row[0] === userId && row[1] === password) {
+      // 認証成功
+      const userInfo = {
+        success: true,
+        userId: row[0],
+        role: row[2],
+        name: row[3],
+        isFirstLogin: row[4]
+      };
+
+      Logger.log(`✅ ログイン成功: ${userId}`);
+
+      return ContentService
+        .createTextOutput(JSON.stringify(userInfo))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // 認証失敗
+  Logger.log(`❌ ログイン失敗: ${userId}`);
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: false,
+      error: 'ユーザーIDまたはパスワードが正しくありません'
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/**
+ * パスワード変更処理
+ */
+function handleChangePassword(data) {
+  const userId = data.userId;
+  const newPassword = data.newPassword;
+
+  if (!userId || !newPassword) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'ユーザーIDと新しいパスワードが必要です'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // パスワードバリデーション: 小文字英字3文字以上 + 数字3文字以上
+  const lowercaseCount = (newPassword.match(/[a-z]/g) || []).length;
+  const digitCount = (newPassword.match(/[0-9]/g) || []).length;
+
+  if (lowercaseCount < 3 || digitCount < 3) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'パスワードは小文字英字3文字以上、数字3文字以上を含めてください'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const usersSheet = ss.getSheetByName('Users');
+
+  if (!usersSheet) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: 'Usersシートが見つかりません'
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  const usersData = usersSheet.getDataRange().getValues();
+
+  // ユーザー検索
+  for (let i = 1; i < usersData.length; i++) {
+    if (usersData[i][0] === userId) {
+      // パスワードを更新
+      usersSheet.getRange(i + 1, 2).setValue(newPassword);
+      // isFirstLoginをFALSEに更新（E列 = 5列目）
+      usersSheet.getRange(i + 1, 5).setValue(false);
+
+      Logger.log(`✅ パスワード変更成功: ${userId}`);
+
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          message: 'パスワードを変更しました'
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // ユーザーが見つからない
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      success: false,
+      error: 'ユーザーが見つかりません'
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 /**

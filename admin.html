@@ -10,10 +10,9 @@
 <body>
     <!-- ヘッダー -->
     <header class="header">
-        <div class="logo">【ロゴ】</div>
+        <div class="logo"></div>
         <div class="user-info">
-            <div class="user-avatar admin">A</div>
-            <span class="user-name">管理者</span>
+            <span class="user-name" id="userName">管理者</span>
             <button class="logout-btn" onclick="authSystem.logout()">ログアウト</button>
         </div>
     </header>
@@ -64,8 +63,6 @@
             <!-- タブナビゲーション -->
             <div class="admin-tabs">
                 <button class="tab-button active" onclick="switchTab('progress')">進捗管理</button>
-                <button class="tab-button" onclick="switchTab('login-history')">ログイン履歴</button>
-                <button class="tab-button" onclick="switchTab('export')">データエクスポート</button>
             </div>
 
             <!-- 進捗管理タブ -->
@@ -103,96 +100,6 @@
                 </div>
             </div>
 
-            <!-- ログイン履歴タブ -->
-            <div class="tab-content" id="loginHistoryTab">
-                <div class="section-header">
-                    <h2>ログイン履歴</h2>
-                    <div class="controls">
-                        <select id="historyFilter" onchange="filterHistory()">
-                            <option value="all">すべて</option>
-                            <option value="today">本日</option>
-                            <option value="week">1週間</option>
-                            <option value="month">1ヶ月</option>
-                        </select>
-                        <button class="btn btn-secondary" onclick="refreshHistory()">🔄 更新</button>
-                    </div>
-                </div>
-
-                <div class="history-table-container">
-                    <table class="admin-table" id="historyTable">
-                        <thead>
-                            <tr>
-                                <th>ユーザーID</th>
-                                <th>ユーザー名</th>
-                                <th>ログイン日時</th>
-                                <th>ログアウト日時</th>
-                                <th>セッション時間</th>
-                                <th>ステータス</th>
-                            </tr>
-                        </thead>
-                        <tbody id="historyTableBody">
-                            <!-- JavaScriptで動的に生成 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- データエクスポートタブ -->
-            <div class="tab-content" id="exportTab">
-                <div class="section-header">
-                    <h2>データエクスポート</h2>
-                </div>
-
-                <div class="export-section">
-                    <div class="export-cards">
-                        <div class="export-card">
-                            <div class="export-icon">📊</div>
-                            <h3>進捗データ</h3>
-                            <p>全受講者の学習進捗をCSV形式でエクスポートします。</p>
-                            <button class="btn btn-primary" onclick="exportProgressCSV()">
-                                📥 進捗データをダウンロード
-                            </button>
-                        </div>
-
-                        <div class="export-card">
-                            <div class="export-icon">📋</div>
-                            <h3>ログイン履歴</h3>
-                            <p>受講者のログイン・ログアウト履歴をCSV形式でエクスポートします。</p>
-                            <button class="btn btn-primary" onclick="exportHistoryCSV()">
-                                📥 履歴データをダウンロード
-                            </button>
-                        </div>
-
-                        <div class="export-card">
-                            <div class="export-icon">📈</div>
-                            <h3>統計レポート</h3>
-                            <p>学習状況の統計情報をまとめたレポートを作成します。</p>
-                            <button class="btn btn-primary" onclick="exportStatisticsReport()">
-                                📥 統計レポートをダウンロード
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="export-options">
-                        <h3>エクスポートオプション</h3>
-                        <div class="options-grid">
-                            <label class="option-item">
-                                <input type="checkbox" id="includePersonalInfo" checked>
-                                <span>個人情報を含む</span>
-                            </label>
-                            <label class="option-item">
-                                <input type="checkbox" id="includeTimestamps" checked>
-                                <span>タイムスタンプを含む</span>
-                            </label>
-                            <label class="option-item">
-                                <input type="checkbox" id="includeProgressDetails" checked>
-                                <span>詳細な進捗情報を含む</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 受講者詳細モーダル -->
             <div class="modal" id="userDetailModal">
                 <div class="modal-content">
@@ -211,10 +118,6 @@
                                 <div class="detail-item">
                                     <span class="label">進捗率:</span>
                                     <span class="value" id="modalProgress">-</span>
-                                </div>
-                                <div class="detail-item">
-                                    <span class="label">最終ログイン:</span>
-                                    <span class="value" id="modalLastLogin">-</span>
                                 </div>
                             </div>
                             <div class="detail-section">
@@ -240,7 +143,6 @@
     <script src="js/hybrid-progress.js"></script>
     <script>
         let allProgressData = [];
-        let allLoginHistory = [];
 
         document.addEventListener('DOMContentLoaded', function() {
             // 管理者権限チェック
@@ -248,9 +150,15 @@
                 return;
             }
 
+            // ログインユーザー情報を表示
+            const currentUser = authSystem.getCurrentUser();
+            if (currentUser) {
+                document.getElementById('userName').textContent = currentUser.name || '管理者';
+            }
+
             // データの初期読み込み
             loadAdminData();
-            
+
             // 統計の表示
             updateStatistics();
         });
@@ -260,6 +168,23 @@
                 // Google Sheetsから進捗データを取得
                 console.log('📊 Google Sheetsから進捗データを取得中...');
                 const sheetsData = await hybridProgressManager.fetchFromGoogleSheetsAPI();
+
+                // Usersシートからrole情報を取得
+                const usersUrl = `${CONFIG.GOOGLE_SHEETS_API_BASE_URL}/${CONFIG.SPREADSHEET_ID}/values/Users!A:E?key=${CONFIG.GOOGLE_API_KEY}`;
+                const usersResponse = await fetch(usersUrl);
+                const usersData = await usersResponse.json();
+
+                // ユーザーロールのマップを作成（userId -> role）
+                const userRoles = {};
+                if (usersData && usersData.values && usersData.values.length > 1) {
+                    usersData.values.slice(1).forEach(row => {
+                        const userId = row[0];
+                        const role = row[2]; // C列がrole
+                        if (userId) {
+                            userRoles[userId] = role;
+                        }
+                    });
+                }
 
                 if (sheetsData && sheetsData.values && sheetsData.values.length > 1) {
                     // ヘッダー行をスキップして変換
@@ -273,20 +198,19 @@
                             lastUpdated: row[5] || '',
                             completedChaptersList: row[6] || ''
                         };
-                    }).filter(user => user.userId); // 空行を除外
+                    }).filter(user => {
+                        // 空行を除外、かつ管理者(admin)を除外
+                        return user.userId && userRoles[user.userId] !== 'admin';
+                    });
 
-                    console.log(`✅ ${allProgressData.length}件の進捗データを取得しました`);
+                    console.log(`✅ ${allProgressData.length}件の進捗データを取得しました（管理者除外）`);
                 } else {
                     console.log('⚠️  進捗データが見つかりません');
                     allProgressData = [];
                 }
 
-                // ログイン履歴の取得
-                allLoginHistory = JSON.parse(localStorage.getItem('loginHistory') || '[]');
-
                 // テーブルの更新
                 updateProgressTable();
-                updateHistoryTable();
                 updateStatistics();
 
             } catch (error) {
@@ -385,64 +309,6 @@
             tableBody.innerHTML = html || '<tr><td colspan="7" class="no-data">データがありません</td></tr>';
         }
 
-        function updateHistoryTable() {
-            const tableBody = document.getElementById('historyTableBody');
-            const filter = document.getElementById('historyFilter').value;
-            
-            let filteredHistory = allLoginHistory.filter(entry => {
-                const loginDate = new Date(entry.loginTime);
-                const now = new Date();
-                
-                if (filter === 'all') return true;
-                if (filter === 'today') {
-                    return loginDate.toDateString() === now.toDateString();
-                }
-                if (filter === 'week') {
-                    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                    return loginDate >= weekAgo;
-                }
-                if (filter === 'month') {
-                    const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-                    return loginDate >= monthAgo;
-                }
-                return true;
-            });
-
-            // 最新順にソート
-            filteredHistory.sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime));
-
-            let html = '';
-            filteredHistory.slice(0, 100).forEach(entry => { // 最新100件のみ表示
-                const loginTime = new Date(entry.loginTime).toLocaleString('ja-JP');
-                const logoutTime = entry.logoutTime ? 
-                    new Date(entry.logoutTime).toLocaleString('ja-JP') : 'ログイン中';
-                
-                let sessionTime = '-';
-                let statusClass = 'active';
-                let status = 'ログイン中';
-
-                if (entry.logoutTime) {
-                    const duration = new Date(entry.logoutTime) - new Date(entry.loginTime);
-                    const minutes = Math.floor(duration / 60000);
-                    sessionTime = `${minutes}分`;
-                    status = '完了';
-                    statusClass = 'completed';
-                }
-
-                html += `
-                    <tr>
-                        <td>${entry.userId}</td>
-                        <td>${entry.name}</td>
-                        <td>${loginTime}</td>
-                        <td>${logoutTime}</td>
-                        <td>${sessionTime}</td>
-                        <td><span class="status-badge ${statusClass}">${status}</span></td>
-                    </tr>
-                `;
-            });
-
-            tableBody.innerHTML = html || '<tr><td colspan="6" class="no-data">データがありません</td></tr>';
-        }
 
         function showUserDetail(userId) {
             const user = allProgressData.find(u => u.userId === userId);
@@ -451,15 +317,6 @@
             document.getElementById('modalUserName').textContent = `${user.userName}の詳細情報`;
             document.getElementById('modalUserId').textContent = user.userId;
             document.getElementById('modalProgress').textContent = user.completionRate + '%';
-            
-            // 最新のログイン履歴を取得
-            const lastLogin = allLoginHistory
-                .filter(entry => entry.userId === userId)
-                .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))[0];
-            
-            const lastLoginText = lastLogin ? 
-                new Date(lastLogin.loginTime).toLocaleString('ja-JP') : '履歴なし';
-            document.getElementById('modalLastLogin').textContent = lastLoginText;
 
             // 完了チャプターの表示
             let completedChaptersHtml = '';
@@ -484,136 +341,16 @@
         }
 
         function switchTab(tabName) {
-            // タブボタンの状態更新
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // タブコンテンツの表示切り替え
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-
-            if (tabName === 'progress') {
-                document.getElementById('progressTab').classList.add('active');
-            } else if (tabName === 'login-history') {
-                document.getElementById('loginHistoryTab').classList.add('active');
-            } else if (tabName === 'export') {
-                document.getElementById('exportTab').classList.add('active');
-            }
+            // タブが1つしかないので何もしない（後方互換性のため関数は残す）
         }
 
         function filterProgress() {
             updateProgressTable();
         }
 
-        function filterHistory() {
-            updateHistoryTable();
-        }
-
         function refreshProgress() {
             loadAdminData();
             updateStatistics();
-        }
-
-        function refreshHistory() {
-            loadAdminData();
-        }
-
-        function exportProgressCSV() {
-            let csvContent = 'ユーザーID,ユーザー名,総チャプター数,完了チャプター数,進捗率(%),最終更新日時\n';
-
-            allProgressData.forEach(user => {
-                const completedCount = user.completedChaptersList ?
-                    user.completedChaptersList.split(',').filter(c => c.trim() !== '').length : 0;
-
-                const row = [
-                    user.userId,
-                    user.userName,
-                    user.totalChapters,
-                    completedCount,
-                    user.completionRate,
-                    user.lastUpdated || ''
-                ].join(',');
-
-                csvContent += row + '\n';
-            });
-
-            downloadCSV(csvContent, 'progress_data.csv');
-        }
-
-        function exportHistoryCSV() {
-            let csvContent = 'ユーザーID,ユーザー名,ログイン日時,ログアウト日時,セッション時間(分)\n';
-            
-            allLoginHistory.forEach(entry => {
-                const sessionMinutes = entry.logoutTime ? 
-                    Math.floor((new Date(entry.logoutTime) - new Date(entry.loginTime)) / 60000) : '';
-                
-                const row = [
-                    entry.userId,
-                    entry.name,
-                    new Date(entry.loginTime).toLocaleString('ja-JP'),
-                    entry.logoutTime ? new Date(entry.logoutTime).toLocaleString('ja-JP') : '',
-                    sessionMinutes
-                ].join(',');
-                
-                csvContent += row + '\n';
-            });
-
-            downloadCSV(csvContent, 'login_history.csv');
-        }
-
-        function exportStatisticsReport() {
-            const report = generateStatisticsReport();
-            downloadCSV(report, 'statistics_report.csv');
-        }
-
-        function generateStatisticsReport() {
-            let report = '学習管理システム 統計レポート\n';
-            report += `生成日時,${new Date().toLocaleString('ja-JP')}\n\n`;
-            
-            report += '基本統計\n';
-            report += `総受講者数,${document.getElementById('totalUsers').textContent}\n`;
-            report += `学習中ユーザー,${document.getElementById('activeUsers').textContent}\n`;
-            report += `完了ユーザー,${document.getElementById('completedUsers').textContent}\n`;
-            report += `平均進捗率,${document.getElementById('averageProgress').textContent}\n\n`;
-            
-            report += '進捗率分布\n';
-            const distribution = [0, 25, 50, 75, 100].map(threshold => {
-                const count = allProgressData.filter(user => user.completionRate >= threshold).length;
-                return `${threshold}%以上,${count}人`;
-            }).join('\n');
-            
-            report += distribution + '\n\n';
-            
-            report += '最新ログイン履歴(上位10件)\n';
-            report += 'ユーザーID,ログイン日時\n';
-            
-            allLoginHistory
-                .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime))
-                .slice(0, 10)
-                .forEach(entry => {
-                    report += `${entry.userId},${new Date(entry.loginTime).toLocaleString('ja-JP')}\n`;
-                });
-            
-            return report;
-        }
-
-        function downloadCSV(csvContent, filename) {
-            const bom = '\uFEFF'; // UTF-8 BOM
-            const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', filename);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            }
         }
 
         // モーダル外クリックで閉じる
