@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 プロンプトエンジニアリングのテクニック</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1 { font-size: 2rem; margin-top: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.25rem; }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+        }
+        figure {
+            margin: 1rem 0;
+        }
+        figcaption {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 3px solid #ddd;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+        }
+        .callout {
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chapter 2 プロンプトエンジニアリングのテクニック</h1>
+<h2>プロンプトエンジニアリングの基本手法</h2>
+<hr>
+<p>プロンプトエンジニアリングにはいくつかの代表的な手法があります。</p>
+<p>ここでは「<strong>ゼロショット（Zero-shot）</strong>」と「<strong>フューショット（Few-shot）</strong>」という2つのアプローチをご紹介します。</p>
+<p>これらの使い分けを理解することで、目的に応じたプロンプト設計がしやすくなり、生成AIからより的確な回答を得ることができます。</p>
+<blockquote><strong>ゼロショット（Zero-shot）とは</strong></blockquote>
+<p>ゼロショットとは、プロンプト内に具体的な例や追加情報を含めずに、AIにタスクをそのまま実行させる方法です。</p>
+<p>生成AIは学習済みの膨大な情報をもとに、提示された課題に対して推論しながら回答を導き出します。</p>
+<p>たとえば、ChatGPTにカフェのレビューがポジティブかネガティブかを判定させるとき、以下のような使い方になります。</p>
+<p><strong>【ゼロショットのプロンプト例】</strong></p>
+<table border="1" style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
+<tr><td style="padding: 8px;">プロンプト</td><td style="padding: 8px;">カフェのレビューコメントがそれぞれポジティブかネガティブか判定してください。
+「素晴らしいコーヒーと心地よい雰囲気です。スタッフもフレンドリーで、いつも笑顔で迎えてくれます。」
+「内装は素敵ですが、混雑時の待ち時間が長すぎます。注文が来るまで30分以上かかったことも。」
+「新鮮なペストリーが豊富で、朝食にぴったり。特にクロワッサンがおすすめです。」</td></tr>
+<tr><td style="padding: 8px;">ChatGPTの回答</td><td style="padding: 8px;">「素晴らしいコーヒーと心地よい雰囲気です。スタッフもフレンドリーで、いつも笑顔で迎えてくれます。」
+→ ポジティブ
+理由：コーヒー、雰囲気、スタッフ対応に対して好意的な評価がされているため。
+
+「内装は素敵ですが、混雑時の待ち時間が長すぎます。注文が来るまで30分以上かかったことも。」
+→ ネガティブ
+理由：内装は褒めているものの、待ち時間の長さという重大なマイナスポイントが主にフォーカスされており、全体的な印象としてネガティブ。
+
+「新鮮なペストリーが豊富で、朝食にぴったり。特にクロワッサンがおすすめです。」
+→ ポジティブ
+理由：ペストリーの新鮮さや品揃え、具体的なおすすめまで示されており、高評価と読み取れる。</td></tr>
+</table>
+<p>このように、前提となる具体例を示さずとも、AIは自らの知識から判断を行うのがゼロショットの特徴です。</p>
+<blockquote><strong>フューショット（Few-shot）とは</strong></blockquote>
+<p>フューショットは、プロンプト内にいくつかの具体例を提示することで、AIにタスクのパターンを学習させながら実行させる方法です。</p>
+<p>ゼロショットに比べて、意図に沿った精度の高い出力が期待できます。</p>
+<p>たとえば「『鍋』の季節はいつか？」という質問に対し、ゼロショットで問いかけた場合は以下のようになります。</p>
+<p><strong>【ゼロショットでの指示例】</strong></p>
+<table border="1" style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
+<tr><td style="padding: 8px;">プロンプト</td><td style="padding: 8px;">鍋は？</td></tr>
+<tr><td style="padding: 8px;">ChatGPTの回答</td><td style="padding: 8px;">鍋は料理を調理するための道具であり、通常は金属や陶器で作られています。
+鍋は液体を加熱し、その中で食材を調理するのに使用されます。
+さまざまな種類の鍋があり、それぞれ異なる料理や調理法に適しています。
+例えば、鍋の種類には鍋、フライパン、圧力鍋、鍋、蒸し器などがあります。</td></tr>
+</table>
+<p>このように、AIは「鍋＝調理器具」と解釈してしまい、意図した「季節としての鍋料理」に関する回答にはなりません。</p>
+<p><strong>【フューショットでの指示例】</strong></p>
+<table border="1" style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
+<tr><td style="padding: 8px;">プロンプト</td><td style="padding: 8px;">『雪合戦』の季節は冬である。
+『桜』の季節は春である。
+『キャンプ』の季節は夏である。『秋刀魚』の季節は秋である。
+『鍋』は？</td></tr>
+<tr><td style="padding: 8px;">ChatGPTの回答</td><td style="padding: 8px;">『鍋』の季節は冬です。
+鍋料理は寒い冬に温かい料理を囲んで食べることが多く、日本では冬の風物詩として親しまれています。
+したがって、『鍋』の季節は冬と考えられます。</td></tr>
+</table>
+<p>このように、いくつかの例を示すことで、AIはそのパターンを踏まえて適切に回答を導き出します。</p>
+<p>フューショットは、より精度の高い応答を引き出したいときに有効な手法です。</p>
+
+</body>
+</html>

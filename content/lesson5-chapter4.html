@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 ［演習課題④］生成AIでアプリを作成してみよう</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1 { font-size: 2rem; margin-top: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.25rem; }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+        }
+        figure {
+            margin: 1rem 0;
+        }
+        figcaption {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 3px solid #ddd;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+        }
+        .callout {
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chapter 4 ［演習課題④］生成AIでアプリを作成してみよう</h1>
+<p>ChatGPTに対して工夫を凝らした構造化プロンプトを設計することで、擬似的なアプリケーションを作成することが可能です。</p>
+<h3><strong>　作成例：算数アプリ</strong></h3>
+<blockquote><strong>想定シナリオ</strong></blockquote>
+<p>今回は、小学生を対象に、1桁の掛け算問題を出題する算数アプリを作成します。ユーザーがChatGPTから出題された問題に答えると、その回答が正しいかどうかを判定してくれる仕組みです。</p>
+<blockquote><strong>プロンプト設計のポイント</strong></blockquote>
+<li>アプリの利用者像を想定し、その役割や背景（文脈）を具体的に記載する</li>
+<li>コマンド（手順）は変数を使って、理解しやすいように明確に記述する</li>
+<li>実際のユーザーとの対話を意識して、自然なやり取りができるような手順を設計する</li>
+<table border="1" style="border-collapse: collapse; width: 100%; margin: 1rem 0;">
+<tr><td style="padding: 8px;">プロンプト</td><td style="padding: 8px;">#役割
+あなたは初心者にやさしい数学の教師です。あなたは1桁同士の掛け算の出題と計算結果の正誤判定を行う役割を担います。
+
+#文脈
+ユーザーは掛け算の学習をしたいと考えています。
+
+#ゴール
+ユーザーに掛け算を出題し、Userが提供した計算結果の正誤を判定する。
+
+#変数
+　- 出題する掛け算のリスト
+　- 掛け算とその計算結果の対応表
+　- Userが提供した計算結果
+　- 正誤判定の結果
+
+#手順
+　- [C1] 出題する掛け算のリストを決定する。
+　- [C2] 掛け算とその計算結果の対応表を用意する。
+　- [C3] Userに掛け算を1つ出題し、計算結果を回答してもらう。
+　- [C4] Userが提供した計算結果と対応表を照らし合わせ、正誤を判定する。
+　- [C5] 正誤の結果と正しい計算結果（誤答の場合）をUserにフィードバックする。
+　- [C6] Userが望む場合、別の掛け算を出題し、[C3]以降のプロセスを繰り返す。
+
+#出力形式
+　- フィードバックメッセージ形式：「あなたの回答は[正しい/間違い]です。正しい計算結果は[計算結果]です。」
+
+#制約事項
+　- フィードバックは教育的な観点から積極的かつ激励の言葉を含むようにする。
+
+#User:「こんにちは。出題を始めてください。」</td></tr>
+<tr><td style="padding: 8px;">会話例</td><td style="padding: 8px;">※画像は欄外</td></tr>
+</table>
+<img src="../images/lesson5/chapter4-image1.png" alt="画像">
+<p>このようにChatGPTがどんどん問題を出題してくれて、アプリのように利用することができます。</p>
+<p>また、今回はユーザーが小学生であることを想定し、「#制約事項」に正誤回答に対する教育的観点や激励という指示をしたことが、正誤判定時のコメントにも反映されていることが分かります。</p>
+<h2><strong>　［演習課題④］医療用語クイズアプリを作ってみよう</strong></h2>
+<blockquote><strong>【想定シナリオ】</strong></blockquote>
+<p>今回は、医療機関で働く新入職員や研修スタッフを対象にした「医療用語クイズアプリ」を企画します。</p>
+<p>アプリでは、医療現場でよく使われる専門用語が出題され、ユーザーがその意味や日本語訳を入力すると、ChatGPTが正誤を判定してくれる仕組みです。</p>
+<p>このアイディアの利点は、ChatGPTが表現の違いやニュアンスを読み取れる点です。厳密に辞書通りの回答でなくても、意味が通じていれば正解として判断されるため、実践的な学習が可能です。</p>
+<blockquote><strong>【実施ステップ】</strong></blockquote>
+<li>医療現場で使用される専門用語に関するクイズ形式のアプリをChatGPTで作成してみましょう。</li>
+<li>次に、自分がそのアプリの利用者になったつもりで、ChatGPTから出題された用語の意味に答えてみてください。</li>
+<blockquote><strong>【提出方法】</strong></blockquote>
+<p><strong>演習課題の入力先シート</strong></p>
+<p>「提出ファイル」>「Lesson5_［演習課題④］医療用語クイズアプリを作ってみよう」</p>
+<p>
+<strong>提出方法</strong></p>
+<p>：スプレッドシートに回答を記入、入力完了にチェックをしたら、チャットワークグループにて担当講師をメンションし、行なった課題の報告をお願いします。</p>
+<p>報告例：Lesson5_演習課題④完了</p>
+
+</body>
+</html>
