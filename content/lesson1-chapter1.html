@@ -1,693 +1,142 @@
-﻿<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Chapter 1 生成AIとは何か</title><style>
-/* cspell:disable-file */
-/* webkit printing magic: print all background colors */
-html {
-	-webkit-print-color-adjust: exact;
-}
-* {
-	box-sizing: border-box;
-	-webkit-print-color-adjust: exact;
-}
-
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
-@media only screen { body { margin: 2em auto;
-		color: rgb(55, 53, 47);
-	}
-}
-
-body {
-	line-height: 1.5;
-	white-space: pre-wrap;
-}
-
-a,
-a.visited {
-	color: inherit;
-	text-decoration: underline;
-}
-
-.pdf-relative-link-path {
-	font-size: 80%;
-	color: #444;
-}
-
-h1,
-h2,
-h3 {
-	letter-spacing: -0.01em;
-	line-height: 1.2;
-	font-weight: 600;
-	margin-bottom: 0;
-}
-
-.page-title {
-	font-size: 2.5rem;
-	font-weight: 700;
-	margin-top: 0;
-	margin-bottom: 0.75em;
-}
-
-h1 {
-	font-size: 1.875rem;
-	margin-top: 1.875rem;
-}
-
-h2 {
-	font-size: 1.5rem;
-	margin-top: 1.5rem;
-}
-
-h3 {
-	font-size: 1.25rem;
-	margin-top: 1.25rem;
-}
-
-.source {
-	border: 1px solid #ddd;
-	border-radius: 3px;
-	padding: 1.5em;
-	word-break: break-all;
-}
-
-.callout {
-	border-radius: 3px;
-	padding: 1rem;
-}
-
-figure {
-	margin: 1.25em 0;
-	page-break-inside: avoid;
-}
-
-figcaption {
-	opacity: 0.5;
-	font-size: 85%;
-	margin-top: 0.5em;
-}
-
-mark {
-	background-color: transparent;
-}
-
-.indented {
-	padding-left: 1.5em;
-}
-
-hr {
-	background: transparent;
-	display: block;
-	width: 100%;
-	height: 1px;
-	visibility: visible;
-	border: none;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-}
-
-img {
-	max-width: 100%;
-}
-
-@media only print {
-	img {
-		max-height: 100vh;
-		object-fit: contain;
-	}
-}
-
-@page {
-	margin: 1in;
-}
-
-.collection-content {
-	font-size: 0.875rem;
-}
-
-.collection-content td {
-	white-space: pre-wrap;
-	word-break: break-word;
-}
-
-.column-list {
-	display: flex;
-	justify-content: space-between;
-}
-
-.column {
-	padding: 0 1em;
-}
-
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
-}
-
-.table_of_contents-item {
-	display: block;
-	font-size: 0.875rem;
-	line-height: 1.3;
-	padding: 0.125rem;
-}
-
-.table_of_contents-indent-1 {
-	margin-left: 1.5rem;
-}
-
-.table_of_contents-indent-2 {
-	margin-left: 3rem;
-}
-
-.table_of_contents-indent-3 {
-	margin-left: 4.5rem;
-}
-
-.table_of_contents-link {
-	text-decoration: none;
-	opacity: 0.7;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
-}
-
-table,
-th,
-td {
-	border: 1px solid rgba(55, 53, 47, 0.09);
-	border-collapse: collapse;
-}
-
-table {
-	border-left: none;
-	border-right: none;
-}
-
-th,
-td {
-	font-weight: normal;
-	padding: 0.25em 0.5em;
-	line-height: 1.5;
-	min-height: 1.5em;
-	text-align: left;
-}
-
-th {
-	color: rgba(55, 53, 47, 0.6);
-}
-
-ol,
-ul {
-	margin: 0;
-	margin-block-start: 0.6em;
-	margin-block-end: 0.6em;
-}
-
-li > ol:first-child,
-li > ul:first-child {
-	margin-block-start: 0.6em;
-}
-
-ul > li {
-	list-style: disc;
-}
-
-ul.to-do-list {
-	padding-inline-start: 0;
-}
-
-ul.to-do-list > li {
-	list-style: none;
-}
-
-.to-do-children-checked {
-	text-decoration: line-through;
-	opacity: 0.375;
-}
-
-ul.toggle > li {
-	list-style: none;
-}
-
-ul {
-	padding-inline-start: 1.7em;
-}
-
-ul > li {
-	padding-left: 0.1em;
-}
-
-ol {
-	padding-inline-start: 1.6em;
-}
-
-ol > li {
-	padding-left: 0.2em;
-}
-
-.mono ol {
-	padding-inline-start: 2em;
-}
-
-.mono ol > li {
-	text-indent: -0.4em;
-}
-
-.toggle {
-	padding-inline-start: 0em;
-	list-style-type: none;
-}
-
-/* Indent toggle children */
-.toggle > li > details {
-	padding-left: 1.7em;
-}
-
-.toggle > li > details > summary {
-	margin-left: -1.1em;
-}
-
-.selected-value {
-	display: inline-block;
-	padding: 0 0.5em;
-	background: rgba(206, 205, 202, 0.5);
-	border-radius: 3px;
-	margin-right: 0.5em;
-	margin-top: 0.3em;
-	margin-bottom: 0.3em;
-	white-space: nowrap;
-}
-
-.collection-title {
-	display: inline-block;
-	margin-right: 1em;
-}
-
-.page-description {
-	margin-bottom: 2em;
-}
-
-.simple-table {
-	margin-top: 1em;
-	font-size: 0.875rem;
-	empty-cells: show;
-}
-.simple-table td {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table th {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table-header-color {
-	background: rgb(247, 246, 243);
-	color: black;
-}
-.simple-table-header {
-	font-weight: 500;
-}
-
-time {
-	opacity: 0.5;
-}
-
-.icon {
-	display: inline-block;
-	max-width: 1.2em;
-	max-height: 1.2em;
-	text-decoration: none;
-	vertical-align: text-bottom;
-	margin-right: 0.5em;
-}
-
-img.icon {
-	border-radius: 3px;
-}
-
-.user-icon {
-	width: 1.5em;
-	height: 1.5em;
-	border-radius: 100%;
-	margin-right: 0.5rem;
-}
-
-.user-icon-inner {
-	font-size: 0.8em;
-}
-
-.text-icon {
-	border: 1px solid #000;
-	text-align: center;
-}
-
-.page-cover-image {
-	display: block;
-	object-fit: cover;
-	width: 100%;
-	max-height: 30vh;
-}
-
-.page-header-icon {
-	font-size: 3rem;
-	margin-bottom: 1rem;
-}
-
-.page-header-icon-with-cover {
-	margin-top: -0.72em;
-	margin-left: 0.07em;
-}
-
-.page-header-icon img {
-	border-radius: 3px;
-}
-
-.link-to-page {
-	margin: 1em 0;
-	padding: 0;
-	border: none;
-	font-weight: 500;
-}
-
-p > .user {
-	opacity: 0.5;
-}
-
-td > .user,
-td > time {
-	white-space: nowrap;
-}
-
-input[type="checkbox"] {
-	transform: scale(1.5);
-	margin-right: 0.6em;
-	vertical-align: middle;
-}
-
-p {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-}
-
-.image {
-	border: none;
-	margin: 1.5em 0;
-	padding: 0;
-	border-radius: 0;
-	text-align: center;
-}
-
-.code,
-code {
-	background: rgba(135, 131, 120, 0.15);
-	border-radius: 3px;
-	padding: 0.2em 0.4em;
-	border-radius: 3px;
-	font-size: 85%;
-	tab-size: 2;
-}
-
-code {
-	color: #eb5757;
-}
-
-.code {
-	padding: 1.5em 1em;
-}
-
-.code-wrap {
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-.code > code {
-	background: none;
-	padding: 0;
-	font-size: 100%;
-	color: inherit;
-}
-
-blockquote {
-	font-size: 1em;
-	margin: 1em 0;
-	padding-left: 1em;
-	border-left: 3px solid rgb(55, 53, 47);
-}
-
-blockquote.quote-large {
-	font-size: 1.25em;
-}
-
-.bookmark {
-	text-decoration: none;
-	max-height: 8em;
-	padding: 0;
-	display: flex;
-	width: 100%;
-	align-items: stretch;
-}
-
-.bookmark-title {
-	font-size: 0.85em;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	height: 1.75em;
-	white-space: nowrap;
-}
-
-.bookmark-text {
-	display: flex;
-	flex-direction: column;
-}
-
-.bookmark-info {
-	flex: 4 1 180px;
-	padding: 12px 14px 14px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-.bookmark-image {
-	width: 33%;
-	flex: 1 1 180px;
-	display: block;
-	position: relative;
-	object-fit: cover;
-	border-radius: 1px;
-}
-
-.bookmark-description {
-	color: rgba(55, 53, 47, 0.6);
-	font-size: 0.75em;
-	overflow: hidden;
-	max-height: 4.5em;
-	word-break: break-word;
-}
-
-.bookmark-href {
-	font-size: 0.75em;
-	margin-top: 0.25em;
-}
-
-.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
-.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
-.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
-.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
-.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
-.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
-.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
-.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
-.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
-.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
-.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
-.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
-.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.highlight-default {
-	color: rgba(50, 48, 44, 1);
-}
-.highlight-gray {
-	color: rgba(115, 114, 110, 1);
-	fill: rgba(115, 114, 110, 1);
-}
-.highlight-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.highlight-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.highlight-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.highlight-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.highlight-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.highlight-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.highlight-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.highlight-red {
-	color: rgba(205, 60, 58, 1);
-	fill: rgba(205, 60, 58, 1);
-}
-.highlight-default_background {
-	color: rgba(50, 48, 44, 1);
-}
-.highlight-gray_background {
-	background: rgba(248, 248, 247, 1);
-}
-.highlight-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.highlight-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.highlight-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.highlight-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.highlight-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.highlight-purple_background {
-	background: rgba(248, 243, 252, 1);
-}
-.highlight-pink_background {
-	background: rgba(252, 241, 246, 1);
-}
-.highlight-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.block-color-default {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray {
-	color: rgba(115, 114, 110, 1);
-	fill: rgba(115, 114, 110, 1);
-}
-.block-color-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.block-color-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.block-color-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.block-color-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.block-color-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.block-color-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.block-color-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.block-color-red {
-	color: rgba(205, 60, 58, 1);
-	fill: rgba(205, 60, 58, 1);
-}
-.block-color-default_background {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray_background {
-	background: rgba(248, 248, 247, 1);
-}
-.block-color-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.block-color-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.block-color-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.block-color-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.block-color-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.block-color-purple_background {
-	background: rgba(248, 243, 252, 1);
-}
-.block-color-pink_background {
-	background: rgba(252, 241, 246, 1);
-}
-.block-color-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
-.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
-.select-value-color-brown { background-color: rgba(142, 58, 1, 0.141); }
-.select-value-color-orange { background-color: rgba(213, 96, 0, 0.188); }
-.select-value-color-yellow { background-color: rgba(209, 155, 0, 0.238); }
-.select-value-color-green { background-color: rgba(1, 104, 42, 0.145); }
-.select-value-color-blue { background-color: rgba(45, 149, 218, 0.236); }
-.select-value-color-purple { background-color: rgba(104, 1, 184, 0.125); }
-.select-value-color-pink { background-color: rgba(204, 1, 88, 0.137); }
-.select-value-color-red { background-color: rgba(228, 26, 0, 0.148); }
-
-.checkbox {
-	display: inline-flex;
-	vertical-align: text-bottom;
-	width: 16;
-	height: 16;
-	background-size: 16px;
-	margin-left: 2px;
-	margin-right: 5px;
-}
-
-.checkbox-on {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-
-.checkbox-off {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-	
-</style></head><body><article id="22a01625-9b2b-81ec-b18a-cb096b425dcd" class="page sans"><header><h1 class="page-title">Chapter 1 生成AIとは何か</h1><p class="page-description"></p></header><div class="page-body"><h2 id="22d01625-9b2b-8086-a962-e756c7d66212" class="block-color-blue_background">　生成AIとは</h2><hr id="24b01625-9b2b-80ef-b85a-ee353991debc"/><p id="24701625-9b2b-805e-bf59-d542095459d2" class="">生成AIは、与えられた入力（プロンプト）をもとに、テキストや画像、音声といった新しいデータを自動的に作り出す技術です。たとえば「猫」と入力すれば、猫に関する説明文を生成したり、犬の画像を描き出したりすることが可能です。</p><p id="22d01625-9b2b-80c2-ba77-db848b2fdd79" class="">この技術の仕組みを理解するには、「開発段階」と「利用段階」に分けて考えるとイメージしやすくなります。</p><p id="22d01625-9b2b-80fe-a3c0-f895121f2313" class="">開発段階では、大量のデータをもとにパターンを学習し、一つの巨大なモデルを構築します。この「モデル」とは、データ内の規則性や関連性を学び取り、未知の情報に対して判断や予測を行うための仕組みの集合体です。言い換えれば、生成AIの「頭脳」にあたる部分ですが、あくまで学習した情報に基づいて応答するものであり、人のように自分の意思や感情を持っているわけではありません。</p><p id="22d01625-9b2b-80a5-928f-eddc2ac39640" class="">続いての利用段階では、この学習済みモデルに対してテキストなどの情報を入力することで、新たなコンテンツを生成する仕組みになっています。</p><p id="24601625-9b2b-8005-b688-e5501cfd3b6a" class="">
-</p><figure id="24601625-9b2b-801b-ba60-cff3a4bb88fc" class="image"><a href="../images/lesson1/chapter1-image1.png"><img style="width:639.3125px" src="../images/lesson1/chapter1-image1.png"/></a></figure><p id="22d01625-9b2b-8063-acb5-d01e273e51d7" class=""><br/>現在では、OpenAIの「ChatGPT」をはじめとした代表的なサービスが登場しており、テキスト生成に特化したこのツールは、人間に近い自然な文章を出力する点で高く評価されています。さらに、GoogleやMicrosoftなども含め、さまざまな企業が生成AIに注目しており、テキストだけでなく画像、音声、動画などの幅広い分野で技術開発が進んでいます。</p><h2 id="22d01625-9b2b-80c3-89d4-dfe332fda2d7" class="block-color-blue_background">　生成AIの主な特徴</h2><hr id="24b01625-9b2b-80f8-9cfd-d98536fceb23"/><p id="22d01625-9b2b-80b8-b754-c950c611d490" class="">生成AIの最大の魅力は、その高い汎用性にあります。</p><p id="22d01625-9b2b-80ed-abd8-f1d5f987cf00" class="">本コースでは生成AIを中心に扱いますが、AIには他にも様々なタイプがあります。それぞれの代表的なAIと比較することで、生成AIの特性をより深く理解していきましょう。以下は、主なAIの種類を整理した一覧です。<br/></p><figure id="24601625-9b2b-80ae-a1c6-ce2dbc791a30" class="image"><a href="../images/lesson1/chapter1-image2.png"><img style="width:639.3203125px" src="../images/lesson1/chapter1-image2.png"/></a></figure><p id="24601625-9b2b-8077-824b-f93a59b0765a" class="">
-</p><blockquote id="22d01625-9b2b-807c-847b-c09a9ab13308" class=""><mark class="highlight-blue"><strong>識別系AI（Discriminative AI）</strong></mark></blockquote><p id="24701625-9b2b-80f7-919c-c9c5109d2c2a" class="">入力されたデータを「分類・識別」することが主な役割です。例えば、画像内の物体を判別する画像認識や、スパムメールを見分けるフィルターなどが該当します。あらかじめ決められた選択肢の中から、最も適切な答えを選ぶ能力に長けています。</p><blockquote id="24701625-9b2b-8083-a1c4-f6922117e8fb" class=""><mark class="highlight-blue"><strong>予測系AI（Predictive AI）</strong></mark></blockquote><p id="24701625-9b2b-803c-896c-cf29d2615038" class="">こちらは、過去のデータを分析し、未来の出来事や数値を「予測」するためのAIです。株価の動きや顧客の行動予測、気象データの解析など、多岐にわたる分野で活用されています。蓄積された情報をもとに傾向を見出し、先を読むことに特化しています。</p><blockquote id="22d01625-9b2b-8098-a2af-c58e474d00c6" class=""><mark class="highlight-blue"><strong>生成系AI（Generative AI）</strong></mark></blockquote><p id="24701625-9b2b-80c0-b01d-df1358d67481" class="">生成AIは、学習済みのデータから新たなコンテンツを「創り出す」能力を持つAIです。絵画や文章、音楽など、既存の作品から特徴を学び、それを応用してまったく新しいものを生み出します。分類や予測だけでなく、独自のアウトプットを作れる点が、他のAIとは一線を画しています。</p><p id="24701625-9b2b-8055-b552-e323bdd82689" class="">
-</p><p id="24701625-9b2b-80b8-8e13-e7ada0b0e6a4" class="">このように比較すると、生成AIは特に応用の幅が広いことがわかります。とりわけテキストに関しては、ニュース記事の作成から小説や詩の創作、さらにはプログラムの自動生成まで、幅広いジャンルでの活用が期待されており、多くの業界において革新の原動力となりつつあります。</p><h2 id="22d01625-9b2b-8031-a73a-f4d38417d30e" class="block-color-blue_background">　生成AIの種類と用途</h2><hr id="24b01625-9b2b-8093-b847-c5fe6caf0d51"/><p id="22d01625-9b2b-80e3-89b0-f6477f391bf4" class="">ここまでで、生成AIがどのように新たなコンテンツを生み出すのかを見てきました。次に、生成AIにはどのようなタイプがあるのかを紹介します。扱うデータの種類ごとに、活用される場面も大きく異なります。</p><blockquote id="22d01625-9b2b-8041-9f3b-e5f61c018573" class=""><mark class="highlight-blue"><strong>テキスト生成AI</strong></mark></blockquote><p id="24701625-9b2b-801b-84a1-ea254b58f769" class="">ユーザーからの指示や質問に対し、新たな文章を生成します。</p><p id="22d01625-9b2b-807c-9e3d-fc1a6303b641" class=""><strong>代表的なツール：</strong></p><p id="24701625-9b2b-8005-9d95-e4342e02c3d1" class="">・GPT-4（ChatGPT）<br/>・Claude<br/>・Perplexity</p><p id="22d01625-9b2b-8010-bc56-e6eb2334dc1f" class="">【主なビジネス活用例】</p><p id="24701625-9b2b-8025-a268-f06ba8af9b98" class="">・マーケティング記事や広告文の作成<br/>・カスタマーサポートでの自動応答<br/>・報告書・提案資料のたたき台作成<br/>・自然言語でのデータレポート作成</p><blockquote id="22d01625-9b2b-8034-80c7-cf48b61e58e4" class=""><mark class="highlight-blue"><strong>画像生成AI</strong></mark></blockquote><p id="24701625-9b2b-808a-acac-e711b006bc59" class="">入力されたテキストをもとに、オリジナルの画像を生成します。</p><p id="24701625-9b2b-80ce-84df-db1f0ff8074e" class=""><strong>代表的なツール：</strong></p><p id="24701625-9b2b-805e-8d29-f457a36048c6" class="">・DALL-E<br/>・Midjourney<br/>・Adobe Firefly</p><p id="24701625-9b2b-8048-845d-f8316da63450" class="">【主なビジネス活用例】</p><p id="24701625-9b2b-8029-8f65-fed88514248a" class="">・新サービスのロゴ案作成<br/>・インテリア提案用の仮ビジュアル制作<br/>・広告やSNS用クリエイティブ画像の生成</p><figure id="24b01625-9b2b-800d-86cd-c8a2bf8581e8" class="image"><a href="../images/lesson1/chapter1-image4.png"><img style="width:1132.364990234375px" src="../images/lesson1/chapter1-image4.png"/></a></figure><p id="24601625-9b2b-8022-86f6-e78459f7d2e4" class="">（DALL-Eで生成したロゴ）</p><p id="24b01625-9b2b-8036-ba05-dd53f5510d2a" class="">
-</p><figure id="24601625-9b2b-809f-ba14-d37659cece39" class="image"><a href="../images/lesson1/chapter1-image3.png"><img style="width:639.3203125px" src="../images/lesson1/chapter1-image3.png"/></a></figure><p id="24601625-9b2b-8071-b754-c818673255c6" class="">（Midjurneyで生成した画像）</p><p id="24601625-9b2b-808f-96f0-db3a83102cf5" class="">
-</p><blockquote id="22d01625-9b2b-80e7-a198-ccd9631faf69" class=""><mark class="highlight-blue"><strong>動画生成AI</strong></mark></blockquote><p id="24701625-9b2b-8036-a49a-ecfc67e077d3" class="">動画生成AIは、テキストや画像の入力から動画コンテンツを自動生成します。</p><p id="24701625-9b2b-8068-9533-f34137d8999d" class=""><strong>代表的な動画生成AI</strong></p><p id="24701625-9b2b-8000-92ab-d807034c7a0a" class="">・Runway<br/>・Stable video<br/>・Sora</p><p id="22d01625-9b2b-8065-8277-f7929c34ea58" class="">【ビジネス利用例】</p><p id="24701625-9b2b-803c-b750-d94430d432e2" class="">・動画広告の生成とカスタマイズ<br/>・動画SNSのためのビジュアルコンテンツ生成<br/>・トレーニングと教育ビデオの自動生成<br/>・イベントやプロダクトのプロモーションビデオ</p><p id="24701625-9b2b-803f-b394-e156a624cf87" class="">
-</p><figure class="block-color-blue_background callout" style="white-space:pre-wrap;display:flex" id="24701625-9b2b-8019-8075-d8a97b42f4d5"><div style="width:100%"><h3 id="22d01625-9b2b-8006-bcda-c4255ea49c40" class="">補足</h3></div></figure><p id="24701625-9b2b-8037-925c-e02f2473b1e7" class="">画像生成AIに比べると、まだ高性能で実用的な動画の生成をすることはできませんが、ゲームやシミュレーションでのリアルタイムレンダリングや、映画・アニメーションの制作支援などの活用が期待されています。また、ChatGPTを開発しているOpenAIからも動画生成AIについての開発が言及されており、将来どのような動画を生成できるようになるか、すでに発表されています。（2024年4月時点）</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 1 生成AIとは何か</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: #333;
+        }
+        h1 { font-size: 2rem; margin-top: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 1.5rem; }
+        h3 { font-size: 1.25rem; margin-top: 1.25rem; }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+        }
+        figure {
+            margin: 1rem 0;
+        }
+        figcaption {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+        }
+        blockquote {
+            border-left: 3px solid #ddd;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+        }
+        .callout {
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 3px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chapter 1 生成AIとは何か</h1>
+<h2>　生成AIとは</h2>
+<hr>
+<p>生成AIは、与えられた入力（プロンプト）をもとに、テキストや画像、音声といった新しいデータを自動的に作り出す技術です。</p>
+<p>たとえば「猫」と入力すれば、猫に関する説明文を生成したり、犬の画像を描き出したりすることが可能です。</p>
+<p>この技術の仕組みを理解するには、「開発段階」と「利用段階」に分けて考えるとイメージしやすくなります。</p>
+<p>開発段階では、大量のデータをもとにパターンを学習し、一つの巨大なモデルを構築します。この「モデル」とは、データ内の規則性や関連性を学び取り、未知の情報に対して判断や予測を行うための仕組みの集合体です。</p>
+<p>言い換えれば、生成AIの「頭脳」にあたる部分ですが、あくまで学習した情報に基づいて応答するものであり、人のように自分の意思や感情を持っているわけではありません。</p>
+<p>続いての利用段階では、この学習済みモデルに対してテキストなどの情報を入力することで、新たなコンテンツを生成する仕組みになっています。</p>
+<img src="../images/lesson1/chapter1-image1.png" alt="画像">
+<p>
+現在では、OpenAIの「ChatGPT」をはじめとした代表的なサービスが登場しており、テキスト生成に特化したこのツールは、人間に近い自然な文章を出力する点で高く評価されています。</p>
+<p>さらに、GoogleやMicrosoftなども含め、さまざまな企業が生成AIに注目しており、テキストだけでなく画像、音声、動画などの幅広い分野で技術開発が進んでいます。</p>
+<h2>　生成AIの主な特徴</h2>
+<hr>
+<p>生成AIの最大の魅力は、その高い汎用性にあります。</p>
+<p>本コースでは生成AIを中心に扱いますが、AIには他にも様々なタイプがあります。それぞれの代表的なAIと比較することで、生成AIの特性をより深く理解していきましょう。以下は、主なAIの種類を整理した一覧です。
+</p>
+<img src="../images/lesson1/chapter1-image2.png" alt="画像">
+<blockquote><strong>識別系AI（Discriminative AI）</strong></blockquote>
+<p>入力されたデータを「分類・識別」することが主な役割です。例えば、画像内の物体を判別する画像認識や、スパムメールを見分けるフィルターなどが該当します。</p>
+<p>あらかじめ決められた選択肢の中から、最も適切な答えを選ぶ能力に長けています。</p>
+<blockquote><strong>予測系AI（Predictive AI）</strong></blockquote>
+<p>こちらは、過去のデータを分析し、未来の出来事や数値を「予測」するためのAIです。株価の動きや顧客の行動予測、気象データの解析など、多岐にわたる分野で活用されています。</p>
+<p>蓄積された情報をもとに傾向を見出し、先を読むことに特化しています。</p>
+<blockquote><strong>生成系AI（Generative AI）</strong></blockquote>
+<p>生成AIは、学習済みのデータから新たなコンテンツを「創り出す」能力を持つAIです。絵画や文章、音楽など、既存の作品から特徴を学び、それを応用してまったく新しいものを生み出します。</p>
+<p>分類や予測だけでなく、独自のアウトプットを作れる点が、他のAIとは一線を画しています。</p>
+<p>このように比較すると、生成AIは特に応用の幅が広いことがわかります。とりわけテキストに関しては、ニュース記事の作成から小説や詩の創作、さらにはプログラムの自動生成まで、幅広いジャンルでの活用が期待されており、多くの業界において革新の原動力となりつつあります。</p>
+<h2>　生成AIの種類と用途</h2>
+<hr>
+<p>ここまでで、生成AIがどのように新たなコンテンツを生み出すのかを見てきました。次に、生成AIにはどのようなタイプがあるのかを紹介します。扱うデータの種類ごとに、活用される場面も大きく異なります。</p>
+<blockquote><strong>テキスト生成AI</strong></blockquote>
+<p>ユーザーからの指示や質問に対し、新たな文章を生成します。</p>
+<p><strong>代表的なツール：</strong></p>
+<p>・GPT-5（ChatGPT）
+・Gemini</p>
+<p>・Claude</p>
+<p>【主なビジネス活用例】</p>
+<p>・マーケティング記事や広告文の作成
+・カスタマーサポートでの自動応答
+・報告書・提案資料のたたき台作成
+・自然言語でのデータレポート作成</p>
+<blockquote><strong>画像生成AI</strong></blockquote>
+<p>入力されたテキストをもとに、オリジナルの画像を生成します。</p>
+<p><strong>代表的なツール：</strong></p>
+<p>・DALL-E
+・Image FX
+・Midjourney
+・Adobe Firefly</p>
+<p>【主なビジネス活用例】</p>
+<p>・新サービスのロゴ案作成
+・インテリア提案用の仮ビジュアル制作
+・広告やSNS用クリエイティブ画像の生成</p>
+<img src="../images/lesson1/chapter1-image3.png" alt="画像">
+<p>（DALL-Eで生成したロゴ）</p>
+<img src="../images/lesson1/chapter1-image4.jpg" alt="画像">
+<p>（Image FXで生成した画像）</p>
+<blockquote><strong>動画生成AI</strong></blockquote>
+<p>動画生成AIは、テキストや画像の入力から動画コンテンツを自動生成します。</p>
+<p><strong>代表的な動画生成AI</strong></p>
+<p>・Runway
+・Stable video
+・Sora</p>
+<p>【ビジネス利用例】</p>
+<p>・動画広告の生成とカスタマイズ
+・動画SNSのためのビジュアルコンテンツ生成
+・トレーニングと教育ビデオの自動生成
+・イベントやプロダクトのプロモーションビデオ</p>
+
+</body>
+</html>
