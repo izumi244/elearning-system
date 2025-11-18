@@ -74,9 +74,14 @@
                             <span class="status-icon">📚</span>
                             <span class="status-text">このチャプターの学習はお済みですか？</span>
                         </div>
-                        <button class="complete-button" id="completeButton" onclick="completeChapter()">
-                            チャプターの学習を完了しました
-                        </button>
+                        <div class="completion-buttons">
+                            <button class="complete-button" id="completeButton" onclick="completeChapter()">
+                                チャプターの学習を完了しました
+                            </button>
+                            <button class="assignment-button" id="assignmentButton" style="display: none;" onclick="openAssignment()">
+                                📝 課題を提出する
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -100,6 +105,8 @@
 
     <!-- JavaScriptファイル -->
     <script src="js/config.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/app-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/progress.js"></script>
     <script src="js/hybrid-progress.js"></script>
@@ -127,21 +134,24 @@
 
             // ユーザー情報の表示
             displayUserInfo();
-            
+
             // サイドバーの生成
             generateSidebar();
-            
+
             // チャプター情報の表示
             displayChapterInfo();
-            
+
             // 動的コンテンツの読み込み
             loadChapterContent();
-            
+
             // 完了状態の確認
             checkCompletionStatus();
-            
+
             // ナビゲーションボタンの設定
             setupNavigation();
+
+            // 課題提出ボタンの表示判定
+            showAssignmentButton();
         });
 
         function loadChapterContent() {
@@ -181,14 +191,7 @@
                 })
                 .catch(error => {
                     console.error('コンテンツの読み込みに失敗しました:', error);
-                    document.getElementById('dynamicContent').innerHTML = `
-                        <div class="error-message">
-                            <h3>コンテンツの読み込みに失敗しました</h3>
-                            <p>ファイルパス: ${contentPath}</p>
-                            <p>エラー詳細: ${error.message}</p>
-                            <button onclick="loadChapterContent()" class="btn btn-primary">再試行</button>
-                        </div>
-                    `;
+                    showContentError(error, contentPath);
                 });
         }
 
@@ -410,6 +413,61 @@
             setTimeout(() => {
                 successDiv.remove();
             }, 3000);
+        }
+
+        function showAssignmentButton() {
+            // 設定ファイルから課題提出ボタンを表示する対象チャプターを取得
+            const currentChapterKey = `${currentLessonId}-${currentChapterId}`;
+
+            if (CHAPTER_CONFIG.CHAPTERS_WITH_ASSIGNMENT.includes(currentChapterKey)) {
+                const assignmentButton = document.getElementById('assignmentButton');
+                if (assignmentButton) {
+                    assignmentButton.style.display = 'inline-block';
+                }
+            }
+        }
+
+        function openAssignment() {
+            // 現在のチャプター情報を付加してassignment.htmlに遷移
+            window.location.href = `assignment.html?from=${currentLessonId}-${currentChapterId}&title=${encodeURIComponent(currentChapterTitle)}`;
+        }
+
+        /**
+         * コンテンツ読み込みエラーを安全に表示する（XSS対策済み）
+         * @param {Error} error - エラーオブジェクト
+         * @param {string} contentPath - コンテンツファイルのパス
+         */
+        function showContentError(error, contentPath) {
+            const dynamicContent = document.getElementById('dynamicContent');
+            dynamicContent.innerHTML = ''; // クリア
+
+            // エラーメッセージコンテナを作成
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+
+            // タイトル
+            const errorTitle = document.createElement('h3');
+            errorTitle.textContent = 'コンテンツの読み込みに失敗しました';
+            errorDiv.appendChild(errorTitle);
+
+            // ファイルパス（安全にtextContentで設定）
+            const pathPara = document.createElement('p');
+            pathPara.textContent = `ファイルパス: ${contentPath}`;
+            errorDiv.appendChild(pathPara);
+
+            // エラー詳細（安全にtextContentで設定）
+            const errorPara = document.createElement('p');
+            errorPara.textContent = `エラー詳細: ${error.message}`;
+            errorDiv.appendChild(errorPara);
+
+            // 再試行ボタン
+            const retryButton = document.createElement('button');
+            retryButton.textContent = '再試行';
+            retryButton.className = 'btn btn-primary';
+            retryButton.onclick = loadChapterContent;
+            errorDiv.appendChild(retryButton);
+
+            dynamicContent.appendChild(errorDiv);
         }
     </script>
 </body>

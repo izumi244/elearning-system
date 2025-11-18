@@ -63,9 +63,16 @@
             border-radius: 8px;
         }
 
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
         .back-button {
             display: inline-block;
-            margin-top: 2rem;
             padding: 0.75rem 2rem;
             background: #6c757d;
             color: white;
@@ -76,6 +83,14 @@
 
         .back-button:hover {
             background: #5a6268;
+        }
+
+        #backToChapterButton {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #backToChapterButton:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #65408b 100%);
         }
     </style>
 </head>
@@ -100,7 +115,10 @@
                     <div class="loading-spinner"></div>
                 </p>
                 <div id="errorContainer"></div>
-                <a href="home.html" class="back-button">ホームに戻る</a>
+                <div class="button-group">
+                    <a href="home.html" class="back-button" id="backToChapterButton" style="display: none;"></a>
+                    <a href="home.html" class="back-button">ホームに戻る</a>
+                </div>
             </div>
         </div>
     </main>
@@ -127,6 +145,20 @@
                 // ユーザーのスプレッドシートURLを取得
                 openAssignmentSpreadsheet(currentUser.userId);
             }
+
+            // URLパラメータから元のチャプター情報を取得
+            const urlParams = new URLSearchParams(window.location.search);
+            const fromChapter = urlParams.get('from');
+            const chapterTitle = urlParams.get('title');
+
+            if (fromChapter && chapterTitle) {
+                // チャプターに戻るボタンを表示
+                const backButton = document.getElementById('backToChapterButton');
+                const [lessonId, chapterId] = fromChapter.split('-');
+                backButton.href = `chapter.html?lesson=${lessonId}&chapter=${chapterId}&title=${encodeURIComponent(chapterTitle)}`;
+                backButton.textContent = `${chapterTitle} に戻る`;
+                backButton.style.display = 'inline-block';
+            }
         });
 
         function openAssignmentSpreadsheet(userId) {
@@ -139,10 +171,16 @@
 
                 if (newWindow) {
                     // 成功メッセージを表示
-                    document.getElementById('assignmentMessage').innerHTML = `
-                        あなた専用の課題提出スプレッドシートを開きました。<br>
-                        新しいタブで表示されない場合は、ポップアップブロックを確認してください。
-                    `;
+                    const messageEl = document.getElementById('assignmentMessage');
+                    messageEl.textContent = '';
+
+                    const line1 = document.createTextNode('あなた専用の課題提出スプレッドシートを開きました。');
+                    const br = document.createElement('br');
+                    const line2 = document.createTextNode('新しいタブで表示されない場合は、ポップアップブロックを確認してください。');
+
+                    messageEl.appendChild(line1);
+                    messageEl.appendChild(br);
+                    messageEl.appendChild(line2);
                 } else {
                     // ポップアップがブロックされた場合
                     showError('ポップアップがブロックされました。以下のリンクをクリックしてスプレッドシートを開いてください。', assignmentUrl);
@@ -155,17 +193,24 @@
 
         function showError(message, url = null) {
             const messageEl = document.getElementById('assignmentMessage');
-            messageEl.innerHTML = message;
+            messageEl.textContent = message;
 
             if (url) {
                 const errorContainer = document.getElementById('errorContainer');
-                errorContainer.innerHTML = `
-                    <div style="margin-top: 2rem;">
-                        <a href="${url}" target="_blank" class="back-button" style="background: #007bff;">
-                            スプレッドシートを開く
-                        </a>
-                    </div>
-                `;
+                errorContainer.textContent = '';
+
+                const wrapper = document.createElement('div');
+                wrapper.style.marginTop = '2rem';
+
+                const link = document.createElement('a');
+                link.href = url;
+                link.target = '_blank';
+                link.className = 'back-button';
+                link.style.background = '#007bff';
+                link.textContent = 'スプレッドシートを開く';
+
+                wrapper.appendChild(link);
+                errorContainer.appendChild(wrapper);
             }
         }
     </script>

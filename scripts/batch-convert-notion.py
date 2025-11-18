@@ -12,9 +12,9 @@ import os
 import sys
 import re
 import time
-import requests
 from pathlib import Path
 from notion_client import Client
+from notion_utils import NotionContentConverter
 
 # Windows環境で絵文字を表示するためのUTF-8出力設定
 if sys.platform == 'win32':
@@ -24,18 +24,25 @@ if sys.platform == 'win32':
 NOTION_API_KEY = os.environ.get('NOTION_API_KEY')
 if not NOTION_API_KEY:
     print("❌ エラー: NOTION_API_KEY 環境変数が設定されていません")
-    print("使い方: set NOTION_API_KEY=your_key (Windowsの場合)")
+    print("\n使い方:")
+    print("  Windows: set NOTION_API_KEY=your_api_key")
+    print("  Mac/Linux: export NOTION_API_KEY=your_api_key")
+    print("\nまたは .env ファイルに記載してください:")
+    print("  NOTION_API_KEY=your_api_key")
     sys.exit(1)
 
 # データベースID
 DATABASE_ID = "2933f0bae9be814cbf53f19addbd408e"
 
 class BatchNotionConverter:
+    """Notionから複数のチャプターを一括で取得してHTML変換するクラス"""
+
     def __init__(self):
+        """初期化"""
         self.notion = Client(auth=NOTION_API_KEY)
         self.content_dir = Path('../content')
-        self.images_dir = Path('../images')
         self.content_dir.mkdir(parents=True, exist_ok=True)
+        self.converter = NotionContentConverter(images_dir='../images')
 
     def get_all_chapters(self):
         """全Lessonのチャプターリスト（手動）"""
@@ -264,29 +271,16 @@ class BatchNotionConverter:
         return html
 
     def rich_text_to_html(self, rich_text_array):
-        """Notionのrich_textをHTMLに変換"""
-        html = ""
-        for text_obj in rich_text_array:
-            content = text_obj.get('plain_text', '')
-            annotations = text_obj.get('annotations', {})
+        """
+        Notionのrich_textをHTMLに変換（共通モジュール使用）
 
-            if annotations.get('bold'):
-                content = f"<strong>{content}</strong>"
-            if annotations.get('italic'):
-                content = f"<em>{content}</em>"
-            if annotations.get('strikethrough'):
-                content = f"<s>{content}</s>"
-            if annotations.get('underline'):
-                content = f"<u>{content}</u>"
-            if annotations.get('code'):
-                content = f"<code>{content}</code>"
+        Args:
+            rich_text_array: NotionのRichTextオブジェクトの配列
 
-            if text_obj.get('href'):
-                content = f'<a href="{text_obj["href"]}">{content}</a>'
-
-            html += content
-
-        return html
+        Returns:
+            str: 変換されたHTML文字列
+        """
+        return self.converter.rich_text_to_html(rich_text_array)
 
     def convert_chapter(self, chapter_info):
         """1つのチャプターを変換"""
@@ -308,19 +302,50 @@ class BatchNotionConverter:
             body_html = ""
             image_counter = [1]  # mutableにするためリストを使用
 
-            for block in blocks:
+            # リストのグループ化処理
+            i = 0
+            while i < len(blocks):
+                block = blocks[i]
                 if block is None:
                     print(f"    ⚠️  Noneブロックをスキップ")
-                    continue
-                try:
-                    block_html = self.block_to_html(block, lesson_num, chapter_num, image_counter)
-                    body_html += block_html
-                except Exception as e:
-                    print(f"    ⚠️  ブロック変換エラー (type: {block.get('type', 'unknown')}): {e}")
+                    i += 1
                     continue
 
-            # 完全なHTMLドキュメントを作成
-            html_content = self.generate_html_template(title, body_html)
+                block_type = block.get('type')
+
+                # bulleted_list_itemの場合、連続する項目を<ul>で囲む
+                if block_type == 'bulleted_list_item':
+                    body_html += "<ul>\n"
+                    while i < len(blocks) and blocks[i].get('type') == 'bulleted_list_item':
+                        try:
+                            block_html = self.block_to_html(blocks[i], lesson_num, chapter_num, image_counter)
+                            body_html += block_html
+                        except Exception as e:
+                            print(f"    ⚠️  ブロック変換エラー (type: {blocks[i].get('type', 'unknown')}): {e}")
+                        i += 1
+                    body_html += "</ul>\n"
+                # numbered_list_itemの場合、連続する項目を<ol>で囲む
+                elif block_type == 'numbered_list_item':
+                    body_html += "<ol>\n"
+                    while i < len(blocks) and blocks[i].get('type') == 'numbered_list_item':
+                        try:
+                            block_html = self.block_to_html(blocks[i], lesson_num, chapter_num, image_counter)
+                            body_html += block_html
+                        except Exception as e:
+                            print(f"    ⚠️  ブロック変換エラー (type: {blocks[i].get('type', 'unknown')}): {e}")
+                        i += 1
+                    body_html += "</ol>\n"
+                else:
+                    # その他のブロックは通常処理
+                    try:
+                        block_html = self.block_to_html(block, lesson_num, chapter_num, image_counter)
+                        body_html += block_html
+                    except Exception as e:
+                        print(f"    ⚠️  ブロック変換エラー (type: {block.get('type', 'unknown')}): {e}")
+                    i += 1
+
+            # 完全なHTMLドキュメントを作成（共通モジュール使用）
+            html_content = self.converter.generate_html_document(title, body_html)
 
             # ファイル保存
             filename = f"lesson{lesson_num}-chapter{chapter_num}.html"
@@ -340,82 +365,6 @@ class BatchNotionConverter:
             print(f"    ❌ エラー: {e}")
             return False
 
-    def generate_html_template(self, title, body_html):
-        """HTMLテンプレートを生成"""
-        return f"""<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title}</title>
-    <style>
-        body {{
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            color: #333;
-        }}
-        h1 {{ font-size: 2rem; margin-top: 2rem; }}
-        h2 {{ font-size: 1.5rem; margin-top: 1.5rem; }}
-        h3 {{ font-size: 1.25rem; margin-top: 1.25rem; }}
-        img {{
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 1rem 0;
-        }}
-        figure {{
-            margin: 1rem 0;
-        }}
-        figcaption {{
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
-            margin-top: 0.5rem;
-        }}
-        code {{
-            background: #f5f5f5;
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }}
-        pre {{
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 5px;
-            overflow-x: auto;
-        }}
-        pre code {{
-            background: none;
-            padding: 0;
-        }}
-        blockquote {{
-            border-left: 3px solid #ddd;
-            padding-left: 1rem;
-            margin-left: 0;
-            color: #666;
-        }}
-        .callout {{
-            background: #f0f7ff;
-            border-left: 3px solid #0066cc;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 3px;
-        }}
-        hr {{
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 2rem 0;
-        }}
-    </style>
-</head>
-<body>
-    <h1>{title}</h1>
-{body_html}
-</body>
-</html>"""
 
 def main():
     print("=" * 60)

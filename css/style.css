@@ -1362,6 +1362,42 @@ body {
     vertical-align: top;
 }
 
+/* 引用ブロックのスタイル */
+#dynamicContent blockquote {
+    border-left: 3px solid #ddd;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #666;
+    margin: 1rem 0;
+}
+
+/* リストのスタイル */
+#dynamicContent ul,
+#dynamicContent ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+#dynamicContent ul li,
+#dynamicContent ol li {
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+/* テーブルのスタイル（全てのテーブルに適用） */
+#dynamicContent table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+#dynamicContent table td,
+#dynamicContent table th {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.75rem 1rem;
+}
+
 .completion-section {
     margin-bottom: 2rem;
 }
@@ -1397,6 +1433,14 @@ body {
     color: #495057;
 }
 
+/* 完了ボタンとアサインメントボタンの横並び配置 */
+.completion-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .complete-button {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
@@ -1417,6 +1461,24 @@ body {
 .complete-button:disabled {
     background: #6c757d;
     cursor: not-allowed;
+}
+
+/* 課題提出ボタン */
+.assignment-button {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.assignment-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(56, 239, 125, 0.3);
 }
 
 .chapter-navigation {
