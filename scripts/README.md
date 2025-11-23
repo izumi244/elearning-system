@@ -4,7 +4,7 @@
 
 ## ✅ 現在の状態
 
-- **学習カリキュラム（基礎マスターコース）**: コンテンツ配置済み、進捗管理機能あり
+- **学習カリキュラム（医療・介護DX人材育成研修（生成AI活用コース））**: コンテンツ配置済み、進捗管理機能あり
 - **PC初心者用カリキュラム**: UIの準備完了、コンテンツ待ち（進捗管理なし・読み取り専用）
 
 ## 🚀 使い方
@@ -25,7 +25,7 @@ cd scripts
 # PC初心者用カリキュラムの場合
 python import-notion-content.py ダウンロードしたZIPファイル.zip pc-beginner
 
-# 基礎マスターコースの場合
+# 医療・介護DX人材育成研修（生成AI活用コース）の場合
 python import-notion-content.py ダウンロードしたZIPファイル.zip basic-course
 ```
 
@@ -77,7 +77,7 @@ images/pc-beginner/step2/chapter1-image1.png
 ...
 ```
 
-### 基礎マスターコース
+### 医療・介護DX人材育成研修（生成AI活用コース）
 
 ```
 content/lesson1-chapter1.html

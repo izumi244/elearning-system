@@ -192,7 +192,7 @@ function onUsersSheetEdit(e) {
       const newRow = [
         userId,           // A: userId
         userName,         // B: userName
-        34,               // C: totalChapters（基礎マスターコースのチャプター数）
+        34,               // C: totalChapters（医療・介護DX人材育成研修（生成AI活用コース）のチャプター数）
         0,                // D: completedChapters
         0,                // E: completionRate
         Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd\'T\'HH:mm:ss\'Z\''), // F: lastUpdated

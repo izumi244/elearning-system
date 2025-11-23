@@ -96,7 +96,7 @@ class NotionContentImporter:
                 # STEPページ自体は学習目標と同じ扱い
                 return step_num, '1'
 
-        # 基礎マスターコースの場合の処理
+        # 医療・介護DX人材育成研修（生成AI活用コース）の場合の処理
         # Lesson/STEP番号を抽出
         lesson_match = re.search(self.lesson_pattern, filename, re.IGNORECASE)
         if not lesson_match:

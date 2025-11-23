@@ -16,7 +16,7 @@ class ProgressManager {
     initializeCurriculumData() {
         return {
             "basic_course": {
-                title: "基礎マスターコース",
+                title: "医療・介護DX人材育成研修（生成AI活用コース）",
                 lessons: [
                     {
                         id: "lesson1",
