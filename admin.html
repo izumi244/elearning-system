@@ -199,8 +199,11 @@
                             completedChaptersList: row[6] || ''
                         };
                     }).filter(user => {
-                        // 空行を除外、かつ管理者(admin)を除外
-                        return user.userId && userRoles[user.userId] !== 'admin';
+                        // 空行を除外、かつ管理者(admin)とテストアカウントを除外
+                        const testAccounts = ['demo456', 'test123'];
+                        return user.userId &&
+                               userRoles[user.userId] !== 'admin' &&
+                               !testAccounts.includes(user.userId);
                     });
 
                     console.log(`✅ ${allProgressData.length}件の進捗データを取得しました（管理者除外）`);
